@@ -23,7 +23,7 @@ export default class Menu extends Phaser.Scene {
         this.effetGlow(BoutonJouer);
         this.effetGlow(BoutonQuitter);
         BoutonJouer.on("pointerup", () => {
-            this.scene.switch("Egypte");
+            this.scene.switch("Industrie");
         });
     }
     udpate() {
