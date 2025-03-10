@@ -3,6 +3,7 @@
 /***********************************************************************/
 /** CONFIGURATION GLOBALE DU JEU ET LANCEMENT 
 /***********************************************************************/
+// import Phaser from "phaser";
 import menu from "./js/menu.js";
 import Moyen_age from "./js/Moyen_age.js";
 import Egypte from "./js/Egypte.js";

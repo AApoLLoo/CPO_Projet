@@ -26,10 +26,12 @@ export default class Industrie extends Phaser.Scene {
         this.load.image("TuilesDeJeuIndustrie19", "src/assets/Fence2.png");
         this.load.tilemapTiledJSON("Carte_Industrie", "src/assets/MAP_INDUSTRY.json"); 
     }
-    create() {
+    create() {  
+        console.log(Phaser.VERSION);
+
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");
     
-        const tileset1 = carteDuNiveau.addTilesetImage("Fire-extinguisher1", "TuilesDeJeuIndustrie1");
+        const tileset1 = carteDuNiveau.addTilesetImage("Decor1", "TuilesDeJeuIndustrie1");
         const tileset2 = carteDuNiveau.addTilesetImage("IndustrialTile_18", "TuilesDeJeuIndustrie2");
         const tileset3 = carteDuNiveau.addTilesetImage("IndustrialTile_19", "TuilesDeJeuIndustrie3");
         const tileset4 = carteDuNiveau.addTilesetImage("IndustrialTile_55", "TuilesDeJeuIndustrie4");
@@ -49,21 +51,12 @@ export default class Industrie extends Phaser.Scene {
         const tileset18 = carteDuNiveau.addTilesetImage("Fence2", "TuilesDeJeuIndustrie18");
         const tileset19 = carteDuNiveau.addTilesetImage("Box8", "TuilesDeJeuIndustrie19");
         const tileset20 = carteDuNiveau.addTilesetImage("Background", "background");
-    
-        // Create layers with the correct tilesets
-        const smog_1erP = carteDuNiveau.createLayer("smog_1erP", tileset1);
-        const platerformes_1erP = carteDuNiveau.createLayer("platerformes_1erP", tileset2);
-        const platerfomes_2emeP = carteDuNiveau.createLayer("platerfomes_2emeP", tileset3);
-        const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset4);
-        const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset5);
-        const smog_2emeP = carteDuNiveau.createLayer("smog_2emeP", tileset6);
-        const fonds_3 = carteDuNiveau.createLayer("fonds_3", tileset7);
-        const soleil = carteDuNiveau.createLayer("soleil", tileset8);
-        const fonds_4 = carteDuNiveau.createLayer("fonds_4", tileset9);
-    
+        
+        const calque = carteDuNiveau.createDynamicLayer("tiled_calque", 
+            [tileset1, tileset2, tileset3, tileset4, tileset5, tileset6, tileset7, tileset8, tileset9, tileset10, tileset11, tileset12, tileset13, tileset14, tileset15, tileset16, tileset17, tileset18, tileset19, tileset20]
+        );
         platerfomes_2emeP.setCollisionByProperty({ estSolide: true });
         platerformes_1erP.setCollisionByProperty({ estSolide: true });
-    
         this.cursors = this.input.keyboard.createCursorKeys();
     }
     
