@@ -13,7 +13,6 @@ var config = {
   type: Phaser.AUTO,
     scale: {
     mode: Phaser.Scale.FIT, // redimensionne le jeu pour qu'il rentre dans la fenetre
-    autocenter: Phaser.Scale.CENTER, // centre le jeu
     width: 1920, // largeur en pixels
     height: 1080  ,// hauteur en pixels
     },

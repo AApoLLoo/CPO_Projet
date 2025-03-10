@@ -14,7 +14,6 @@ export default class Menu extends Phaser.Scene {
         this.load.image("BoutonQuitter", "src/assets/BoutonQuitter.png");
     }
     create() {
-        console.log(Phaser.VERSION);
         this.add.image(960, 540, "background");
         BoutonJouer = this.add.image(960, 920, "BoutonJouer");
         BoutonQuitter = this.add.image(960, 730, "BoutonQuitter");

@@ -1,5 +1,4 @@
 var clavier;
-var player;
 export default class Egypte extends Phaser.Scene {
     constructor() {
         super({key : "Egypte"});
@@ -113,6 +112,11 @@ export default class Egypte extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shoes", { start: 22, end: 24 }),
             frameRate: 4,
         });
+        this.message = this.add.text(400, 100, "Bienvenue en Egypte", { fontSize: "32px", color: "White" });
+        this.message.setOrigin(0.5);
+        this.time.delayedCall(10000, () => {
+            this.message.destroy();
+        }, [], this);
         clavier = this.input.keyboard.createCursorKeys();
     }
     update() {        
