@@ -15,13 +15,35 @@ export default class Industrie extends Phaser.Scene {
         this.load.image("TuilesDeJeuIndustrie10", "src/assets/smog1.png");
         this.load.image("TuilesDeJeuIndustrie11", "src/assets/smog2.png");
         this.load.image("TuilesDeJeuIndustrie12", "src/assets/sun.png");
-        this.load.tilemapTiledJSON("Carte_Industrie", "src/assets/MAPINDUSTRY.json"); 
+        this.load.tilemapTiledJSON("Carte_Industrie", "src/assets/MAP_INDUSTRY.json"); 
     }
     create(){
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
-            "tuiles_de_Jeu",
-            "Phaser_tuilesdejeu"
+            "Fire-extinguisher1",
+            "IndustrialTile_18",
+            "IndustrialTile_19",
+            "IndustrialTile_55",
+            "IndustrialTile_56",
+            "Ladder1",
+            "light",
+            "minishop&callbox",
+            "Pointer1",
+            "smog1",
+            "smog2",
+            "sun",
+            "TuilesDeJeuIndustrie1",
+            "TuilesDeJeuIndustrie2",
+            "TuilesDeJeuIndustrie3",
+            "TuilesDeJeuIndustrie4",
+            "TuilesDeJeuIndustrie5",
+            "TuilesDeJeuIndustrie6",
+            "TuilesDeJeuIndustrie7",
+            "TuilesDeJeuIndustrie8",
+            "TuilesDeJeuIndustrie9",
+            "TuilesDeJeuIndustrie10",
+            "TuilesDeJeuIndustrie11",
+            "TuilesDeJeuIndustrie12"
           );  
         const calque_background = carteDuNiveau.createLayer("Calque_Background", tileset);
         const calque_background2 = carteDuNiveau.createLayer("Calque_Background2", tileset);
