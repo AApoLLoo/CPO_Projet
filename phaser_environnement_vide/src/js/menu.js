@@ -22,8 +22,13 @@ export default class Menu extends Phaser.Scene {
         ZoneQuitter = this.add.text(815 , 710, "Quitter le jeu", {fontSize: "35px", color:("Black"), fontStyle: "bold"});
         this.effetGlow(BoutonJouer);
         this.effetGlow(BoutonQuitter);
+        BoutonJouer.on("pointerup", () => {
+            this.scene.switch("Egypte");
+        });
     }
+    udpate() {
 
+    }
 effetGlow(bouton) {
     bouton.setInteractive();
     bouton.on("pointerover", () => {
