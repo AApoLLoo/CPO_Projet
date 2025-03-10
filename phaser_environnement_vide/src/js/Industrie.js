@@ -45,9 +45,15 @@ export default class Industrie extends Phaser.Scene {
             "TuilesDeJeuIndustrie11",
             "TuilesDeJeuIndustrie12"
           );  
-        const calque_background = carteDuNiveau.createLayer("Calque_Background", tileset);
-        const calque_background2 = carteDuNiveau.createLayer("Calque_Background2", tileset);
-        const calque_plateformes = carteDuNiveau.createLayer("Calque_Plateformes", tileset);
+        const smog_1erP = carteDuNiveau.createLayer("smog_1erP", tileset);
+        const platerformes_1erP = carteDuNiveau.createLayer("platerformes_1erP", tileset);
+        const platerfomes_2emeP = carteDuNiveau.createLayer("platerfomes_2emeP", tileset);
+        const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
+        const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
+        const smog_2emeP = carteDuNiveau.createLayer("smog_2emeP", tileset);
+        const fonds_3 = carteDuNiveau.createLayer("fonds_3", tileset);
+        const soleil = carteDuNiveau.createLayer("soleil", tileset);
+        const fonds_4 = carteDuNiveau.createLayer("fonds_4", tileset);
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
     }
     update() {
