@@ -133,12 +133,12 @@ export default class Egypte extends Phaser.Scene {
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
-        const clavier = this.input.keyboard.createCursorKeys();
+        this.clavier = this.input.keyboard.createCursorKeys();
         this.physics.add.collider(this.player, calque_plateformes); 
     }
     
     update() {        
-        if (clavier.left.isDown) {
+        if (this.clavier.left.isDown) {
             this.player.direction = 'left';
             this.pants.direction = 'left';
             this.shirt.direction = 'left';
@@ -151,7 +151,7 @@ export default class Egypte extends Phaser.Scene {
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
             this.shoes.anims.play("anim_tourne_gauche_shoes", true);
-          } else if (clavier.right.isDown) {
+          } else if (this.clavier.right.isDown) {
             this.player.direction = 'right';
             this.pants.direction = 'right';
             this.shirt.direction = 'right';
@@ -175,7 +175,7 @@ export default class Egypte extends Phaser.Scene {
             this.shoes.anims.play("anim_face_shoes");
           }
         
-          if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
+          if (this.clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
             this.player.anims.play("anim_saut", true);
             this.pants.anims.play("anim_saut_pants", true);
             this.shirt.anims.play("anim_saut_shirt", true);
