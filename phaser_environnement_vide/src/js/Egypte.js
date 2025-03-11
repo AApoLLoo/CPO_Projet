@@ -4,7 +4,9 @@ export default class Egypte extends Phaser.Scene {
         super({key : "Egypte"});
     }
     preload() {
-        this.load.image("Phaser_TuilesEgypte", "src/assets/tuilesJeu.png");
+        this.load.image("TuilesEgypte", "src/assets/TuilesEgypte.png");
+        this.load.tilemapTiledJSON("MapEgypte", "src/assets/MapEgypte.json");
+        //
         this.load.image("Ciel", "src/assets/Ciel.png");
         this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("player2", "src/assets/Personnage - Copie.png", { frameWidth: 80, frameHeight: 64 });
@@ -17,6 +19,28 @@ export default class Egypte extends Phaser.Scene {
 
     }
     create(){
+        const carteDuNiveau = this.add.tilemap("MapEgypte");
+        const tileset = carteDuNiveau.addTilesetImage(
+          "TuilesEgypte",  
+        );  
+        const calque_background = carteDuNiveau.createLayer(
+            "calque_background",
+            tileset
+          );
+          const calque_background2 = carteDuNiveau.createLayer(
+            "calque_background",
+            tileset
+          );
+          const calque_background4 = carteDuNiveau.createLayer(
+            "calque_background",
+            tileset
+          );
+          const calque_background3 = carteDuNiveau.createLayer(
+            "calque_background",
+            tileset
+          );
+        calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+        //
         this.add.image(960, 540, "Ciel");
         this.player = this.physics.add.sprite(100, 450, "player");
         this.pants = this.physics.add.sprite(100, 450, "pants");
@@ -120,7 +144,9 @@ export default class Egypte extends Phaser.Scene {
             this.message.destroy();
         }, [], this);
         clavier = this.input.keyboard.createCursorKeys();
+        this.physics.add.collider(player, calque_plateformes); 
     }
+    
     update() {        
         if (clavier.left.isDown) {
             this.player.direction = 'left';
