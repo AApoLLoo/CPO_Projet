@@ -171,35 +171,16 @@ export default class Industrie extends Phaser.Scene {
 
 
 
-        boutonFeu = this.input.keyboard.addKey('A');
-
-
-
-
-      platmouv = this.physics.add.sprite(100, 450, 'Transporter2');
-      platmouv.setallowGravity = false;
-      platmouv.setImmovable(true);
-      this.anims.create({
-        key: "anime", // key est le nom de l'animation : doit etre unique poru la scene.
-        frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 3 }), // on prend toutes les frames de img perso numerotées de 0 à 3
-        frameRate: 10, // vitesse de défilement des frames
-        repeat: -1 // nombre de répétitions de l'animation. -1 = infini
-      }); 
-
-
-
     }
     update() {
       if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
         tirer(this.player);
       } 
       if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
-        
         this.player.setVelocityY(-100) && this.player.setVelocityX(0);
         this.pants.setVelocityY(-100) && this.pants.setVelocityX(0);
         this.shirt.setVelocityY(-100) && this.shirt.setVelocityX(0);
         this.shoes.setVelocityY(-100) && this.shoes.setVelocityX(0);
-        
       }else if (clavier.left.isDown) {
         this.player.direction = 'left';
         this.pants.direction = 'left';
