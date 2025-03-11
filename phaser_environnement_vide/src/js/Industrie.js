@@ -1,18 +1,10 @@
 var clavier;
 var toucheEchelle;
 var platmouv; // désigne le sprite du joueur
-var boutonFeu;
-
-function tirer(player) {
-  // mesasge d'alerte affichant les attributs de player
-  alert ("joueur en position"+player.x + ","+player.y + ", direction du tir: "
-  + player.direction) ; 
-}
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
     }
-    
     preload() {
         this.load.image("TuilesDeJeuIndustrie1", "src/assets/TuilesJeux.png");
         this.load.tilemapTiledJSON("Carte_Industrie", "src/assets/MAP_INDUSTRY.json"); 
@@ -25,16 +17,14 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes", "src/assets/Shoes.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes2", "src/assets/Shoes - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 128, frameHeight: 32});
-        this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 128, frameHeight: 32 });
-         
+        this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 80, frameHeight: 64 });
+        this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 80, frameHeight: 64 });
+        this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 80, frameHeight: 64 });  
 
     }
 
 
     create(){
-      
-// affectation de la touche A à boutonFeu
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
@@ -78,6 +68,7 @@ export default class Industrie extends Phaser.Scene {
         this.shoes.setCollideWorldBounds(true);
         this.shoes.direction = 'right';
         this.physics.add.collider(this.shoes, plateform);
+        platmouv = this.add.sprite(100, 450, 'Transporter1');
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],
@@ -171,28 +162,8 @@ export default class Industrie extends Phaser.Scene {
 
 
 
-        boutonFeu = this.input.keyboard.addKey('A');
-
-
-
-
-      platmouv = this.physics.add.sprite(100, 450, 'Transporter2');
-      platmouv.setallowGravity = false;
-      platmouv.setImmovable(true);
-      this.anims.create({
-        key: "anime", // key est le nom de l'animation : doit etre unique poru la scene.
-        frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 3 }), // on prend toutes les frames de img perso numerotées de 0 à 3
-        frameRate: 10, // vitesse de défilement des frames
-        repeat: -1 // nombre de répétitions de l'animation. -1 = infini
-      }); 
-
-
-
     }
     update() {
-      if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
-        tirer(this.player);
-      } 
       if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
         
         this.player.setVelocityY(-100) && this.player.setVelocityX(0);
@@ -249,8 +220,7 @@ export default class Industrie extends Phaser.Scene {
       } }   
     isOnLadder(player) {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
-      return tile && tile.properties.estladder; 
-    }
-   
-    
+      return tile && tile.properties.estladder;
+  }
+
 }
