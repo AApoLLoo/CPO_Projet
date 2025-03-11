@@ -32,7 +32,7 @@ export default class Menu extends Phaser.Scene {
 effetGlow(bouton) {
     bouton.setInteractive();
     bouton.on("pointerover", () => {
-        bouton.setTint(0x00ff00);
+        bouton.setTint(0xffffff);
     });
     bouton.on("pointerout", () => {
         bouton.clearTint();
