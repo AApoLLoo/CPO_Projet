@@ -22,6 +22,11 @@ export default class Egypte extends Phaser.Scene {
         const carteDuNiveau2 = this.add.tilemap("MapEgypte2");
         const tileset = carteDuNiveau2.addTilesetImage("TuilesEgypte", "TuilesEgypte", 32, 32);
         const calque_background = carteDuNiveau2.createLayer("calque_background", tileset);
+        const calque_background2 = carteDuNiveau2.createLayer("calque_background2", tileset);
+        const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
+        const calque_background3 = carteDuNiveau2.createLayer("calque_background3", tileset);
+        const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
+        calque_plateformes.setCollisionByProperty({ estSolide: true }); 
 
         // const tileset = carteDuNiveau.addTilesetImage(
         //   "TuilesEgypte", "TuilesEgypte", 32 , 32);  
@@ -129,6 +134,7 @@ export default class Egypte extends Phaser.Scene {
             this.message.destroy();
         }, [], this);
         clavier = this.input.keyboard.createCursorKeys();
+        this.physics.add.collider(player, calque_plateformes); 
     }
     
     update() {        
