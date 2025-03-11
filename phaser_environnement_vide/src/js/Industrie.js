@@ -148,6 +148,19 @@ export default class Industrie extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
         clavier = this.input.keyboard.createCursorKeys();
+
+        //echelles test
+        plateform.setCollisionByProperty({ estLadder: true }); 
+        this.ladderTouchees = false;
+        this.physics.add.overlap(this.player, ladder, () => {
+        this.echellesTouchees = true;
+          }, null, this);
+          this.physics.add.overlap(this.pants, echelles, null, null, this);
+          this.physics.add.overlap(this.shirt, echelles, null, null, this);
+          this.physics.add.overlap(this.shoes, echelles, null, null, this);
+
+
+
     }
     update() {
       if (clavier.left.isDown) {
@@ -192,10 +205,10 @@ export default class Industrie extends Phaser.Scene {
         this.pants.anims.play("anim_saut_pants", true);
         this.shirt.anims.play("anim_saut_shirt", true);
         this.shoes.anims.play("anim_saut_shoes", true);
-        this.pants.setVelocityY(-400);
-        this.player.setVelocityY(-400);
-        this.shirt.setVelocityY(-400);
-        this.shoes.setVelocityY(-400);
+        this.pants.setVelocityY(-330);
+        this.player.setVelocityY(-330);
+        this.shirt.setVelocityY(-330);
+        this.shoes.setVelocityY(-330);
       } }
     }
     
