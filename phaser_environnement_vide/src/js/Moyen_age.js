@@ -5,7 +5,7 @@ export default class Moyen_age extends Phaser.Scene {
     }   
     preload() {
      
-    this.load.image("tuilemoyenage", "src/assets/tuilemoyenage.png");
+    this.load.image("Sanstitre", "src/assets/Sanstitre.png");
     this.load.tilemapTiledJSON("MAPmoyenage", "src/assets/MAPmoyenage.json"); 
     }
     create(){

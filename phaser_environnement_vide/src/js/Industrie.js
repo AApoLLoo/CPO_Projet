@@ -18,6 +18,7 @@ function tirer(player) {
   var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
   // parametres physiques de la balle.
   bullet.setCollideWorldBounds(true);
+  bullet.body.onWorldBounds = true;
   bullet.body.allowGravity = false;
   bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
 
@@ -242,6 +243,17 @@ export default class Industrie extends Phaser.Scene {
             frameRate: 60,
             repeat: -1
             });
+
+            this.physics.world.on("worldbounds", function(body) {
+        // on récupère l'objet surveillé
+        var objet = body.gameObject;
+        // s'il s'agit d'une balle
+        if (groupeBullets.contains(objet)) {
+            // on le détruit
+            objet.destroy();
+        }
+    });
+
         groupeCibles = this.physics.add.group({
             key: 'cible',
             repeat: 7,
