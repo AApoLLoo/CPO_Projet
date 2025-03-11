@@ -8,14 +8,24 @@ var groupeBullets;
 
 function tirer(player) {
   var coefDir;
-if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
+  if (player.direction == 'left') { 
+    coefDir = -1; 
+  } else { 
+    coefDir = 1; 
+  }
   // on crée la balle a coté du joueur
   var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
   // parametres physiques de la balle.
   bullet.setCollideWorldBounds(true);
-  bullet.body.allowGravity =false;
+  bullet.body.allowGravity = false;
   bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
-}  
+
+  if (coefDir == -1) {
+    bullet.anims.play('Bullet2', true);
+  } else {
+    bullet.anims.play('Bullet', true);
+  }
+}
 
 export default class Industrie extends Phaser.Scene {
     constructor() {
@@ -37,6 +47,7 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 32, frameHeight: 32 });  
         this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
+        this.load.spritesheet("bullet2", "src/assets/Bullet - Copie.png", { frameWidth: 63, frameHeight: 48 });
 
     }
 
@@ -114,8 +125,8 @@ export default class Industrie extends Phaser.Scene {
         platmouv.anims.play("anim_transporter1", true);
         platmouv2.anims.play("anim_transporter2", true);
         platmouv3.anims.play("anim_transporter3", true);
-        // Reste du code
         this.physics.add.collider(this.player, platmouv);
+        // Reste du code
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],
@@ -213,9 +224,16 @@ export default class Industrie extends Phaser.Scene {
         groupeBullets = this.physics.add.group();
         this.anims.create({
           key: "Bullet",
-          frames: this.anims.generateFrameNumbers("Bullet", { start: 0, end: 6 }),
-          frameRate: 40,
-      });
+          frames: this.anims.generateFrameNumbers("bullet", { start: 0, end: 6 }),
+          frameRate: 60,
+          repeat: -1
+        });
+        this.anims.create({
+            key: "Bullet2",
+            frames: this.anims.generateFrameNumbers("bullet2", { start: 0, end: 6 }),
+            frameRate: 60,
+            repeat: -1
+            });
       
 
 
@@ -226,7 +244,6 @@ export default class Industrie extends Phaser.Scene {
         this.pants.setVelocityY(-200) && this.pants.setVelocityX(0);
         this.shirt.setVelocityY(-200) && this.shirt.setVelocityX(0);
         this.shoes.setVelocityY(-200) && this.shoes.setVelocityX(0);
-        
       }else if (clavier.left.isDown) {
         this.player.direction = 'left';
         this.pants.direction = 'left';
@@ -263,7 +280,6 @@ export default class Industrie extends Phaser.Scene {
         this.shirt.anims.play("anim_face_shirt");
         this.shoes.anims.play("anim_face_shoes");
       }
-      
       if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
         this.player.anims.play("anim_saut", true);
         this.pants.anims.play("anim_saut_pants", true);
@@ -273,12 +289,6 @@ export default class Industrie extends Phaser.Scene {
         this.player.setVelocityY(-400);
         this.shirt.setVelocityY(-400);
         this.shoes.setVelocityY(-400);
-
-
-
-
-
-
       }
     
     
@@ -288,10 +298,6 @@ export default class Industrie extends Phaser.Scene {
     if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
       tirer(this.player);
    }
-   if( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
-    bullet.anims.play("Bullet",true);
-   }
-   
     
     
     
@@ -301,5 +307,4 @@ export default class Industrie extends Phaser.Scene {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
       return tile && tile.properties.estladder;
   }
-
 }
