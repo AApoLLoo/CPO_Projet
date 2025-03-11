@@ -30,19 +30,17 @@ export default class Industrie extends Phaser.Scene {
         const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
-        const ladder = carteDuNiveau.createLayer("ladder", tileset);
+        this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true }); 
         //
-        this.ladders = carteDuNiveau.createLayer("ladder", tileset)
-        this.ladders.setCollisionByProperty({ estLadder: true });
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.shoes = this.physics.add.sprite(100, 600, "shoes");
-        this.player.body.setSize(20, 60, true); 
-        this.pants.body.setSize(20, 60, true);
-        this.shirt.body.setSize(20, 60, true);
-        this.shoes.body.setSize(20, 60, true);
+        this.player.body.setSize(18, 60, true); 
+        this.pants.body.setSize(18, 60, true);
+        this.shirt.body.setSize(18, 60, true);
+        this.shoes.body.setSize(18, 60, true);
         this.player.direction = 'right';
         this.player.setScale(1.5); 
         this.player.setBounce(0.2);
@@ -158,13 +156,14 @@ export default class Industrie extends Phaser.Scene {
 
     }
     update() {
-      if (toucheEchelle.isDown && this.physics.overlap(this.player, ladder)) {
-        this.player.setVelocityY(200) && this.player.setVelocityX(0);
-        this.pants.setVelocityY(200) && this.pants.setVelocityX(0);
-        this.shirt.setVelocityY(200) && this.shirt.setVelocityX(0);
-        this.shoes.setVelocityY(200) && this.shoes.setVelocityX(0);
-      }
-      if (clavier.left.isDown) {
+      if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
+        
+        this.player.setVelocityY(-100) && this.player.setVelocityX(0);
+        this.pants.setVelocityY(-100) && this.pants.setVelocityX(0);
+        this.shirt.setVelocityY(-100) && this.shirt.setVelocityX(0);
+        this.shoes.setVelocityY(-100) && this.shoes.setVelocityX(0);
+        
+      }else if (clavier.left.isDown) {
         this.player.direction = 'left';
         this.pants.direction = 'left';
         this.shirt.direction = 'left';
@@ -206,10 +205,14 @@ export default class Industrie extends Phaser.Scene {
         this.pants.anims.play("anim_saut_pants", true);
         this.shirt.anims.play("anim_saut_shirt", true);
         this.shoes.anims.play("anim_saut_shoes", true);
-        this.pants.setVelocityY(-330);
-        this.player.setVelocityY(-330);
-        this.shirt.setVelocityY(-330);
-        this.shoes.setVelocityY(-330);
-      } }
-    }
-    
+        this.pants.setVelocityY(-400);
+        this.player.setVelocityY(-400);
+        this.shirt.setVelocityY(-400);
+        this.shoes.setVelocityY(-400);
+      } }   
+    isOnLadder(player) {
+      const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
+      return tile && tile.properties.estladder;
+  }
+
+}
