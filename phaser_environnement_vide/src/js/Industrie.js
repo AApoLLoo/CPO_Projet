@@ -108,19 +108,19 @@ export default class Industrie extends Phaser.Scene {
         platmouv3 = this.add.sprite(1439, 950, 'Transporter3');      
         this.anims.create({
             key: "anim_transporter1",  
-            frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 3 }),
             frameRate: 60,
             repeat: -1
         });
         this.anims.create({
             key: "anim_transporter2",
-            frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 4 }),  
+            frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 3 }),  
             frameRate: 60,
             repeat: -1
         });
         this.anims.create({
             key: "anim_transporter3",
-            frames: this.anims.generateFrameNumbers("Transporter3", { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers("Transporter3", { start: 0, end: 3}),
             frameRate: 60,
             repeat: -1
         });
