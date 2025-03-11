@@ -5,6 +5,7 @@ var platmouv2;
 var platmouv3;
 var boutonFeu;
 var groupeBullets;
+var groupeCibles; 
 
 function tirer(player) {
   var coefDir;
@@ -66,7 +67,8 @@ export default class Industrie extends Phaser.Scene {
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
-        plateform.setCollisionByProperty({ estsolide: true }); 
+        plateform.setCollisionByProperty({ estsolide: true });
+        this.add.image(960, 540, "cible");; 
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -106,19 +108,19 @@ export default class Industrie extends Phaser.Scene {
         platmouv3 = this.add.sprite(1439, 950, 'Transporter3');      
         this.anims.create({
             key: "anim_transporter1",  
-            frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 3 }),
             frameRate: 60,
             repeat: -1
         });
         this.anims.create({
             key: "anim_transporter2",
-            frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 4 }),  
+            frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 3 }),  
             frameRate: 60,
             repeat: -1
         });
         this.anims.create({
             key: "anim_transporter3",
-            frames: this.anims.generateFrameNumbers("Transporter3", { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers("Transporter3", { start: 0, end: 3}),
             frameRate: 60,
             repeat: -1
         });
