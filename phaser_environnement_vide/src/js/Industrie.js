@@ -1,6 +1,8 @@
 var clavier;
 var toucheEchelle;
-var platmouv; // désigne le sprite du joueur
+var platmouv; 
+var platmouv2;
+var platmouv3;
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
@@ -17,10 +19,9 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes", "src/assets/Shoes.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes2", "src/assets/Shoes - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 80, frameHeight: 64 });  
-
+        this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 32, frameHeight: 32 });  
     }
 
 
@@ -44,10 +45,14 @@ export default class Industrie extends Phaser.Scene {
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.shoes = this.physics.add.sprite(100, 600, "shoes");
-        this.player.body.setSize(18, 60, true); 
-        this.pants.body.setSize(18, 60, true);
-        this.shirt.body.setSize(18, 60, true);
-        this.shoes.body.setSize(18, 60, true);
+        this.player.body.setSize(18, 40, true); 
+        this.player.body.setOffset(30, 22);
+        this.pants.body.setSize(18, 40, true);
+        this.pants.body.setOffset(30, 22);
+        this.shirt.body.setSize(18, 40, true);
+        this.shirt.body.setOffset(30, 22);
+        this.shoes.body.setSize(18, 40, true);
+        this.shoes.body.setOffset(30, 22);
         this.player.direction = 'right';
         this.player.setScale(1.5); 
         this.player.setBounce(0.2);
@@ -68,7 +73,33 @@ export default class Industrie extends Phaser.Scene {
         this.shoes.setCollideWorldBounds(true);
         this.shoes.direction = 'right';
         this.physics.add.collider(this.shoes, plateform);
-        platmouv = this.add.sprite(100, 450, 'Transporter1');
+        // Création des pigèes ahhahahah
+        platmouv = this.add.sprite(1375, 950, 'Transporter1');
+        platmouv2 = this.add.sprite(1407, 950, 'Transporter2');
+        platmouv3 = this.add.sprite(1439, 950, 'Transporter3');      
+        this.anims.create({
+            key: "anim_transporter1",  
+            frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 4 }),
+            frameRate: 60,
+            repeat: -1
+        });
+        this.anims.create({
+            key: "anim_transporter2",
+            frames: this.anims.generateFrameNumbers("Transporter2", { start: 0, end: 4 }),  
+            frameRate: 60,
+            repeat: -1
+        });
+        this.anims.create({
+            key: "anim_transporter3",
+            frames: this.anims.generateFrameNumbers("Transporter3", { start: 0, end: 4 }),
+            frameRate: 60,
+            repeat: -1
+        });
+        platmouv.anims.play("anim_transporter1", true);
+        platmouv2.anims.play("anim_transporter2", true);
+        platmouv3.anims.play("anim_transporter3", true);
+        // Reste du code
+        this.physics.add.collider(this.player, platmouv);
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],
@@ -165,11 +196,10 @@ export default class Industrie extends Phaser.Scene {
     }
     update() {
       if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
-        
-        this.player.setVelocityY(-100) && this.player.setVelocityX(0);
-        this.pants.setVelocityY(-100) && this.pants.setVelocityX(0);
-        this.shirt.setVelocityY(-100) && this.shirt.setVelocityX(0);
-        this.shoes.setVelocityY(-100) && this.shoes.setVelocityX(0);
+        this.player.setVelocityY(-200) && this.player.setVelocityX(0);
+        this.pants.setVelocityY(-200) && this.pants.setVelocityX(0);
+        this.shirt.setVelocityY(-200) && this.shirt.setVelocityX(0);
+        this.shoes.setVelocityY(-200) && this.shoes.setVelocityX(0);
         
       }else if (clavier.left.isDown) {
         this.player.direction = 'left';
