@@ -5,6 +5,7 @@ var platmouv2;
 var platmouv3;
 var boutonFeu;
 var groupeBullets;
+var groupeCibles; 
 
 function tirer(player) {
   var coefDir;
@@ -15,6 +16,13 @@ if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
   bullet.setCollideWorldBounds(true);
   bullet.body.allowGravity =false;
   bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+}  
+
+
+
+function hit (uneBalle, uneCible) {
+  uneBalle.destroy(); // destruction de la balle
+  uneCible.destroy();  // destruction de la cible.   
 }  
 
 export default class Industrie extends Phaser.Scene {
@@ -37,7 +45,7 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 32, frameHeight: 32 });  
         this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
-
+        this.load.image("cible", "assets/Cible.png");
     }
 
 
@@ -55,7 +63,8 @@ export default class Industrie extends Phaser.Scene {
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
-        plateform.setCollisionByProperty({ estsolide: true }); 
+        plateform.setCollisionByProperty({ estsolide: true });
+        this.add.image(960, 540, "cible");; 
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -217,6 +226,17 @@ export default class Industrie extends Phaser.Scene {
           frameRate: 40,
       });
       
+      groupeCibles = this.physics.add.group({
+        key: 'cible',
+        repeat: 10,
+        setXY: { x: 24, y: 0, stepX: 107 }
+    });  
+
+    this.physics.add.collider(groupeCibles, plateform);  
+
+    this.physics.add.overlap(groupeBullets, groupeCibles, hit, null,this);
+    
+  
 
 
     }
