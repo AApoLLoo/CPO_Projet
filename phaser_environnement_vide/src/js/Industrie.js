@@ -27,6 +27,13 @@ function tirer(player) {
     bullet.anims.play('Bullet', true);
   }
 }
+function hit (bullet, groupeCibles) {
+    groupeCibles.pointsVie--;
+    if (groupeCibles.pointsVie==0) {
+      groupeCibles.destroy(); 
+    } 
+     bullet.destroy();
+  }  
 
 export default class Industrie extends Phaser.Scene {
     constructor() {
@@ -49,7 +56,7 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 32, frameHeight: 32 });  
         this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
         this.load.spritesheet("bullet2", "src/assets/Bullet - Copie.png", { frameWidth: 63, frameHeight: 48 });
-
+        this.load.image("cible", "src/assets/Cible.png");
     }
 
 
@@ -68,7 +75,6 @@ export default class Industrie extends Phaser.Scene {
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
-        this.add.image(960, 540, "cible");; 
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -226,19 +232,31 @@ export default class Industrie extends Phaser.Scene {
         groupeBullets = this.physics.add.group();
         this.anims.create({
           key: "Bullet",
-          frames: this.anims.generateFrameNumbers("bullet", { start: 0, end: 6 }),
+          frames: this.anims.generateFrameNumbers("bullet", { start: 0, end: 5 }),
           frameRate: 60,
           repeat: -1
         });
         this.anims.create({
             key: "Bullet2",
-            frames: this.anims.generateFrameNumbers("bullet2", { start: 0, end: 6 }),
+            frames: this.anims.generateFrameNumbers("bullet2", { start: 0, end: 5 }),
             frameRate: 60,
             repeat: -1
             });
-      
-
-
+        groupeCibles = this.physics.add.group({
+            key: 'cible',
+            repeat: 7,
+            setXY: { x: 58, y: 0, stepX: 200 }
+        });  
+        groupeCibles.children.iterate(function (cible) {
+            cible.setScale(1.5);
+            cible.body.setSize(18, 40, true);
+        });
+        groupeCibles.children.iterate(function (cibleTrouvee) {
+            cibleTrouvee.pointsVie=Phaser.Math.Between(1, 3);
+            cibleTrouvee.y = Phaser.Math.Between(10,250);
+            });    
+        this.physics.add.collider(groupeCibles, plateform); 
+        this.physics.add.overlap(groupeBullets, groupeCibles, hit, null,this);
     }
     update() {
       if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
