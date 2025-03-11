@@ -31,6 +31,8 @@ export default class Industrie extends Phaser.Scene {
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
         plateform.setCollisionByProperty({ estsolide: true }); 
         //
+        this.ladders = carteDuNiveau.createLayer("ladder", tileset)
+        this.ladders.setCollisionByProperty({ estLadder: true });
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
