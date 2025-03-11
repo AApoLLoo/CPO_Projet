@@ -141,6 +141,19 @@ export default class Industrie extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
         clavier = this.input.keyboard.createCursorKeys();
+
+        //echelles test
+        plateform.setCollisionByProperty({ estLadder: true }); 
+        this.ladderTouchees = false;
+        this.physics.add.overlap(this.player, ladder, () => {
+        this.echellesTouchees = true;
+          }, null, this);
+          this.physics.add.overlap(this.pants, echelles, null, null, this);
+          this.physics.add.overlap(this.shirt, echelles, null, null, this);
+          this.physics.add.overlap(this.shoes, echelles, null, null, this);
+
+
+
     }
     update() {
       if (clavier.left.isDown) {
@@ -189,6 +202,140 @@ export default class Industrie extends Phaser.Scene {
         this.player.setVelocityY(-330);
         this.shirt.setVelocityY(-330);
         this.shoes.setVelocityY(-330);
-      } }
-    }
+      } 
     
+    
+    //echelles test
+
+
+    this.echellesTouchees = false;
+
+    if (clavier.left.isDown) {
+      this.player.direction = 'left';
+      this.pants.direction = 'left';
+      this.shirt.direction = 'left';
+      this.shoes.direction = 'left';
+      this.player.setVelocityX(-200);
+      this.pants.setVelocityX(-200);
+      this.shirt.setVelocityX(-200);
+      this.shoes.setVelocityX(-200);
+      this.player.anims.play("anim_tourne_gauche", true);
+      this.pants.anims.play("anim_tourne_gauche_pants", true);
+      this.shirt.anims.play("anim_tourne_gauche_shirt", true);
+      this.shoes.anims.play("anim_tourne_gauche_shoes", true);
+    } else if (clavier.right.isDown) {
+      this.player.direction = 'right';
+      this.pants.direction = 'right';
+      this.shirt.direction = 'right';
+      this.shoes.direction = 'right';
+      this.player.setVelocityX(160);
+      this.pants.setVelocityX(160);
+      this.shirt.setVelocityX(160);
+      this.shoes.setVelocityX(160);
+      this.player.anims.play("anim_tourne_droite", true);
+      this.pants.anims.play("anim_tourne_droite_pants", true);
+      this.shirt.anims.play("anim_tourne_droite_shirt", true);
+      this.shoes.anims.play("anim_tourne_droite_shoes", true);
+    } else {
+      this.player.setVelocityX(0);
+      this.pants.setVelocityX(0);
+      this.shirt.setVelocityX(0);
+      this.shoes.setVelocityX(0);
+      this.player.anims.play("anim_face");
+      this.pants.anims.play("anim_face_pants");
+      this.shirt.anims.play("anim_face_shirt");
+      this.shoes.anims.play("anim_face_shoes");
+    }
+  
+    if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
+      this.player.anims.play("anim_saut", true);
+      this.pants.anims.play("anim_saut_pants", true);
+      this.shirt.anims.play("anim_saut_shirt", true);
+      this.shoes.anims.play("anim_saut_shoes", true);
+      this.pants.setVelocityY(-330);
+      this.player.setVelocityY(-330);
+      this.shirt.setVelocityY(-330);
+      this.shoes.setVelocityY(-330);
+    } 
+
+     // Gestion des échelles
+     if (this.echellesTouchees) {
+      // Désactiver la gravité pendant que le joueur est sur l'échelle
+      this.player.body.setAllowGravity(false);
+      this.pants.body.setAllowGravity(false);
+      this.shirt.body.setAllowGravity(false);
+      this.shoes.body.setAllowGravity(false);
+      
+      // Monter sur l'échelle
+      if (clavier.up.isDown) {
+          this.player.setVelocityY(-150);
+          this.pants.setVelocityY(-150);
+          this.shirt.setVelocityY(-150);
+          this.shoes.setVelocityY(-150);
+      }
+      // Descendre sur l'échelle
+      else if (clavier.down.isDown) {
+          this.player.setVelocityY(150);
+          this.pants.setVelocityY(150);
+          this.shirt.setVelocityY(150);
+          this.shoes.setVelocityY(150);
+      }
+      // Rester immobile sur l'échelle si aucune touche n'est enfoncée
+      else {
+          this.player.setVelocityY(0);
+          this.pants.setVelocityY(0);
+          this.shirt.setVelocityY(0);
+          this.shoes.setVelocityY(0);
+      }
+  } else {
+      // Réactiver la gravité quand le joueur n'est pas sur l'échelle
+      this.player.body.setAllowGravity(true);
+      this.pants.body.setAllowGravity(true);
+      this.shirt.body.setAllowGravity(true);
+      this.shoes.body.setAllowGravity(true);
+
+
+
+    
+    }
+
+
+    if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
+      this.player.anims.play("anim_saut", true);
+      this.pants.anims.play("anim_saut_pants", true);
+      this.shirt.anims.play("anim_saut_shirt", true);
+      this.shoes.anims.play("anim_saut_shoes", true);
+      this.pants.setVelocityY(-330);
+      this.player.setVelocityY(-330);
+      this.shirt.setVelocityY(-330);
+      this.shoes.setVelocityY(-330);
+    } 
+
+    //echelle dessous
+
+    const echelleSousMoi = this.isLadderBelow(); 
+    if (echelleSousMoi) {
+      console.log("Il y a une échelle en dessous du joueur!");
+      // Ajouter ici le code pour descendre l'échelle
+      if (clavier.down.isDown) {
+        this.player.setVelocityY(150);
+        this.pants.setVelocityY(150);
+        this.shirt.setVelocityY(150);
+        this.shoes.setVelocityY(150);
+      }
+    }
+
+    }
+
+    isLadderBelow() {
+      // Position en tuiles du joueur
+      const playerX = Math.floor(this.player.x / this.echelles.tilemap.tileWidth);
+      const playerY = Math.floor((this.player.y + this.player.height/2) / this.echelles.tilemap.tileHeight);
+      
+      // Récupérer la tuile juste en dessous du joueur
+      const tileBelow = this.echelles.tilemap.getTileAt(playerX, playerY + 1, true, this.echelles);
+      
+      // Vérifier si cette tuile est une échelle
+      return tileBelow && tileBelow.properties && tileBelow.properties.estLadder;
+    }
+  }
