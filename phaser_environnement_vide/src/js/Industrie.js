@@ -1,6 +1,24 @@
 var clavier;
 var toucheEchelle;
 var platmouv; // désigne le sprite du joueur
+var boutonFeu; 
+var groupeBullets;  
+
+
+
+// FONCTION DE TIR
+function tirer(player) {
+  var coefDir;
+if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
+  // on crée la balle a coté du joueur
+  var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
+  // parametres physiques de la balle.
+  bullet.setCollideWorldBounds(true);
+  bullet.body.allowGravity =false;
+  bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+}  
+
+
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
@@ -20,6 +38,8 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 80, frameHeight: 64 });  
+      // GESTION DES TIRS 
+      this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
 
     }
 
@@ -161,6 +181,16 @@ export default class Industrie extends Phaser.Scene {
         clavier = this.input.keyboard.createCursorKeys();
 
 
+        // GESTION DES TIRS
+        boutonFeu = this.input.keyboard.addKey('A');
+        groupeBullets = this.physics.add.group();
+        this.anims.create({
+          key: "Bullet",
+          frames: this.anims.generateFrameNumbers("Bullet", { start: 0, end: 6 }),
+          frameRate: 40,
+      });
+      
+
 
     }
     update() {
@@ -217,7 +247,30 @@ export default class Industrie extends Phaser.Scene {
         this.player.setVelocityY(-400);
         this.shirt.setVelocityY(-400);
         this.shoes.setVelocityY(-400);
-      } }   
+
+
+
+
+
+
+      }
+    
+    
+    
+    
+    // GESTION DES TIRS 
+    if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
+      tirer(this.player);
+   }
+   if( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
+    bullet.anims.play("Bullet",true);
+   }
+   
+    
+    
+    
+    
+    }   
     isOnLadder(player) {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
       return tile && tile.properties.estladder;
