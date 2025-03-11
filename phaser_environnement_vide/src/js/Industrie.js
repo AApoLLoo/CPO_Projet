@@ -139,9 +139,9 @@ export default class Industrie extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shoes", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 100, "Bienvenue dans l'air de l'insdustrie !", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(400, 200, "Bienvenue dans l'air de l'insdustrie !", { fontSize: "32px", color: "White" });
         this.message.setOrigin(0.5);
-        this.time.delayedCall(10000, () => {
+        this.time.delayedCall(5000, () => {
             this.message.destroy();
         }, [], this);
         this.physics.world.setBounds(0, 0, 3840, 1280);
