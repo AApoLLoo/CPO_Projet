@@ -159,18 +159,13 @@ export default class Industrie extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
         toucheEchelle = this.input.keyboard.addKey('E');
         clavier = this.input.keyboard.createCursorKeys();
-
-
-
     }
     update() {
       if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
-        
         this.player.setVelocityY(-100) && this.player.setVelocityX(0);
         this.pants.setVelocityY(-100) && this.pants.setVelocityX(0);
         this.shirt.setVelocityY(-100) && this.shirt.setVelocityX(0);
         this.shoes.setVelocityY(-100) && this.shoes.setVelocityX(0);
-        
       }else if (clavier.left.isDown) {
         this.player.direction = 'left';
         this.pants.direction = 'left';
