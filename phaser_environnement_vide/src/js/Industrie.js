@@ -3,6 +3,20 @@ var toucheEchelle;
 var platmouv; 
 var platmouv2;
 var platmouv3;
+var boutonFeu;
+var groupeBullets;
+
+function tirer(player) {
+  var coefDir;
+if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
+  // on crée la balle a coté du joueur
+  var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
+  // parametres physiques de la balle.
+  bullet.setCollideWorldBounds(true);
+  bullet.body.allowGravity =false;
+  bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+}  
+
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
@@ -22,6 +36,8 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 32, frameHeight: 32 });  
+        this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
+
     }
 
 
