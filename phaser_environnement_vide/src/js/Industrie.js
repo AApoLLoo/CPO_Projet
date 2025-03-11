@@ -21,37 +21,44 @@ export default class Industrie extends Phaser.Scene {
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
           );  
-        //  const smog = carteDuNiveau.createLayer("smog", tileset);
-        // const calque_1 = carteDuNiveau.createLayer("calque_1", tileset);
-        // const calque_2 = carteDuNiveau.createLayer("calque_2", tileset);
-        // const calque_3 = carteDuNiveau.createLayer("calque_3", tileset);
-        // const calque_4 = carteDuNiveau.createLayer("calque_4", tileset);;
-        // const fonds_3 = carteDuNiveau.createLayer("fonds_3", tileset);
-        // const soleil = carteDuNiveau.createLayer("soleil", tileset);
-    
         const background = carteDuNiveau.createLayer("background", tileset);
+        const light = carteDuNiveau.createLayer("light", tileset);
+        const sun = carteDuNiveau.createLayer("sun", tileset);
+        const fonds_4 = carteDuNiveau.createLayer("fonds_4", tileset);
+        const fonds_3 = carteDuNiveau.createLayer("fonds_3", tileset);
+        const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
-        // platerformes.setCollisionByProperty({ estSolide: true }); 
-        this.player = this.physics.add.sprite(100, 450, "player");
-        this.pants = this.physics.add.sprite(100, 450, "pants");
-        this.shirt = this.physics.add.sprite(100, 450, "shirt");
-        this.shoes = this.physics.add.sprite(100, 450, "shoes");
+        const platerform = carteDuNiveau.createLayer("platerform", tileset);
+        platerform.setCollisionByProperty({ estsolide: true }); 
+        //
+        this.player = this.physics.add.sprite(100, 600, "player");
+        this.pants = this.physics.add.sprite(100, 600, "pants");
+        this.shirt = this.physics.add.sprite(100, 600, "shirt");
+        this.shoes = this.physics.add.sprite(100, 600, "shoes");
+        this.player.body.setSize(20, 60, true); 
+        this.pants.body.setSize(20, 60, true);
+        this.shirt.body.setSize(20, 60, true);
+        this.shoes.body.setSize(20, 60, true);
         this.player.direction = 'right';
         this.player.setScale(1.5); 
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
+        this.physics.add.collider(this.player, platerform);
         this.pants.setScale(1.5);
         this.pants.setBounce(0.2);
         this.pants.setCollideWorldBounds(true);
         this.pants.direction = 'right';
+        this.physics.add.collider(this.pants, platerform);
         this.shirt.setScale(1.5);
         this.shirt.setBounce(0.2);
         this.shirt.setCollideWorldBounds(true);
         this.shirt.direction = 'right';
+        this.physics.add.collider(this.shirt, platerform);
         this.shoes.setScale(1.5);
         this.shoes.setBounce(0.2);
         this.shoes.setCollideWorldBounds(true);
         this.shoes.direction = 'right';
+        this.physics.add.collider(this.shoes, platerform);
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],
@@ -161,10 +168,10 @@ export default class Industrie extends Phaser.Scene {
         this.pants.direction = 'right';
         this.shirt.direction = 'right';
         this.shoes.direction = 'right';
-        this.player.setVelocityX(160);
-        this.pants.setVelocityX(160);
-        this.shirt.setVelocityX(160);
-        this.shoes.setVelocityX(160);
+        this.player.setVelocityX(200);
+        this.pants.setVelocityX(200);
+        this.shirt.setVelocityX(200);
+        this.shoes.setVelocityX(200);
         this.player.anims.play("anim_tourne_droite", true);
         this.pants.anims.play("anim_tourne_droite_pants", true);
         this.shirt.anims.play("anim_tourne_droite_shirt", true);
@@ -185,10 +192,10 @@ export default class Industrie extends Phaser.Scene {
         this.pants.anims.play("anim_saut_pants", true);
         this.shirt.anims.play("anim_saut_shirt", true);
         this.shoes.anims.play("anim_saut_shoes", true);
-        this.pants.setVelocityY(-330);
-        this.player.setVelocityY(-330);
-        this.shirt.setVelocityY(-330);
-        this.shoes.setVelocityY(-330);
+        this.pants.setVelocityY(-400);
+        this.player.setVelocityY(-400);
+        this.shirt.setVelocityY(-400);
+        this.shoes.setVelocityY(-400);
       } }
     }
     
