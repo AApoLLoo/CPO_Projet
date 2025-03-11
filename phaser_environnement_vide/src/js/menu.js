@@ -62,7 +62,7 @@ export default class Menu extends Phaser.Scene {
             this.scene.start("Industrie");
         });
         BoutonMoyenAge.on("pointerup", () => {
-            this.scene.start("MoyenAge");
+            this.scene.start("Moyen_age");
         });
         //
     }
