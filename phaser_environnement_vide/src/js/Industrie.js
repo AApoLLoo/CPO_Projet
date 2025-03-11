@@ -269,6 +269,15 @@ export default class Industrie extends Phaser.Scene {
             });    
         this.physics.add.collider(groupeCibles, plateform); 
         this.physics.add.overlap(groupeBullets, groupeCibles, hit, null,this);
+        this.physics.world.on("worldbounds", function(body) {
+            // on récupère l'objet surveillé
+            var objet = body.gameObject;
+            // s'il s'agit d'une balle
+            if (groupeBullets.contains(objet)) {
+                // on le détruit
+                objet.destroy();
+            }
+        });
     }
     update() {
       if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
