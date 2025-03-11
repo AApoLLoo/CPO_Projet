@@ -1,4 +1,5 @@
 var clavier;
+var toucheEchelle;
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
@@ -29,8 +30,11 @@ export default class Industrie extends Phaser.Scene {
         const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
+        const ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true }); 
         //
+        this.ladders = carteDuNiveau.createLayer("ladder", tileset)
+        this.ladders.setCollisionByProperty({ estLadder: true });
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
@@ -139,30 +143,27 @@ export default class Industrie extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shoes", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 100, "Bienvenue dans l'air de l'insdustrie !", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(400, 200, "Bienvenue dans l'air de l'insdustrie !", { fontSize: "32px", color: "White" });
         this.message.setOrigin(0.5);
-        this.time.delayedCall(10000, () => {
+        this.time.delayedCall(5000, () => {
             this.message.destroy();
         }, [], this);
         this.physics.world.setBounds(0, 0, 3840, 1280);
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
+        toucheEchelle = this.input.keyboard.addKey('E');
         clavier = this.input.keyboard.createCursorKeys();
-
-        //echelles test
-        plateform.setCollisionByProperty({ estLadder: true }); 
-        this.ladderTouchees = false;
-        this.physics.add.overlap(this.player, ladder, () => {
-        this.echellesTouchees = true;
-          }, null, this);
-          this.physics.add.overlap(this.pants, echelles, null, null, this);
-          this.physics.add.overlap(this.shirt, echelles, null, null, this);
-          this.physics.add.overlap(this.shoes, echelles, null, null, this);
 
 
 
     }
     update() {
+      if (toucheEchelle.isDown && this.physics.overlap(this.player, ladder)) {
+        this.player.setVelocityY(200) && this.player.setVelocityX(0);
+        this.pants.setVelocityY(200) && this.pants.setVelocityX(0);
+        this.shirt.setVelocityY(200) && this.shirt.setVelocityX(0);
+        this.shoes.setVelocityY(200) && this.shoes.setVelocityX(0);
+      }
       if (clavier.left.isDown) {
         this.player.direction = 'left';
         this.pants.direction = 'left';
@@ -199,7 +200,7 @@ export default class Industrie extends Phaser.Scene {
         this.shirt.anims.play("anim_face_shirt");
         this.shoes.anims.play("anim_face_shoes");
       }
-    
+      
       if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
         this.player.anims.play("anim_saut", true);
         this.pants.anims.play("anim_saut_pants", true);
