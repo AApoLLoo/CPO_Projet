@@ -15,7 +15,7 @@ var config = {
     scale: {
     mode: Phaser.Scale.FIT, // redimensionne le jeu pour qu'il rentre dans la fenetre
     width: 1920, // largeur en pixels
-    height: 1080  ,// hauteur en pixels
+    height: 1080  ,// hauteur en pixels   
     },
     physics: {
       // définition des parametres physiques
