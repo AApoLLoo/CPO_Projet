@@ -100,9 +100,15 @@ export default class Industrie extends Phaser.Scene {
         this.shirt.direction = 'right';
         this.physics.add.collider(this.shirt, plateform);
         // Création des pigèes ahhahahah
-        platmouv = this.add.sprite(1375, 950, 'Transporter1');
-        platmouv2 = this.add.sprite(1407, 950, 'Transporter2');
-        platmouv3 = this.add.sprite(1439, 950, 'Transporter3');      
+        platmouv = this.physics.add.sprite(1375, 950, 'Transporter1');
+        platmouv2 = this.physics.add.sprite(1407, 950, 'Transporter2');
+        platmouv3 = this.physics.add.sprite(1439, 950, 'Transporter3');
+        platmouv.body.setAllowGravity(false);
+        platmouv.body.immovable = true;
+        platmouv2.body.setAllowGravity(false);
+        platmouv2.body.immovable = true;
+        platmouv3.body.setAllowGravity(false);
+        platmouv3.body.immovable = true;   
         this.anims.create({
             key: "anim_transporter1",  
             frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 3 }),
@@ -125,6 +131,14 @@ export default class Industrie extends Phaser.Scene {
         platmouv2.anims.play("anim_transporter2", true);
         platmouv3.anims.play("anim_transporter3", true);
         this.physics.add.collider(this.player, platmouv);
+        this.physics.add.collider(this.player, platmouv2);                              
+        this.physics.add.collider(this.player, platmouv3);
+        this.physics.add.collider(this.pants, platmouv);
+        this.physics.add.collider(this.pants, platmouv2);
+        this.physics.add.collider(this.pants, platmouv3);
+        this.physics.add.collider(this.shirt, platmouv);
+        this.physics.add.collider(this.shirt, platmouv2);
+        this.physics.add.collider(this.shirt, platmouv3);
         // Reste du code
         this.anims.create({
             key: "anim_face",
@@ -250,58 +264,59 @@ export default class Industrie extends Phaser.Scene {
         });
     }
     update() {
-      if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
-        this.player.setVelocityY(-200) && this.player.setVelocityX(0);
-        this.pants.setVelocityY(-200) && this.pants.setVelocityX(0);
-        this.shirt.setVelocityY(-200) && this.shirt.setVelocityX(0);
-      }else if (clavier.left.isDown) {
-        this.player.direction = 'left';
-        this.pants.direction = 'left';
-        this.shirt.direction = 'left';
-        this.player.setVelocityX(-200);
-        this.pants.setVelocityX(-200);
-        this.shirt.setVelocityX(-200);
-        this.player.anims.play("anim_tourne_gauche", true);
-        this.pants.anims.play("anim_tourne_gauche_pants", true);
-        this.shirt.anims.play("anim_tourne_gauche_shirt", true);
-      } else if (clavier.right.isDown) {
-        this.player.direction = 'right';
-        this.pants.direction = 'right';
-        this.shirt.direction = 'right';
-        this.player.setVelocityX(200);
-        this.pants.setVelocityX(200);
-        this.shirt.setVelocityX(200);
-        this.player.anims.play("anim_tourne_droite", true);
-        this.pants.anims.play("anim_tourne_droite_pants", true);
-        this.shirt.anims.play("anim_tourne_droite_shirt", true);
-      } else {
-        this.player.setVelocityX(0);
-        this.pants.setVelocityX(0);
-        this.shirt.setVelocityX(0);
-        this.player.anims.play("anim_face");
-        this.pants.anims.play("anim_face_pants");
-        this.shirt.anims.play("anim_face_shirt");
-      }
-      if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
-        this.player.anims.play("anim_saut", true);
-        this.pants.anims.play("anim_saut_pants", true);
-        this.shirt.anims.play("anim_saut_shirt", true);
-        this.pants.setVelocityY(-400);
-        this.player.setVelocityY(-400);
-        this.shirt.setVelocityY(-400);
-      }
-    
-    
-    
-    
-    // GESTION DES TIRS 
-    if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
-      tirer(this.player);
-   }
-    
-    
-    
-    
+        const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
+
+        if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
+            this.player.setVelocityY(-200);
+            this.player.setVelocityX(0);
+            this.pants.setVelocityY(-200);
+            this.pants.setVelocityX(0);
+            this.shirt.setVelocityY(-200);
+            this.shirt.setVelocityX(0);
+        } else if (clavier.left.isDown) {
+            this.player.direction = 'left';
+            this.pants.direction = 'left';
+            this.shirt.direction = 'left';
+            const velocity = isOnTransporter ? -100 : -200;
+            this.player.setVelocityX(velocity);
+            this.pants.setVelocityX(velocity);
+            this.shirt.setVelocityX(velocity);
+            this.player.anims.play("anim_tourne_gauche", true);
+            this.pants.anims.play("anim_tourne_gauche_pants", true);
+            this.shirt.anims.play("anim_tourne_gauche_shirt", true);
+        } else if (clavier.right.isDown) {
+            this.player.direction = 'right';
+            this.pants.direction = 'right';
+            this.shirt.direction = 'right';
+            const velocity = isOnTransporter ? 100 : 200;
+            this.player.setVelocityX(velocity);
+            this.pants.setVelocityX(velocity);
+            this.shirt.setVelocityX(velocity);
+            this.player.anims.play("anim_tourne_droite", true);
+            this.pants.anims.play("anim_tourne_droite_pants", true);
+            this.shirt.anims.play("anim_tourne_droite_shirt", true);
+        } else {
+            const velocity = isOnTransporter ? (this.player.direction === 'left' ? -100 : 100) : 0;
+            this.player.setVelocityX(velocity);
+            this.pants.setVelocityX(velocity);
+            this.shirt.setVelocityX(velocity);
+            this.player.anims.play("anim_face");
+            this.pants.anims.play("anim_face_pants");
+            this.shirt.anims.play("anim_face_shirt");
+        }
+        if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
+            this.player.anims.play("anim_saut", true);
+            this.pants.anims.play("anim_saut_pants", true);
+            this.shirt.anims.play("anim_saut_shirt", true);
+            this.pants.setVelocityY(-400);
+            this.player.setVelocityY(-400);
+            this.shirt.setVelocityY(-400);
+        }
+
+        // GESTION DES TIRS 
+        if (Phaser.Input.Keyboard.JustDown(boutonFeu)) {
+            tirer(this.player);
+        }
     }   
     isOnLadder(player) {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
