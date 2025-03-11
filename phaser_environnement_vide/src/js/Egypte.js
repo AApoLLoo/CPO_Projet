@@ -1,11 +1,13 @@
 var clavier;
+var player;
 export default class Egypte extends Phaser.Scene {
     constructor() {
         super({key : "Egypte"});
     }
     preload() {
-        this.load.image("Phaser_TuilesEgypte", "src/assets/tuilesJeu.png");
-        this.load.image("Ciel", "src/assets/Ciel.png");
+        this.load.image("TuilesEgypte", "src/assets/TuilesEgypte.png");
+        this.load.tilemapTiledJSON("MapEgypte1", "src/assets/MapEgypte1.json");
+        //
         this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("player2", "src/assets/Personnage - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("pants", "src/assets/Pants.png", { frameWidth: 80, frameHeight: 64 });
@@ -17,7 +19,14 @@ export default class Egypte extends Phaser.Scene {
 
     }
     create(){
-        this.add.image(960, 540, "Ciel");
+        const carteDuNiveau2 = this.add.tilemap("MapEgypte1");
+        const tileset = carteDuNiveau2.addTilesetImage("TuilesEgypte", "TuilesEgypte", 32, 32);
+        const calque_background = carteDuNiveau2.createLayer("calque_background", tileset);
+
+        // const tileset = carteDuNiveau.addTilesetImage(
+        //   "TuilesEgypte", "TuilesEgypte", 32 , 32);  
+        // const calque_background = carteDuNiveau.createLayer("calque_background", tileset);
+            //
         this.player = this.physics.add.sprite(100, 450, "player");
         this.pants = this.physics.add.sprite(100, 450, "pants");
         this.shirt = this.physics.add.sprite(100, 450, "shirt");
@@ -121,6 +130,7 @@ export default class Egypte extends Phaser.Scene {
         }, [], this);
         clavier = this.input.keyboard.createCursorKeys();
     }
+    
     update() {        
         if (clavier.left.isDown) {
             this.player.direction = 'left';
