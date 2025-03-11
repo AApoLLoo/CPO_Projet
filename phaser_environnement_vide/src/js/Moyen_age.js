@@ -5,13 +5,13 @@ export default class Moyen_age extends Phaser.Scene {
     }   
     preload() {
      
-    this.load.image("tuilemoyenage", "src/assets/tuilemoyenage.png");
+    this.load.image("Sanstitre", "src/assets/Sanstitre.png");
     this.load.tilemapTiledJSON("MAPmoyenage", "src/assets/MAPmoyenage.json"); 
     }
     create(){
 
         const carteDuNiveau = this.add.tilemap("MAPmoyenage");   
-        const tileset = carteDuNiveau.addTilesetImage( "tuilemoyenage", "tuilemoyenage",32,32);  
+        const tileset = carteDuNiveau.addTilesetImage( "Sanstitre", "Sanstitre",32,32);  
         const calque_background = carteDuNiveau.createLayer("calque background", tileset);
         const calque_2 = carteDuNiveau.createLayer("calque_2", tileset);
         const calque_3 = carteDuNiveau.createLayer("calque_3", tileset);
@@ -21,104 +21,7 @@ export default class Moyen_age extends Phaser.Scene {
         calque_4.setCollisionByProperty({ estSolide: true }); 
     
         
-       
-        this.player = this.physics.add.sprite(100, 450, "player");
-        this.pants = this.physics.add.sprite(100, 450, "pants");
-        this.shirt = this.physics.add.sprite(100, 450, "shirt");
-        this.shoes = this.physics.add.sprite(100, 450, "shoes");
-        this.player.direction = 'right';
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
-        this.pants.setBounce(0.2);
-        this.pants.setCollideWorldBounds(true);
-        this.pants.direction = 'right';
-        this.shirt.setBounce(0.2);
-        this.shirt.setCollideWorldBounds(true);
-        this.shirt.direction = 'right';
-        this.shoes.setBounce(0.2);
-        this.shoes.setCollideWorldBounds(true);
-        this.shoes.direction = 'right';
-        this.anims.create({
-            key: "anim_face",
-            frames: [{ key: "player", frame: 4 }],
-            frameRate: 20
-            });
-        this.anims.create({
-            key: "anim_tourne_gauche",
-            frames: this.anims.generateFrameNumbers("player", { start: 14, end: 16 }),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_tourne_droite",
-            frames: this.anims.generateFrameNumbers("player2", { start: 14, end: 16}),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_saut",
-            frames: this.anims.generateFrameNumbers("player", { start: 22, end: 24 }),
-            frameRate: 4,
-        });
-        this.anims.create({
-            key: "anim_face_pants",
-            frames: [{ key: "pants", frame: 4 }],
-            frameRate: 20
-            });
-        this.anims.create({
-            key: "anim_tourne_gauche_pants",
-            frames: this.anims.generateFrameNumbers("pants", { start: 14, end: 16 }),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_tourne_droite_pants",
-            frames: this.anims.generateFrameNumbers("pants2", { start: 14, end: 16}),
-            frameRate: 8,
-        });
-        this.anims.create({ 
-            key: "anim_saut_pants",
-            frames: this.anims.generateFrameNumbers("pants", { start: 22, end: 24 }),
-            frameRate: 4,
-        });
-        this.anims.create({
-            key: "anim_face_shirt",
-            frames: [{ key: "shirt", frame: 4 }],
-            frameRate: 20
-            });
-        this.anims.create({
-            key: "anim_tourne_gauche_shirt",
-            frames: this.anims.generateFrameNumbers("shirt", { start: 14, end: 16 }),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_tourne_droite_shirt",
-            frames: this.anims.generateFrameNumbers("shirt2", { start: 14, end: 16}),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_saut_shirt",
-            frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
-            frameRate: 4,
-        });
-        this.anims.create({
-            key: "anim_face_shoes",
-            frames: [{ key: "shoes", frame: 4 }],
-            frameRate: 20
-            });
-        this.anims.create({
-            key: "anim_tourne_gauche_shoes",
-            frames: this.anims.generateFrameNumbers("shoes", { start: 14, end: 16 }),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_tourne_droite_shoes",
-            frames: this.anims.generateFrameNumbers("shoes2", { start: 14, end: 16}),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_saut_shoes",
-            frames: this.anims.generateFrameNumbers("shoes", { start: 22, end: 24 }),
-            frameRate: 4,
-        });
-        clavier = this.input.keyboard.createCursorKeys();
+
     }
     update() {        
         if (clavier.left.isDown) {
