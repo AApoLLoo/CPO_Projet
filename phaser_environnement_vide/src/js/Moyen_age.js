@@ -20,7 +20,7 @@ export default class Moyen_age extends Phaser.Scene {
         calque_2.setCollisionByProperty({ estSolide: true }); 
         calque_3.setCollisionByProperty({ estSolide: true }); 
         calque_4.setCollisionByProperty({ estSolide: true }); 
-
+        (tgt)
         
         this.add.image(960, 540, "Ciel");
         this.player = this.physics.add.sprite(100, 450, "player");
