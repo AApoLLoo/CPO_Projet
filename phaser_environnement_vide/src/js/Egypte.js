@@ -21,6 +21,9 @@ export default class Egypte extends Phaser.Scene {
     create(){
         const carteDuNiveau2 = this.add.tilemap("MapEgypte2");
         const tileset = carteDuNiveau2.addTilesetImage("TuilesEgypte", "TuilesEgypte", 32, 32);
+
+        this.scale.resize(window.innerWidth, window.innerHeight);
+
         const calque_background = carteDuNiveau2.createLayer("calque_background", tileset);
         const calque_background2 = carteDuNiveau2.createLayer("calque_background2", tileset);
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
