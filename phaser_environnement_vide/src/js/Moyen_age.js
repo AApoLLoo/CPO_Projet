@@ -11,16 +11,15 @@ export default class Moyen_age extends Phaser.Scene {
     create(){
 
         const carteDuNiveau = this.add.tilemap("carte_moyenage");   
-        const tileset = carteDuNiveau.addTilesetImage( "tuiles", "TuilesDeJeuMoyenAge", 32, 32);  
-        const smog = carteDuNiveau.createLayer("smog", tileset);
-        const calque_background = carteDuNiveau.createLayer("Calque background", tileset);
+        const tileset = carteDuNiveau.addTilesetImage( "tuilemoyenage", "tuilemoyenage");  
+        const calque_background = carteDuNiveau.createLayer("calque background", tileset);
         const calque_2 = carteDuNiveau.createLayer("calque_2", tileset);
         const calque_3 = carteDuNiveau.createLayer("calque_3", tileset);
         const calque_4 = carteDuNiveau.createLayer("calque_4", tileset);;
         calque_2.setCollisionByProperty({ estSolide: true }); 
         calque_3.setCollisionByProperty({ estSolide: true }); 
         calque_4.setCollisionByProperty({ estSolide: true }); 
-        (tgt)
+    
         
         this.add.image(960, 540, "Ciel");
         this.player = this.physics.add.sprite(100, 450, "player");
