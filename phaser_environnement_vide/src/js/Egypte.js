@@ -6,7 +6,7 @@ export default class Egypte extends Phaser.Scene {
     }
     preload() {
         this.load.image("TuilesEgypte", "src/assets/TuilesEgypte.png");
-        this.load.tilemapTiledJSON("MapEgypte", "src/assets/MapEgypte1.json");
+        this.load.tilemapTiledJSON("MapEgypte1", "src/assets/MapEgypte1.json");
         //
         this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("player2", "src/assets/Personnage - Copie.png", { frameWidth: 80, frameHeight: 64 });
@@ -19,7 +19,7 @@ export default class Egypte extends Phaser.Scene {
 
     }
     create(){
-        const carteDuNiveau2 = this.add.tilemap("MapEgypte");
+        const carteDuNiveau2 = this.add.tilemap("MapEgypte1");
         const tileset = carteDuNiveau2.addTilesetImage("TuilesEgypte", "TuilesEgypte", 32, 32);
         const calque_background = carteDuNiveau2.createLayer("calque_background", tileset);
 
