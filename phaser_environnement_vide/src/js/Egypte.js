@@ -4,7 +4,7 @@ export default class Egypte extends Phaser.Scene {
         super({key : "Egypte"});
     }
     preload() {
-        this.load.image("Parchemin", "src/assets/Jeton_A_Recup.png");
+        this.load.image("Phaser_TuilesEgypte", "src/assets/tuilesJeu.png");
         this.load.image("Ciel", "src/assets/Ciel.png");
         this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("player2", "src/assets/Personnage - Copie.png", { frameWidth: 80, frameHeight: 64 });
