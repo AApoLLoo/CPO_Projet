@@ -14,6 +14,7 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes", "src/assets/Shoes.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes2", "src/assets/Shoes - Copie.png", { frameWidth: 80, frameHeight: 64 });
+
     }
     create(){
         this.add.image(960, 540, "Ciel");
