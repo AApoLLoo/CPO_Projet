@@ -27,7 +27,7 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("shoes2", "src/assets/Shoes - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 128, frameHeight: 32});
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 128, frameHeight: 32 });
-         
+        this.load.image("bullet", "assets/balle.png"); 
 
     }
 
