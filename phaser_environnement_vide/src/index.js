@@ -8,6 +8,7 @@ import menu from "./js/menu.js";
 import Moyen_age from "./js/Moyen_age.js";
 import Egypte from "./js/Egypte.js";
 import Industrie from "./js/Industrie.js";
+import Credit from "./js/Credit.js";    
 // configuration générale du jeu
 var config = {
   type: Phaser.AUTO,
@@ -24,10 +25,10 @@ var config = {
         gravity: {
           y: 300 // gravité verticale : acceleration ddes corps en pixels par seconde
         },
-        debug: false // permet de voir les hitbox et les vecteurs d'acceleration quand mis à true
+        debug: true // permet de voir les hitbox et les vecteurs d'acceleration quand mis à true
       }
     },
-  scene : [menu, Egypte, Moyen_age, Industrie] // liste des scenes du jeu
+  scene : [menu, Egypte, Moyen_age, Industrie, Credit] // liste des scenes du jeu
   };
 
 
