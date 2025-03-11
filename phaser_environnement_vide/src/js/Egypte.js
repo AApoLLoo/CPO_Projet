@@ -133,8 +133,8 @@ export default class Egypte extends Phaser.Scene {
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
-        clavier = this.input.keyboard.createCursorKeys();
-        this.physics.add.collider(player, calque_plateformes); 
+        const clavier = this.input.keyboard.createCursorKeys();
+        this.physics.add.collider(this.player, calque_plateformes); 
     }
     
     update() {        
