@@ -5,8 +5,8 @@ export default class Egypte extends Phaser.Scene {
         super({key : "Egypte"});
     }
     preload() {
-        this.load.image("TuilesEgypte", "src/assets/TuilesEgypte.png");
-        this.load.tilemapTiledJSON("MapEgypte2", "src/assets/MapEgypte2.json");
+        this.load.image("TuilesEgypte3", "src/assets/TuilesEgypte3.png");
+        this.load.tilemapTiledJSON("MapEgypte", "src/assets/MapEgypte.json");
         //
         this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("player2", "src/assets/Personnage - Copie.png", { frameWidth: 80, frameHeight: 64 });
@@ -17,15 +17,13 @@ export default class Egypte extends Phaser.Scene {
 
     }
     create(){
-        const carteDuNiveau2 = this.add.tilemap("MapEgypte2");
-        const tileset = carteDuNiveau2.addTilesetImage("TuilesEgypte", "TuilesEgypte", 32, 32);
-
-        this.scale.resize(window.innerWidth, window.innerHeight);
+        const carteDuNiveau2 = this.add.tilemap("MapEgypte");
+        const tileset = carteDuNiveau2.addTilesetImage("TuilesEgypte3", "TuilesEgypte3", 32, 32);
 
         const calque_background = carteDuNiveau2.createLayer("calque_background", tileset);
         const calque_background2 = carteDuNiveau2.createLayer("calque_background2", tileset);
-        const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_background3 = carteDuNiveau2.createLayer("calque_background3", tileset);
+        const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
 
@@ -122,8 +120,8 @@ export default class Egypte extends Phaser.Scene {
 
         this.physics.add.collider(this.player, calque_plateformes); 
 
-        this.physics.world.setBounds(0, 0, 3200, 640);
-        this.cameras.main.setBounds(0, 0, 3200, 640);
+        this.physics.world.setBounds(0, 0, 3840, 1280);
+        this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
     }
     
