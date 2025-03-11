@@ -26,12 +26,8 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_background3 = carteDuNiveau2.createLayer("calque_background3", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
-        // calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+        calque_plateformes.setCollisionByProperty({ estSolide: true }); 
 
-        // const tileset = carteDuNiveau.addTilesetImage(
-        //   "TuilesEgypte", "TuilesEgypte", 32 , 32);  
-        // const calque_background = carteDuNiveau.createLayer("calque_background", tileset);
-            //
         this.player = this.physics.add.sprite(100, 450, "player");
         this.pants = this.physics.add.sprite(100, 450, "pants");
         this.shirt = this.physics.add.sprite(100, 450, "shirt");
@@ -134,7 +130,12 @@ export default class Egypte extends Phaser.Scene {
             this.message.destroy();
         }, [], this);
         this.clavier = this.input.keyboard.createCursorKeys();
+
         this.physics.add.collider(this.player, calque_plateformes); 
+
+        this.physics.world.setBounds(0, 0, 3200, 640);
+        this.cameras.main.setBounds(0, 0, 3200, 640);
+        this.cameras.main.startFollow(this.player);
     }
     
     update() {        
@@ -180,10 +181,10 @@ export default class Egypte extends Phaser.Scene {
             this.pants.anims.play("anim_saut_pants", true);
             this.shirt.anims.play("anim_saut_shirt", true);
             this.shoes.anims.play("anim_saut_shoes", true);
-            this.pants.setVelocityY(-330);
-            this.player.setVelocityY(-330);
-            this.shirt.setVelocityY(-330);
-            this.shoes.setVelocityY(-330);
+            this.pants.setVelocityY(-400);
+            this.player.setVelocityY(-400);
+            this.shirt.setVelocityY(-400);
+            this.shoes.setVelocityY(-400);
           } }
         
     }
