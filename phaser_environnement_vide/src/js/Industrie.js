@@ -28,8 +28,8 @@ export default class Industrie extends Phaser.Scene {
         const fonds_3 = carteDuNiveau.createLayer("fonds_3", tileset);
         const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
-        const platerform = carteDuNiveau.createLayer("platerform", tileset);
-        platerform.setCollisionByProperty({ estsolide: true }); 
+        const plateform = carteDuNiveau.createLayer("plateform", tileset);
+        plateform.setCollisionByProperty({ estsolide: true }); 
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -43,22 +43,22 @@ export default class Industrie extends Phaser.Scene {
         this.player.setScale(1.5); 
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
-        this.physics.add.collider(this.player, platerform);
+        this.physics.add.collider(this.player, plateform);
         this.pants.setScale(1.5);
         this.pants.setBounce(0.2);
         this.pants.setCollideWorldBounds(true);
         this.pants.direction = 'right';
-        this.physics.add.collider(this.pants, platerform);
+        this.physics.add.collider(this.pants, plateform);
         this.shirt.setScale(1.5);
         this.shirt.setBounce(0.2);
         this.shirt.setCollideWorldBounds(true);
         this.shirt.direction = 'right';
-        this.physics.add.collider(this.shirt, platerform);
+        this.physics.add.collider(this.shirt, plateform);
         this.shoes.setScale(1.5);
         this.shoes.setBounce(0.2);
         this.shoes.setCollideWorldBounds(true);
         this.shoes.direction = 'right';
-        this.physics.add.collider(this.shoes, platerform);
+        this.physics.add.collider(this.shoes, plateform);
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],
