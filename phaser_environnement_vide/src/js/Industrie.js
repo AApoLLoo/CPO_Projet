@@ -17,15 +17,14 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes", "src/assets/Shoes.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shoes2", "src/assets/Shoes - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter1", "src/assets/Transporter1 - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter2", "src/assets/Transporter2 - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("Transporter3", "src/assets/Transporter3 - Copie.png", { frameWidth: 80, frameHeight: 64 });  
+        this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 80, frameHeight: 64 });
+        this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 80, frameHeight: 64 });
+        this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 80, frameHeight: 64 });  
 
     }
 
 
     create(){
-      platmouv = this.physics.add.sprite(100, 450, 'Transporter1');
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
@@ -69,6 +68,7 @@ export default class Industrie extends Phaser.Scene {
         this.shoes.setCollideWorldBounds(true);
         this.shoes.direction = 'right';
         this.physics.add.collider(this.shoes, plateform);
+        platmouv = this.add.sprite(100, 450, 'Transporter1');
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],

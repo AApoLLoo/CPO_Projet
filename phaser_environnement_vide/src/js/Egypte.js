@@ -26,7 +26,7 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_background3 = carteDuNiveau2.createLayer("calque_background3", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
-        calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+        // calque_plateformes.setCollisionByProperty({ estSolide: true }); 
 
         // const tileset = carteDuNiveau.addTilesetImage(
         //   "TuilesEgypte", "TuilesEgypte", 32 , 32);  
