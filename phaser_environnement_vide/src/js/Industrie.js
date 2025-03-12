@@ -13,6 +13,9 @@ var explosion;
 var industry;
 var MUSIQUE;
 var Shot;
+var Mort;
+var footstep;
+var Degats;
 
 function tirer(player) {
     var coefDir;
@@ -86,15 +89,14 @@ export default class Industrie extends Phaser.Scene {
         this.load.audio('factory', 'src/assets/factory.mp3');
         this.load.audio('MUSIQUE', 'src/assets/musique.mp3');
         this.load.audio('shot', 'src/assets/gun_shot.mp3');
+        this.load.audio('footstep', 'src/assets/footstep_iron.mp3');
+        this.load.audio('Degats', 'src/assets/BruitageDegats.mp3');
+        this.load.audio('Mort', 'src/assets/Mort.mp3');
     }
 
 
     create(){
-      industry = this.sound.add('factory'), {loop: true};
-      MUSIQUE = this.sound.add('MUSIQUE'), {loop: true};
-        Shot= this.sound.add('shot')
-      MUSIQUE.play();
-      industry.play(); 
+
 
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
@@ -111,6 +113,15 @@ export default class Industrie extends Phaser.Scene {
         const smog = carteDuNiveau.createLayer("smog", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
+        //      
+        industry = this.sound.add('factory'), {loop: true}, {volume: 1.5};
+        MUSIQUE = this.sound.add('MUSIQUE'), {loop: true},  {volume: 0.8};
+        Shot= this.sound.add('shot')
+        Mort = this.sound.add('Mort'), {loop: false}, {volume: 1};
+        footstep = this.sound.add('footstep'), {loop: true}, {volume: 1};
+        Degats = this.sound.add('Degats'), {loop: false}, {volume: 1};
+        MUSIQUE.play();
+        industry.play(); 
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -390,6 +401,7 @@ export default class Industrie extends Phaser.Scene {
             this.player.anims.play("anim_tourne_gauche", true);
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
+            footstep.play();
         } else if (clavier.right.isDown) {
             this.player.direction = 'right';
             this.pants.direction = 'right';
@@ -401,6 +413,7 @@ export default class Industrie extends Phaser.Scene {
             this.player.anims.play("anim_tourne_droite", true);
             this.pants.anims.play("anim_tourne_droite_pants", true);
             this.shirt.anims.play("anim_tourne_droite_shirt", true);
+            footstep.play();
         } else {
             const velocity = isOnTransporter ? (this.player.direction === 'left' ? -100 : 100) : 0;
             this.player.setVelocityX(velocity);
@@ -455,6 +468,7 @@ export default class Industrie extends Phaser.Scene {
                 this.physics.resume();
             }, [], this);
         } else {
+            Mort.play();
             this.add.image(960,350, "GameOverImage").setScrollFactor(0);
             BoutonRetourMenu = this.add.image(960,800, "BoutonRetourMenu").setScrollFactor(0);
             this.add.text(960, 800, "Retour au menu", { fontSize: "50px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0).setScale(3);
@@ -505,6 +519,7 @@ export default class Industrie extends Phaser.Scene {
     playerHitFireball(player, fireball) {
         if (fireball.texture.key === 'fireball') {
             this.hp--;
+            Degats.play();
             fireball.destroy();
             this.updateLivesDisplay();
             if (this.hp <= 0) {
@@ -518,5 +533,12 @@ export default class Industrie extends Phaser.Scene {
             }
         }
     }
-
+    shutdown(){
+        if (MUSIQUE.isPlaying) {
+            MUSIQUE.stop();
+        }
+        if (industry.isPlaying) {
+            industry.stop();
+        }
+    }
 }
