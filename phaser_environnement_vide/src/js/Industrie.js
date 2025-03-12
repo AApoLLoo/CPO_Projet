@@ -337,7 +337,7 @@ export default class Industrie extends Phaser.Scene {
             });
         }
     });
-      
+    this.physics.add.overlap(this.player, groupeCibles, this.playerHitFireball, null, this);
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
@@ -470,6 +470,20 @@ tirerFireball(cible) {
         } else {
             console.error("Failed to create fireball.");
         }
+    }
+}
+playerHitFireball(player, fireball) {
+    this.hp--;
+    fireball.destroy();
+    this.updateLivesDisplay();
+    if (this.hp <= 0) {
+        this.respawn();
+    } else {
+        // Optionally, you can add a brief invincibility period here
+        this.player.setTint(0xff0000); // Change player color to indicate damage
+        this.time.delayedCall(500, () => {
+            this.player.clearTint(); // Reset player color
+        }, [], this);
     }
 }
 
