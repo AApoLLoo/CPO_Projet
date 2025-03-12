@@ -93,7 +93,7 @@ export default class Industrie extends Phaser.Scene {
         Degats = this.sound.add('Degats'), { loop: false }, { volume: 1 };
         MUSIQUE.play();
         industry.play();
-        door = this.physics.add.sprite(100, 600, 'door');
+        door = this.physics.add.sprite(3500, 600, 'door');
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");

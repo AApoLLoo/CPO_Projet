@@ -66,7 +66,7 @@ export default class Egypte extends Phaser.Scene {
 
         
 
-        this.player = this.physics.add.sprite(5000, 600, "player");
+        this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.player.body.setSize(18, 40, true); 
@@ -280,6 +280,18 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 
 if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur)) {
     teleporteur.anims.play('teleporteur', true);
+    teleporteur.on('animationcomplete', () => {
+        // Arrêtez la musique
+        // // if (MUSIQUE.isPlaying) {
+        //     MUSIQUE.stop();
+        // }
+        // if (industry.isPlaying) {
+        //     industry.stop();
+        // }
+        // // Lancez la scène Fin
+        this.scene.stop('Egypte');
+        this.scene.start('Moyen_age');
+    }, this);
 }
 //SON
 this.load.audio('desert', 'desert.mp3');
