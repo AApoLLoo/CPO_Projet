@@ -3,6 +3,10 @@ var player;
 var groupe_parchemins;
 var score = 0;
 var zone_texte_score;
+var teleporteur;
+var boutondoor;
+var sol = false;
+var musique_fond;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -22,6 +26,12 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("momie", "src/assets/momie.png", { frameWidth: 80, frameHeight: 80}); 
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("Ramses", "src/assets/Ramses.png");
+        this.load.audio('desert', 'src/assets/desert.mp3');
+
+
+
+        //teleporteur
+        this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
    
 
     }
@@ -35,9 +45,29 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+
+
+        //teleporteur
+        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur");
+        teleporteur.body.immovable = true;
+        teleporteur.setAllowGravity = false;  
+        this.physics.add.collider(teleporteur, calque_plateformes);
+        this.anims.create({
+            key: 'teleporteur',
+            frames: this.anims.generateFrameNumbers('teleporteur', { start: 0, end: 5 }),
+            frameRate: 4
+            ,
+            });
+
+            boutondoor= this.input.keyboard.addKey('F');
+
+
+
+
+
         
 
-        this.player = this.physics.add.sprite(100, 600, "player");
+        this.player = this.physics.add.sprite(5000, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.player.body.setSize(18, 40, true); 
@@ -126,6 +156,9 @@ export default class Egypte extends Phaser.Scene {
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
+//SON
+musique_fond = this.sound.add('desert');
+musique_fond.play();  
 
 //CLAVIER
         clavier = this.input.keyboard.createCursorKeys();
@@ -187,10 +220,6 @@ export default class Egypte extends Phaser.Scene {
     fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
 }).setOrigin(0.5).setScrollFactor(0);
 
-//RAMSES
-this.ramses = this.physics.add.sprite(600, 400, "Ramses").setScale(1.5); // Positionner Ramses sur la plateforme
-this.ramses.setInteractive(); // Rendre Ramses interactif
-this.physics.add.collider(this.ramses, calque_plateformes);
 
     }
 
@@ -232,10 +261,11 @@ this.physics.add.collider(this.ramses, calque_plateformes);
             this.pants.setVelocityY(-450);
             this.player.setVelocityY(-450);
             this.shirt.setVelocityY(-450);
+            
           }
+          
 
-//Détecte si le joueur touche Ramses
-             this.physics.add.overlap(this.player, this.ramses, this.afficherQuestion, null, this);
+
           
 // Faire suivre les momies
  this.momies.children.iterate((momie) => {
@@ -248,6 +278,16 @@ this.physics.add.collider(this.ramses, calque_plateformes);
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
+
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur)) {
+    teleporteur.anims.play('teleporteur', true);
+}
+//SON
+this.load.audio('desert', 'desert.mp3');
+
+
+
+
 }
 
 hitByMomie(player, momie) {
@@ -288,6 +328,8 @@ this.momies.children.iterate((momie) => {
     }
 });
 }
+
+
 }
 
 //Fonction pour ramasser les parchemins
@@ -332,5 +374,10 @@ function verifierReponse(reponse) {
             // Redémarre le jeu
             this.scene.restart();
         });
-    }
-}
+
+
+
+
+
+       
+    }}

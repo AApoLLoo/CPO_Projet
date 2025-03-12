@@ -2,7 +2,6 @@ var clavier;
 var player;
 var score = 0;
 var zone_texte_score;
-var musique_de_fond;
 
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
@@ -22,9 +21,8 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
     this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
     this.load.image("HP", "src/assets/Coeur_HP.png");
+   
     
-    this.load.audio('medieval', 'src/assets/medieval.mp3');
-
 
 
     }
@@ -201,6 +199,31 @@ zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', {
    fontStyle: 'bold',
    fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
 }).setOrigin(0.5).setScrollFactor(0);
+
+
+//TELEPORTATION
+TP=this.physics.add.sprite(3700, 100, "TP");
+        TP.body.immovable = true;
+        TP.setAllowGravity = false;  
+        this.physics.add.collider(TP, calque_2);
+        this.anims.create({
+            key: 'teleporteur',
+            frames: this.anims.generateFrameNumbers('TP', { start: 0, end: 5 }),
+            frameRate: 4
+            ,
+            });
+
+            boutondoor= this.input.keyboard.addKey('F');
+
+
+
+
+
+
+
+
+
+
    }
 
     
@@ -251,7 +274,24 @@ zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', {
 // Attaque du joueur
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
+
 }
+
+// Téléportation
+if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
+    TP.anims.play('teleporteur', true);
+    
+
+}
+
+
+
+
+
+
+
+
+
 }
 
 
