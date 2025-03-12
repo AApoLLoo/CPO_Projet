@@ -87,9 +87,8 @@ export default class Industrie extends Phaser.Scene {
 
 
     create(){
-      industry = this.sound.add('factory');
-      MUSIQUE = this.sound.add('MUSIQUE');
-      loop: true;
+      industry = this.sound.add('factory'), {loop: true};
+      MUSIQUE = this.sound.add('MUSIQUE'), {loop: true};
       MUSIQUE.play();
       industry.play();
 
@@ -452,9 +451,9 @@ export default class Industrie extends Phaser.Scene {
                 this.physics.resume();
             }, [], this);
         } else {
-            this.add.image(960, 540, "GameOverImage");
-            BoutonRetourMenu = this.add.image(960, 1000, "BoutonRetourMenu");
-            this.add.text(960, 1000, "Retour au menu", { fontSize: "50px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 });
+            this.add.image(960,350, "GameOverImage").setScrollFactor(0);
+            BoutonRetourMenu = this.add.image(960,800, "BoutonRetourMenu").setScrollFactor(0);
+            this.add.text(960, 800, "Retour au menu", { fontSize: "50px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0).setScale(3);
             this.physics.pause();
             this.player.setTint(0xff0000);
             BoutonRetourMenu.setInteractive();
