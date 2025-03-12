@@ -277,6 +277,18 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 
 if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur)) {
     teleporteur.anims.play('teleporteur', true);
+    teleporteur.on('animationcomplete', () => {
+        // Arrêtez la musique
+        // // if (MUSIQUE.isPlaying) {
+        //     MUSIQUE.stop();
+        // }
+        // if (industry.isPlaying) {
+        //     industry.stop();
+        // }
+        // // Lancez la scène Fin
+        this.scene.stop('Egypte');
+        this.scene.start('Moyen_age');
+    }, this);
 }
 
 

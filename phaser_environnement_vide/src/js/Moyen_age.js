@@ -282,7 +282,21 @@ if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
 }
 
 
-
+if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
+    TP.anims.play('teleporteur', true);
+    TP.on('animationcomplete', () => {
+        // Arrêtez la musique
+        // // if (MUSIQUE.isPlaying) {
+        //     MUSIQUE.stop();
+        // }
+        // if (industry.isPlaying) {
+        //     industry.stop();
+        // }
+        // // Lancez la scène Fin
+        this.scene.stop('Moyen_age');
+        this.scene.start('Industrie');
+    }, this);
+}
 
 
 
