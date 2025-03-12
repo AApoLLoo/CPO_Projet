@@ -5,7 +5,6 @@ var score = 0;
 var zone_texte_score;
 var teleporteur;
 var boutondoor;
-var sol = false;
 var musique_fond;
 
 export default class Egypte extends Phaser.Scene {
@@ -182,9 +181,10 @@ musique_fond.play();
         this.physics.add.collider(groupe_parchemins, calque_plateformes); 
 
         groupe_parchemins.children.iterate(function iterateur(parchemin_i) {
-            // On tire un coefficient aléatoire de rerebond : valeur entre 0.4 et 0.8
+            
             var coef_rebond = Phaser.Math.FloatBetween(0.4, 0.8);
-            parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond à l'étoile etoile_i
+            parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond 
+            
           }); 
         this.physics.add.overlap(this.player, groupe_parchemins, ramasserParchemin, null, this);
 
@@ -206,7 +206,6 @@ musique_fond.play();
  //VIES
  this.player.health = 3; // Nombre initial de vies
  this.coins = []; // Tableau pour stocker les objets de cœur
- 
  // Affichage des cœurs pour les vies
  for (let i = 0; i < this.player.health; i++) {
     this.coins.push(this.add.image(100 + i * 120, 120, "HP").setOrigin(0.5).setScrollFactor(0));
@@ -217,7 +216,7 @@ musique_fond.play();
     fontSize: '64px', 
     fill: '#FFF', 
     fontStyle: 'bold',
-    fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
+    fontFamily: 'Times New Roman' 
 }).setOrigin(0.5).setScrollFactor(0);
 
 
@@ -321,7 +320,7 @@ hitByMomie(player, momie) {
 
 attack() {
 
-// Tuer les momies proches
+// Tuer par les momies proches
 this.momies.children.iterate((momie) => {
     if (Phaser.Math.Distance.Between(this.player.x, this.player.y, momie.x, momie.y) < 50) {
         momie.destroy();
@@ -340,44 +339,10 @@ function ramasserParchemin(player, un_parchemin) {
       
       } 
 
-//Fonction pour afficher la question
-function question() {
-    // Affichage du message de la question
-    this.message_question = this.add.text(400, 100, "Les pyramides ont été construites en grande partie par des esclaves.", { fontSize: "32px", color: "White" });
-    this.message_question.setOrigin(0.5);
-    
-    // Attente de la touche A ou B pour répondre
-    this.input.keyboard.once('keydown_A', () => {
-        // Réponse A (vrai)
-        this.verifierReponse(true);
-    });
-
-    this.input.keyboard.once('keydown_B', () => {
-        // Réponse B (faux)
-        this.verifierReponse(false);
-    });
-}
-
-function verifierReponse(reponse) {
-    // Si la réponse est correcte (A = vrai)
-    if (reponse === true) {
-        this.message_question.setText("Bonne réponse ! Les pyramides ont été construites par une main-d'œuvre salariée.");
-        this.time.delayedCall(2000, () => {
-            // Continue le jeu
-            this.message_question.destroy();
-        });
-    } else {
-        // Si la réponse est incorrecte (B = faux)
-        this.message_question.setText("Mauvaise réponse ! " +
-            "Contrairement à la croyance populaire, la plupart des archéologues s’entendent sur le fait que les pyramides ont été construites par une main-d'œuvre salariée, ou à tout le moins volontaire. Il s’agit d’une vieille croyance qui a été entretenue par de nombreuses œuvres de fiction.");
-        this.time.delayedCall(2000, () => {
-            // Redémarre le jeu
-            this.scene.restart();
-        });
 
 
 
 
 
        
-    }}
+   
