@@ -383,19 +383,23 @@ export default class Industrie extends Phaser.Scene {
             defaultKey: 'fireball',
             maxSize: 50,
         });
+        this.physics.add.collider(this.player, groupeFireball, this.playerHitFireball, null, this);
+        this.physics.add.collider(groupeFireball, plateform, this.handlerDestructionFireball, null, this);
+        this.physics.add.collider(groupeFireball, platmouv, this.handlerDestructionFireball, null, this);
+        this.physics.add.collider(groupeFireball, platmouv2, this.handlerDestructionFireball, null, this);
+        this.physics.add.collider(groupeFireball, platmouv3, this.handlerDestructionFireball, null, this);
 
 
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
 
+        // Logique pour tirer les fireball depuis les cibles
         groupeCibles.children.iterate((cible) => {
-            if (Phaser.Math.Between(0, 1000)>995 ) {
+            if (Phaser.Math.Between(0, 1000) > 995 && !cible.fireballActive) {
                 this.tirerFireball(cible);
-            }       
-
+            }
         });
-
 
         if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
             this.player.setVelocityY(-200);
@@ -525,19 +529,19 @@ export default class Industrie extends Phaser.Scene {
     }
 
     tirerFireball(cible) {
-        if (cible.pointsVie > 0 && cible.body.touching.down) {
-            // Create the fireball using the correct group
+        if (cible.pointsVie > 0 && cible.body.touching.down && !cible.fireballActive) {
+            // Crée la fireball en utilisant le groupe correct
             var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
 
             if (fireball) {
                 fireball.setCollideWorldBounds(true);
                 fireball.body.onWorldBounds = true;
                 fireball.body.allowGravity = false;
-                fireball.setVelocity(-400, 0); // Set the velocity of the fireball
+                fireball.setVelocity(-400, 0); // Définit la vitesse de la fireball
                 fireball.anims.play('fireball', true);
                 cible.fireballActive = true;
 
-                // Listen for world bounds event to handle fireball destruction
+                // Écoute l'événement world bounds pour gérer la destruction de la fireball
                 this.physics.world.on('worldbounds', (body) => {
                     if (body.gameObject === fireball) {
                         cible.fireballActive = false;
@@ -549,6 +553,11 @@ export default class Industrie extends Phaser.Scene {
             }
         }
     }
+    handlerDestructionFireball(fireball, plateform, platmouv, platmouv2, platmouv3) {
+        if (fireball.texture.key === 'fireball') {
+            fireball.destroy();
+        }
+    } 
     playerHitFireball(player, fireball) {
         if (fireball.texture.key === 'fireball') {
             this.hp--;
