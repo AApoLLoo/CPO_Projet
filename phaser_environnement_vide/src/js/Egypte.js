@@ -152,7 +152,10 @@ export default class Egypte extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 100, "Bienvenue en Egypte", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(1000, 350, 
+            "Bienvenue en Égypte !\nTa mission : récupérer tous les parchemins sacrés\net éviter les momies qui hantent ces terres antiques.", 
+            { fontSize: "32px", color: "Black", fontFamily: "Papyrus", align: "center" }
+        );
         this.message.setOrigin(0.5);
         this.time.delayedCall(10000, () => {
             this.message.destroy();
@@ -215,11 +218,11 @@ musique_fond.play();
  }
     
  //SCORE
- zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', { 
-    fontSize: '64px', 
-    fill: '#FFF', 
+ zone_texte_score = this.add.text(this.cameras.main.width * 0.08, 200, 'SCORE : 0', { 
+    fontSize: '32px', 
+    fill: '#000', 
     fontStyle: 'bold',
-    fontFamily: 'Times New Roman' 
+    fontFamily: 'Papyrus' 
 }).setOrigin(0.5).setScrollFactor(0);
 
 
