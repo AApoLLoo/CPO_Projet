@@ -14,9 +14,9 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("pants2", "src/assets/Pants - Copie.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
-
-
-
+    this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 80, frameHeight: 80}); // Ajout gobelins
+   
+    
 
 
     }
@@ -27,8 +27,8 @@ export default class Moyen_age extends Phaser.Scene {
         const calque_background = carteDuNiveau3.createLayer("calque_background", tileset);
         const calque_2 = carteDuNiveau3.createLayer("calque_2", tileset);
         const calque_3 = carteDuNiveau3.createLayer("calque_3", tileset);
-        calque_3.setCollisionByProperty({ estSolide: true }); 
         calque_2.setCollisionByProperty({ estSolide: true });
+    
 
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -114,18 +114,41 @@ export default class Moyen_age extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 100, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(400, 300, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
         this.message.setOrigin(0.5);
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
         clavier = this.input.keyboard.createCursorKeys();
 
+
+        this.fantomes = this.physics.add.group();
+        for (let i = 0; i < 3; i++) {
+            let fantome = this.fantomes.create(Phaser.Math.Between(500, 1500), 600, "fantome");
+            fantome.setCollideWorldBounds(true);
+            fantome.setVelocity(Phaser.Math.Between(-50, 50), Phaser.Math.Between(-50, 50));
+            fantome.health = 1;
+        }
+
+        this.physics.add.collider(this.fantomes, calque_2);
+        this.physics.add.overlap(this.player, this.fantomes, this.hitByFantome, null, this);
         this.physics.add.collider(this.player, calque_2); 
+
+
+        this.player.health = 3;
+        this.healthText = this.add.text(300, 400, "Vies❤️: " + this.player.health, { fontSize: "24px", fill: "#FFF" });
+
+        // Clavier
+        this.clavier = this.input.keyboard.createCursorKeys();
+        this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.physics.world.setBounds(0, 0, 3840, 1280);
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
+
+
+
+
     }
     
     update() {        
@@ -133,9 +156,9 @@ export default class Moyen_age extends Phaser.Scene {
             this.player.direction = 'left';
             this.pants.direction = 'left';
             this.shirt.direction = 'left';
-            this.player.setVelocityX(-200);
-            this.pants.setVelocityX(-200);
-            this.shirt.setVelocityX(-200);
+            this.player.setVelocityX(-400);
+            this.pants.setVelocityX(-400);
+            this.shirt.setVelocityX(-400);
             this.player.anims.play("anim_tourne_gauche", true);
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
@@ -161,11 +184,39 @@ export default class Moyen_age extends Phaser.Scene {
             this.player.anims.play("anim_saut", true);
             this.pants.anims.play("anim_saut_pants", true);
             this.shirt.anims.play("anim_saut_shirt", true);
-            this.pants.setVelocityY(-400);
-            this.player.setVelocityY(-400);
-            this.shirt.setVelocityY(-400);
+            this.pants.setVelocityY(-550);
+            this.player.setVelocityY(-550);
+            this.shirt.setVelocityY(-550);
           }
-        }
-        
+ // Faire suivre les gobelins
+ this.fantomes.children.iterate((fantome) => {
+    if (fantome) {
+        this.physics.moveToObject(fantome, this.player, 50);
     }
-    
+});
+
+// Attaque du joueur
+if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
+    this.attack();
+}
+}
+
+hitByFantome(player, fantome) {
+// Si un gobelin touche le joueur, il perd une vie
+player.health -= 1;
+this.healthText.setText("Vies: " + player.health);
+
+if (player.health <= 0) {
+    this.scene.restart();
+}
+}
+
+attack() {
+// Tuer les gobelins proches
+this.fantomes.children.iterate((fantome) => {
+    if (Phaser.Math.Distance.Between(this.player.x, this.player.y, fantome.x, fantome.y) < 50) {
+        fantome.destroy();
+    }
+});
+}
+}
