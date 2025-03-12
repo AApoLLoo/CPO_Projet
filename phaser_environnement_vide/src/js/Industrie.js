@@ -396,10 +396,13 @@ export default class Industrie extends Phaser.Scene {
 
         // Logique pour tirer les fireball depuis les cibles
         groupeCibles.children.iterate((cible) => {
-            if (Phaser.Math.Between(0, 1000) > 995 && !cible.fireballActive) {
-                this.tirerFireball(cible);
-            }
+            this.tirerFireball(cible);
         });
+        // groupeCibles.children.iterate((cible) => {
+        //     if (!cible.fireballActive) {
+        //         this.tirerFireball(cible);
+        //     }
+        // });
 
         if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
             this.player.setVelocityY(-200);
@@ -532,7 +535,7 @@ export default class Industrie extends Phaser.Scene {
         if (cible.pointsVie > 0 && cible.body.touching.down && !cible.fireballActive) {
             // Crée la fireball en utilisant le groupe correct
             var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
-
+    
             if (fireball) {
                 fireball.setCollideWorldBounds(true);
                 fireball.body.onWorldBounds = true;
@@ -540,13 +543,18 @@ export default class Industrie extends Phaser.Scene {
                 fireball.setVelocity(-400, 0); // Définit la vitesse de la fireball
                 fireball.anims.play('fireball', true);
                 cible.fireballActive = true;
-
-                // Écoute l'événement world bounds pour gérer la destruction de la fireball
-                this.physics.world.on('worldbounds', (body) => {
+    
+                // Détection de sortie de l'écran propre à cet objet
+                fireball.body.world.on('worldbounds', (body) => {
                     if (body.gameObject === fireball) {
                         cible.fireballActive = false;
                         fireball.destroy();
                     }
+                });
+    
+                // Ajout d'un timer pour réinitialiser `cible.fireballActive`
+                this.time.delayedCall(1000, () => {
+                    cible.fireballActive = false;
                 });
             } else {
                 console.error("Failed to create fireball.");
