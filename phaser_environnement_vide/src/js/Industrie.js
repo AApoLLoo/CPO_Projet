@@ -9,6 +9,9 @@ var groupeCibles;
 var sol = false;
 var BoutonRetourMenu;
 var bouton;
+var explosion;
+var industry;
+var MUSIQUE;
 
 function tirer(player) {
     var coefDir;
@@ -32,17 +35,19 @@ function tirer(player) {
     }
 }
 function hit(bullet, cible) {
-    cible.pointsVie--;
-    if (cible.pointsVie == 0) {
-        // Jouer l'animation d'explosion
-        var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
-        explosion.play('explosion');
-        explosion.on('animationcomplete', function () {
-            explosion.destroy();
-        });
-        cible.destroy();
-    }
-    bullet.destroy();
+  cible.pointsVie--;
+  if (cible.pointsVie == 0) {
+      // Jouer l'animation d'explosion
+      var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
+      explosion.play('explosion');
+      explosion.on('animationcomplete', function() {
+          explosion.destroy();
+      });
+
+      cible.scene.sound.play('BOUM');
+      cible.destroy();
+  }
+  bullet.destroy();
 }
 
 //tire des cibles 
@@ -74,11 +79,21 @@ export default class Industrie extends Phaser.Scene {
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("GameOverImage", "src/assets/GameOverNice.png");
         this.load.image("BoutonRetourMenu", "src/assets/BoutonRetour.png");
+
+        this.load.audio('BOUM', 'src/assets/explosion.mp3');
+        this.load.audio('factory', 'src/assets/factory.mp3');
+        this.load.audio('MUSIQUE', 'src/assets/musique.mp3');
     }
 
 
-    create() {
-        const carteDuNiveau = this.add.tilemap("Carte_Industrie");
+    create(){
+      industry = this.sound.add('factory');
+      MUSIQUE = this.sound.add('MUSIQUE');
+      loop: true;
+      MUSIQUE.play();
+      industry.play();
+
+        const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
         );
@@ -90,6 +105,7 @@ export default class Industrie extends Phaser.Scene {
         const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
+        const smog = carteDuNiveau.createLayer("smog", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
         //
@@ -350,6 +366,8 @@ export default class Industrie extends Phaser.Scene {
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
+
+        
 
         if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
             this.player.setVelocityY(-200);
