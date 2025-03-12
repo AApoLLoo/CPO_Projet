@@ -10,7 +10,7 @@ export default class Fin extends Phaser.Scene {
 
     create() {
         this.add.image(960, 540, "Paradis");
-        this.add.audio("music", { loop: true }).play();
+        this.sound.add("music", { loop: true }).play();
         const creditsText = `
         Merci d'avoir joué à notre jeu !
         Nous espérons que vous avez apprécié votre expérience
@@ -37,14 +37,21 @@ export default class Fin extends Phaser.Scene {
         - EPF
         - Dartis BENOIT
         - Fragale ENZO
+        - Nos galères
 
         Date de création : 13-03-2025
 
-        www.epf.fr/
+        www.epf.fr
         Merci pour votre soutien !
+
+
+
+
+
+        A bientôt ! 🚀
         `;
 
-        const credits = this.add.text(960, 1080, creditsText, {
+        const credits = this.add.text(960, 2400, creditsText, {
             font: "60px SP Marker",
             fill: "#FFDE06",
             align: "center",
@@ -54,7 +61,7 @@ export default class Fin extends Phaser.Scene {
         this.tweens.add({
             targets: credits,
             y: -credits.height,
-            duration: 30000,
+            duration: 120000,
             ease: "Linear",
             repeat: -1,
             onComplete: () => {

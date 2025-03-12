@@ -19,44 +19,8 @@ var Degats;
 var door;
 var boutondoor;
 var groupeFireball;
+var compteurCibleDetruite = 0;
 
-function tirer(player) {
-    var coefDir;
-    if (player.direction == 'left') {
-        coefDir = -1;
-    } else {
-        coefDir = 1;
-    }
-    // on crée la balle a coté du joueur
-    var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
-    Shot.play();
-    // parametres physiques de la balle.
-    bullet.setCollideWorldBounds(true);
-    bullet.body.onWorldBounds = true;
-    bullet.body.allowGravity = false;
-    bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
-
-    if (coefDir == -1) {
-        bullet.anims.play('Bullet2', true);
-    } else {
-        bullet.anims.play('Bullet', true);
-    }
-}
-function hit(bullet, cible) {
-    cible.pointsVie--;
-    if (cible.pointsVie == 0) {
-        // Jouer l'animation d'explosion
-        var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
-        explosion.play('explosion');
-        explosion.on('animationcomplete', function () {
-            explosion.destroy();
-        });
-
-        cible.scene.sound.play('BOUM');
-        cible.destroy();
-    }
-    bullet.destroy();
-}
 
 //tire des cibles 
 export default class Industrie extends Phaser.Scene {
@@ -105,8 +69,6 @@ export default class Industrie extends Phaser.Scene {
 
 
     create() {
-
-
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
@@ -124,7 +86,7 @@ export default class Industrie extends Phaser.Scene {
         plateform.setCollisionByProperty({ estsolide: true });
         //      
         industry = this.sound.add('factory'), { loop: true }, { volume: 1.5 };
-        MUSIQUE = this.sound.add('MUSIQUE'), { loop: true }, { volume: 0.8 };
+        MUSIQUE = this.sound.add('MUSIQUE'), { loop: true }, { volume: 0.1 };
         Shot = this.sound.add('shot')
         Mort = this.sound.add('Mort'), { loop: false }, { volume: 1 };
         footstep = this.sound.add('footstep'), { loop: true }, { volume: 1 };
@@ -136,24 +98,24 @@ export default class Industrie extends Phaser.Scene {
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
-        this.player.body.setSize(18, 40, true);
-        this.player.body.setOffset(30, 22);
-        this.pants.body.setSize(18, 40, true);
-        this.pants.body.setOffset(30, 22);
-        this.shirt.body.setSize(18, 40, true);
-        this.shirt.body.setOffset(30, 22);
+        this.player.body.setSize(10, 40, true);
+        this.player.body.setOffset(35, 22);
+        this.pants.body.setSize(10, 40, true);
+        this.pants.body.setOffset(35, 22);
+        this.shirt.body.setSize(10, 40, true);
+        this.shirt.body.setOffset(35, 22);
         this.player.direction = 'right';
         this.player.setScale(1.5);
-        this.player.setBounce(0.2);
+        this.player.setBounce(0.05);
         this.player.setCollideWorldBounds(true);
         this.physics.add.collider(this.player, plateform);
         this.pants.setScale(1.5);
-        this.pants.setBounce(0.2);
+        this.pants.setBounce(0.05);
         this.pants.setCollideWorldBounds(true);
         this.pants.direction = 'right';
         this.physics.add.collider(this.pants, plateform);
         this.shirt.setScale(1.5);
-        this.shirt.setBounce(0.2);
+        this.shirt.setBounce(0.05);
         this.shirt.setCollideWorldBounds(true);
         this.shirt.direction = 'right';
         this.physics.add.collider(this.shirt, plateform);
@@ -202,7 +164,6 @@ export default class Industrie extends Phaser.Scene {
         this.physics.add.collider(this.shirt, platmouv);
         this.physics.add.collider(this.shirt, platmouv2);
         this.physics.add.collider(this.shirt, platmouv3);
-        // Reste du code
         this.anims.create({
             key: "anim_face",
             frames: [{ key: "player", frame: 4 }],
@@ -273,8 +234,6 @@ export default class Industrie extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
         toucheEchelle = this.input.keyboard.addKey('E');
         clavier = this.input.keyboard.createCursorKeys();
-
-
         // GESTION DES TIRS
         boutonFeu = this.input.keyboard.addKey('A');
         boutondoor = this.input.keyboard.addKey('F');
@@ -293,7 +252,6 @@ export default class Industrie extends Phaser.Scene {
         });
 
         this.physics.world.on("worldbounds", function (body) {
-            // on récupère l'objet surveillé
             var objet = body.gameObject;
             // s'il s'agit d'une balle
             if (groupeBullets.contains(objet)) {
@@ -307,17 +265,25 @@ export default class Industrie extends Phaser.Scene {
 
         groupeCibles = this.physics.add.group({
             key: 'cible',
-            repeat: 50,
-            setXY: { x: 1240, y: 0, stepX: 200 }
+            repeat: 20,
+            setXY: { x: 1240, y: 0, stepX: 300 }
         });
         groupeCibles.children.iterate(function (cible) {
+            console.log("Ciblecree");
             cible.setScale(1.5);
             cible.body.setSize(18, 40, true);
-        });
-        groupeCibles.children.iterate(function (cibleTrouvee) {
-            cibleTrouvee.pointsVie = Phaser.Math.Between(1, 2);
-            cibleTrouvee.y = Phaser.Math.Between(10, 250);
-        });
+            cible.fireballActive = false;
+            cible.pointsVie = Phaser.Math.Between(1, 2);
+            cible.y = Phaser.Math.Between(10, 250)
+            cible.timer = this.time.addEvent({
+                delay: Phaser.Math.Between(1000, 3000),
+                callback: () => {
+                    tirerFireball(cible);
+                },
+                callbackScope: this,
+                loop: true
+            });
+        }, this);
         // Gestion des collisions entre les balles et les cibles    
         this.physics.add.overlap(groupeBullets, groupeCibles, hit, null, this);
         //////////////////////////////////////////
@@ -331,7 +297,6 @@ export default class Industrie extends Phaser.Scene {
                 objet.destroy();
             }
         });
-        //destuction des cibles
         this.anims.create({
             key: 'explosion',
             frames: this.anims.generateFrameNumbers('boum', { start: 0, end: 11 }),
@@ -362,11 +327,6 @@ export default class Industrie extends Phaser.Scene {
             this.hpContainer.add(heart);
         }
         this.resetLives();
-        // this.physics.add.overlap(this.player, groupeCibles, this.playerHitFireball, null, this);
-        // this.physics.add.collider(groupeCibles, plateform, (fireball) => {
-        //     this.physics.add.collider(groupeCibles, plateform);
-        //     fireball.destroy();
-        // });
         this.physics.add.collider(groupeCibles, plateform);
         this.physics.add.collider(groupeCibles, platmouv);
         this.physics.add.collider(groupeCibles, platmouv2);
@@ -380,7 +340,20 @@ export default class Industrie extends Phaser.Scene {
 // Création des fireballs
         groupeFireball = this.physics.add.group({
             defaultKey: 'fireball',
-            maxSize: 50,
+        });
+        this.physics.add.collider(this.player, groupeFireball, this.playerHitFireball, null, this);
+        this.physics.add.collider(groupeFireball, plateform, this.handlerDestructionFireball, null, this);
+        this.physics.add.collider(groupeFireball, platmouv, this.handlerDestructionFireball, null, this);
+        this.physics.add.collider(groupeFireball, platmouv2, this.handlerDestructionFireball, null, this);
+        this.physics.add.collider(groupeFireball, platmouv3, this.handlerDestructionFireball, null, this);
+        this.physics.world.on("worldbounds", function (body) {
+            // on récupère l'objet surveillé
+            var objet = body.gameObject;
+            // s'il s'agit d'une fireball
+            if (groupeFireball.contains(objet)) {
+                // on le détruit
+                objet.destroy();
+            }
         });
 
 
@@ -388,14 +361,7 @@ export default class Industrie extends Phaser.Scene {
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
 
-        groupeCibles.children.iterate((cible) => {
-            if (Phaser.Math.Between(0, 1000)>995 ) {
-                this.tirerFireball(cible);
-            }       
-
-        });
-
-
+        // Logique pour tirer les fireball depuis les cibles
         if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
             this.player.setVelocityY(-200);
             this.player.setVelocityX(0);
@@ -435,6 +401,7 @@ export default class Industrie extends Phaser.Scene {
             this.player.anims.play("anim_face");
             this.pants.anims.play("anim_face_pants");
             this.shirt.anims.play("anim_face_shirt");
+            footstep.stop();
         }
         if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
             this.player.anims.play("anim_saut", true);
@@ -456,7 +423,7 @@ export default class Industrie extends Phaser.Scene {
         }
 
         // GESTION DE LA PORTE
-        if (boutondoor.isDown && this.physics.overlap(this.player, door)) {
+        if (boutondoor.isDown && this.physics.overlap(this.player, door) && compteurCibleDetruite == 0) {
             door.anims.play('door', true);
             door.on('animationcomplete', () => {
                 // Arrêtez la musique
@@ -513,6 +480,7 @@ export default class Industrie extends Phaser.Scene {
                 BoutonRetourMenu.clearTint();
             });
             BoutonRetourMenu.on("pointerup", () => {
+                this.shutdown();
                 this.scene.start("menu");
             });
         }
@@ -522,32 +490,11 @@ export default class Industrie extends Phaser.Scene {
         this.hp = 3;
         this.updateLivesDisplay();
     }
-
-    tirerFireball(cible) {
-        if (cible.pointsVie > 0 && cible.body.touching.down) {
-            // Create the fireball using the correct group
-            var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
-
-            if (fireball) {
-                fireball.setCollideWorldBounds(true);
-                fireball.body.onWorldBounds = true;
-                fireball.body.allowGravity = false;
-                fireball.setVelocity(-400, 0); // Set the velocity of the fireball
-                fireball.anims.play('fireball', true);
-                cible.fireballActive = true;
-
-                // Listen for world bounds event to handle fireball destruction
-                this.physics.world.on('worldbounds', (body) => {
-                    if (body.gameObject === fireball) {
-                        cible.fireballActive = false;
-                        fireball.destroy();
-                    }
-                });
-            } else {
-                console.error("Failed to create fireball.");
-            }
+    handlerDestructionFireball(fireball, plateform, platmouv, platmouv2, platmouv3) {
+        if (fireball.texture.key === 'fireball') {
+            fireball.destroy();
         }
-    }
+    } 
     playerHitFireball(player, fireball) {
         if (fireball.texture.key === 'fireball') {
             this.hp--;
@@ -580,4 +527,62 @@ export default class Industrie extends Phaser.Scene {
             industry.stop();
         }
     }
+}
+function tirerFireball(cible) {
+    console.log("ontire")
+    if (cible.pointsVie > 0 && (cible.body.touching.down || cible.body.blocked.down)) {
+        // Crée la fireball en utilisant le groupe correct
+         var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
+
+            fireball.setCollideWorldBounds(true);
+            fireball.body.onWorldBounds = true;
+            fireball.body.allowGravity = false;
+            fireball.setVelocity(-400, 0); // Définit la vitesse de la fireball
+            fireball.anims.play('fireball', true);
+            cible.fireballActive = true;
+            console.log("onatire")
+            // Ajout d'un timer pour réinitialiser `cible.fireballActive`
+            fireball.on('destroy', () => {
+                cible.fireballActive = false;
+            });
+    }
+}
+function tirer(player) {
+    var coefDir;
+    if (player.direction == 'left') {
+        coefDir = -1;
+    } else {
+        coefDir = 1;
+    }
+    // on crée la balle a coté du joueur
+    var bullet = groupeBullets.create(player.x + (1 * coefDir), player.y - 4, 'bullet');
+    Shot.play();
+    // parametres physiques de la balle.
+    bullet.setCollideWorldBounds(true);
+    bullet.body.onWorldBounds = true;
+    bullet.body.allowGravity = true;
+    bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
+
+    if (coefDir == -1) {
+        bullet.anims.play('Bullet2', true);
+    } else {
+        bullet.anims.play('Bullet', true);
+    }
+}
+function hit(bullet, cible) {
+    cible.pointsVie--;
+    if (cible.pointsVie == 0) {
+        // Jouer l'animation d'explosion
+        var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
+        explosion.play('explosion');
+        explosion.on('animationcomplete', function () {
+            explosion.destroy();
+        });
+
+        cible.scene.sound.play('BOUM');
+        cible.destroy();
+        compteurCibleDetruite += 1;
+        console.log(compteurCibleDetruite);
+    }
+    bullet.destroy();
 }
