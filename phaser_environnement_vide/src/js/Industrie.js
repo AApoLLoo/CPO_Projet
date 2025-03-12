@@ -6,6 +6,9 @@ var platmouv3;
 var boutonFeu;
 var groupeBullets;
 var groupeCibles; 
+var sol = false;
+var BoutonRetourMenu;
+var bouton;
 
 function tirer(player) {
   var coefDir;
@@ -41,10 +44,11 @@ function hit(bullet, cible) {
   }
   bullet.destroy();
 }
-
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
+        this.hp = 3;
+        this.spawn = { x: 100, y: 580 };
     }
     preload() {
         this.load.image("TuilesDeJeuIndustrie1", "src/assets/TuilesJeux.png");
@@ -63,6 +67,9 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("bullet2", "src/assets/Bullet - Copie.png", { frameWidth: 63, frameHeight: 48 });
         this.load.image("cible", "src/assets/Cible.png");
         this.load.spritesheet("boum", "src/assets/boum.png", { frameWidth: 120, frameHeight: 120 });
+        this.load.image("HP", "src/assets/Coeur_HP.png");
+        this.load.image("GameOverImage", "src/assets/GameOverNice.png");
+        this.load.image("BoutonRetourMenu", "src/assets/BoutonRetour.png");
     }
 
 
@@ -106,6 +113,9 @@ export default class Industrie extends Phaser.Scene {
         this.shirt.setCollideWorldBounds(true);
         this.shirt.direction = 'right';
         this.physics.add.collider(this.shirt, plateform);
+        this.player.body.onWorldBounds = true;
+        this.pants.body.onWorldBounds = true;
+        this.shirt.body.onWorldBounds = true;
         // Création des pigèes ahhahahah
         platmouv = this.physics.add.sprite(1375, 950, 'Transporter1');
         platmouv2 = this.physics.add.sprite(1407, 950, 'Transporter2');
@@ -243,8 +253,11 @@ export default class Industrie extends Phaser.Scene {
             // on le détruit
             objet.destroy();
         }
-    });
-
+        });
+        this.physics.add.collider(groupeBullets, plateform, function(bullet) {
+            bullet.destroy();
+        });
+        
         groupeCibles = this.physics.add.group({
             key: 'cible',
             repeat: 7,
@@ -255,11 +268,13 @@ export default class Industrie extends Phaser.Scene {
             cible.body.setSize(18, 40, true);
         });
         groupeCibles.children.iterate(function (cibleTrouvee) {
-            cibleTrouvee.pointsVie=Phaser.Math.Between(1, 3);
+            cibleTrouvee.pointsVie=Phaser.Math.Between(1, 2);
             cibleTrouvee.y = Phaser.Math.Between(10,250);
             });    
         this.physics.add.collider(groupeCibles, plateform); 
+        // Gestion des collisions entre les balles et les cibles    
         this.physics.add.overlap(groupeBullets, groupeCibles, hit, null,this);
+        // Gestion des collisions entre les balles et les bords du monde    
         this.physics.world.on("worldbounds", function(body) {
             // on récupère l'objet surveillé
             var objet = body.gameObject;
@@ -270,7 +285,6 @@ export default class Industrie extends Phaser.Scene {
             }
         });
 
-
         //destuction des cibles
         this.anims.create({
           key: 'explosion',
@@ -278,7 +292,21 @@ export default class Industrie extends Phaser.Scene {
           frameRate: 10,
           repeat: 0
       });
-
+      this.player.body.world.on(
+        "worldbounds",
+        function(body, up, down, left, right) {
+            if (body.gameObject == (this.player || this.pants || this.shrit) && down) {
+                this.respawn(); // Appelle respawn directement
+            }
+        },
+        this
+    );    
+    this.hpContainer = this.add.group();
+    for (let i = 0; i < this.hp; i++) {
+    let heart = this.add.image(50 + i * 80, 50, "HP").setScrollFactor(0).setScale(0.5);
+    this.hpContainer.add(heart);
+    }
+    this.resetLives();
 
     }
     update() {
@@ -330,7 +358,10 @@ export default class Industrie extends Phaser.Scene {
             this.player.setVelocityY(-400);
             this.shirt.setVelocityY(-400);
         }
-
+        if (sol) {
+            this.time.delayedCall(1000, this.respawn, null, this);  
+            return;
+          }
         // GESTION DES TIRS 
         if (Phaser.Input.Keyboard.JustDown(boutonFeu)) {
             tirer(this.player);
@@ -340,4 +371,49 @@ export default class Industrie extends Phaser.Scene {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
       return tile && tile.properties.estladder;
   }
+
+  updateLivesDisplay() {
+    this.hpContainer.clear(true, true);
+    for (let i = 0; i < this.hp; i++) {
+        let heart = this.add.image(50 + i * 80, 50, "HP").setScrollFactor(0).setScale(0.5);
+        this.hpContainer.add(heart);
+    }
 }
+
+
+respawn() {
+    console.log("Respawn appelé !");
+    this.hp--;
+
+    if (this.hp > 0) {
+        this.player.setPosition(this.spawn.x, this.spawn.y);
+        this.pants.setPosition(this.spawn.x, this.spawn.y);
+        this.shirt.setPosition(this.spawn.x, this.spawn.y);
+        this.physics.pause();
+        this.time.delayedCall(500, () => {
+            this.physics.resume();
+        }, [], this);
+    } else {
+        this.add.image(960, 540, "GameOverImage");
+        BoutonRetourMenu = this.add.image(960, 1000, "BoutonRetourMenu");
+        this.add.text(960, 1000, "Retour au menu", { fontSize: "50px", color: "White" , fontStyle: "bold", fontStyle:"Arial Black", origin: 0.5});
+        this.physics.pause();
+        this.player.setTint(0xff0000);
+        BoutonRetourMenu.setInteractive();
+        BoutonRetourMenu.on("pointerover", () => {
+            BoutonRetourMenu.setTint(0x00ff00);
+        });
+        BoutonRetourMenu.on("pointerout", () => {
+            BoutonRetourMenu.clearTint();
+        });
+        BoutonRetourMenu.on("pointerup", () => {
+            this.scene.start("menu");
+        });
+    }
+    this.updateLivesDisplay();
+}
+resetLives() {
+    this.hp = 3;
+    this.updateLivesDisplay();
+}
+}  
