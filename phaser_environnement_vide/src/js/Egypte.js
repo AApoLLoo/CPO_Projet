@@ -1,5 +1,7 @@
 var clavier;
 var player;
+var groupe_parchemin;
+
 export default class Egypte extends Phaser.Scene {
     constructor() {
         super({key : "Egypte"});
@@ -14,6 +16,7 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("pants2", "src/assets/Pants - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
+        
 
     }
     create(){
