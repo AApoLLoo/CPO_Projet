@@ -278,6 +278,7 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
     TP.anims.play('teleporteur', true);
     
+
 }
 
 

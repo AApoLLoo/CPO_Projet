@@ -5,6 +5,7 @@ var score = 0;
 var zone_texte_score;
 var teleporteur;
 var boutondoor;
+var sol = false;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -213,10 +214,6 @@ export default class Egypte extends Phaser.Scene {
     fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
 }).setOrigin(0.5).setScrollFactor(0);
 
-//RAMSES
-this.ramses = this.physics.add.sprite(600, 400, "Ramses").setScale(1.5); // Positionner Ramses sur la plateforme
-this.ramses.setInteractive(); // Rendre Ramses interactif
-this.physics.add.collider(this.ramses, calque_plateformes);
 
     }
 
@@ -258,10 +255,11 @@ this.physics.add.collider(this.ramses, calque_plateformes);
             this.pants.setVelocityY(-450);
             this.player.setVelocityY(-450);
             this.shirt.setVelocityY(-450);
+            
           }
+          
 
-//Détecte si le joueur touche Ramses
-             this.physics.add.overlap(this.player, this.ramses, this.afficherQuestion, null, this);
+
           
 // Faire suivre les momies
  this.momies.children.iterate((momie) => {
@@ -324,6 +322,8 @@ this.momies.children.iterate((momie) => {
     }
 });
 }
+
+
 }
 
 //Fonction pour ramasser les parchemins
