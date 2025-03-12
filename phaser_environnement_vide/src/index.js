@@ -8,7 +8,8 @@ import menu from "./js/menu.js";
 import Moyen_age from "./js/Moyen_age.js";
 import Egypte from "./js/Egypte.js";
 import Industrie from "./js/Industrie.js";
-import Credit from "./js/Credit.js";    
+import Credit from "./js/Credit.js";  
+import Fin from "./js/Fin.js";  
 // configuration générale du jeu
 var config = {
   type: Phaser.AUTO,
@@ -28,7 +29,7 @@ var config = {
         debug: true // permet de voir les hitbox et les vecteurs d'acceleration quand mis à true
       }
     },
-  scene : [menu, Egypte, Moyen_age, Industrie, Credit] // liste des scenes du jeu
+  scene : [menu, Egypte, Moyen_age, Industrie, Credit, Fin] // liste des scenes du jeu
   };
 
 
