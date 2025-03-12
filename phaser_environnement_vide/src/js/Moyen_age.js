@@ -2,8 +2,9 @@ var clavier;
 var player;
 var score = 0;
 var zone_texte_score;
-var boutondoor;
+var musique_de_fond;
 var TP;
+var boutondoor;
 
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
@@ -11,6 +12,7 @@ export default class Moyen_age extends Phaser.Scene {
     }   
     preload() {
      
+        
     this.load.image("tuilesmoyenage", "src/assets/tuilesmoyenage.png");
     this.load.tilemapTiledJSON("MAPmoyenage", "src/assets/MAPmoyenage.json"); 
     this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
@@ -22,18 +24,22 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
     this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
     this.load.image("HP", "src/assets/Coeur_HP.png");
+    this.load.audio('medieval', 'src/assets/medieval.mp3');   
+    this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
    
-
-    //teleportation
-    this.load.spritesheet("TP", "src/assets/teleporter2.png", { frameWidth: 154, frameHeight: 148}); // Ajout gobelins
-    
 
 
     }
     create(){
-        this.score = 0; // Score initial
-        this.scoreText = this.add.text(50, 80, "Score: " + this.score, { fontSize: "24px", fill: "#FFF" });
 
+        musique_de_fond = this.sound.add('medieval'); 
+        musique_de_fond.play();  
+        this.score = 0;
+        this.scoreText = this.add.text(50, 80, "Score: " + this.score, { 
+            fontSize: "24px", 
+            fill: "#FFF" 
+        }).setScrollFactor(0);
+        
     
         const carteDuNiveau3 = this.add.tilemap("MAPmoyenage");
         const tileset = carteDuNiveau3.addTilesetImage("tuilesmoyenage");
@@ -127,7 +133,7 @@ export default class Moyen_age extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 300, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(400, 500, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
         this.message.setOrigin(0.5);
         this.time.delayedCall(10000, () => {
             this.message.destroy();
@@ -151,7 +157,7 @@ export default class Moyen_age extends Phaser.Scene {
 
 
         this.player.health = 3;
-        this.healthText = this.add.text(300, 400, "Vies❤️: " + this.player.health, { fontSize: "24px", fill: "#FFF" });
+        
 
         // Clavier
         this.clavier = this.input.keyboard.createCursorKeys();
@@ -176,6 +182,7 @@ let positionsEpees = [
 positionsEpees.forEach(pos => {
     this.epees.create(pos.x, pos.y, "epee").setScale(0.5); // Place les épées et réduit la taille
 });
+
 
 // Détecte quand le joueur touche une épée
 this.physics.add.overlap(this.player, this.epees, this.ramasserEpee, null, this);
@@ -209,10 +216,11 @@ TP=this.physics.add.sprite(3700, 100, "TP");
             frameRate: 4
             ,
             });
+boutondoor=this.input.keyboard.addKey('F');
 
-            boutondoor= this.input.keyboard.addKey('F');
 
-
+    
+    
 
 
 
@@ -340,10 +348,15 @@ attack() {
 
 ramasserEpee(player, epee) {
     console.log("🗡️ Épée ramassée !");
-    epee.destroy(); // Supprime l'épée
+    epee.destroy(); // Supprime l'épée ramassée
 
-    // Augmente le score
+    // **Mise à jour du score**
     this.score += 10;
-    this.scoreText.setText("SCORE: " + this.score);
+    this.updateScore();
+}
+
+// **Mise à jour du texte du score**
+updateScore() {
+    this.scoreText.setText("Score: " + this.score);
 }
 }
