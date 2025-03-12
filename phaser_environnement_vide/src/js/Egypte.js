@@ -63,7 +63,7 @@ export default class Egypte extends Phaser.Scene {
 
         
 
-        this.player = this.physics.add.sprite(5000, 600, "player");
+        this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.player.body.setSize(18, 40, true); 
