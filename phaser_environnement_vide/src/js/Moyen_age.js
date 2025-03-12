@@ -265,9 +265,9 @@ boutondoor=this.input.keyboard.addKey('F');
             this.player.anims.play("anim_saut", true);
             this.pants.anims.play("anim_saut_pants", true);
             this.shirt.anims.play("anim_saut_shirt", true);
-            this.pants.setVelocityY(-550);
-            this.player.setVelocityY(-550);
-            this.shirt.setVelocityY(-550);
+            this.pants.setVelocityY(-420);
+            this.player.setVelocityY(-420);
+            this.shirt.setVelocityY(-420);
           }
  // Faire suivre les gobelins
  this.fantomes.children.iterate((fantome) => {
