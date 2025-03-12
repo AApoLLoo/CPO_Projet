@@ -13,6 +13,8 @@ var explosion;
 var industry;
 var MUSIQUE;
 var Shot;
+var door;
+var boutondoor;
 
 function tirer(player) {
     var coefDir;
@@ -86,7 +88,15 @@ export default class Industrie extends Phaser.Scene {
         this.load.audio('factory', 'src/assets/factory.mp3');
         this.load.audio('MUSIQUE', 'src/assets/musique.mp3');
         this.load.audio('shot', 'src/assets/gun_shot.mp3');
+
+        this.load.spritesheet("door", "src/assets/door.png", { frameWidth: 71, frameHeight: 97 });
+        
     }
+
+
+
+
+
 
 
     create(){
@@ -111,6 +121,7 @@ export default class Industrie extends Phaser.Scene {
         const smog = carteDuNiveau.createLayer("smog", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
+        door = this.physics.add.sprite(100, 600, 'door');
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -140,6 +151,8 @@ export default class Industrie extends Phaser.Scene {
         this.pants.body.onWorldBounds = true;
         this.shirt.body.onWorldBounds = true;
         // Création des pigèes ahhahahah
+        door.body.immovable = true;
+        door.body.setAllowGravity(false);
         platmouv = this.physics.add.sprite(1375, 950, 'Transporter1');
         platmouv2 = this.physics.add.sprite(1407, 950, 'Transporter2');
         platmouv3 = this.physics.add.sprite(1439, 950, 'Transporter3');
@@ -254,6 +267,7 @@ export default class Industrie extends Phaser.Scene {
 
         // GESTION DES TIRS
         boutonFeu = this.input.keyboard.addKey('A');
+        boutondoor= this.input.keyboard.addKey('F');
         groupeBullets = this.physics.add.group();
         this.anims.create({
             key: "Bullet",
@@ -366,6 +380,17 @@ export default class Industrie extends Phaser.Scene {
                 cible.destroy();
             }
         });
+
+
+
+        this.anims.create({
+          key: 'door',
+          frames: this.anims.generateFrameNumbers('door', { start: 0, end: 4 }),
+          frameRate: 6,
+          })
+
+
+
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
@@ -425,6 +450,11 @@ export default class Industrie extends Phaser.Scene {
         // GESTION DES TIRS 
         if (Phaser.Input.Keyboard.JustDown(boutonFeu)) {
             tirer(this.player);
+        }
+
+        // GESTION DE LA PORTE
+        if (boutondoor.isDown && this.physics.overlap(this.player, door)) {
+            door.anims.play('door', true);
         }
 
     }
@@ -516,6 +546,13 @@ export default class Industrie extends Phaser.Scene {
                     this.player.clearTint(); // Reset player color
                 }, [], this);
             }
+        }
+
+
+
+
+        if (boutondoor.isDown && this.physics.overlap(this.player, door)) {
+            door.anims.play('door', true);
         }
     }
 
