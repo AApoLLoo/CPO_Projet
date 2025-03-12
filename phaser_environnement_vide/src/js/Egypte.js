@@ -151,10 +151,12 @@ export default class Egypte extends Phaser.Scene {
         
         this.momies = this.physics.add.group();
         for (let i = 0; i < 3; i++) {
-            let momie = this.momies.create(Phaser.Math.Between(500, 1500), 600, "momie");
-            momie.setCollideWorldBounds(true);
-            momie.setVelocity(Phaser.Math.Between(-50, 50), Phaser.Math.Between(-50, 50));
-            momie.health = 1;
+            this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
+                let momie = this.momies.create(1000 + i * 800, 600, "momie"); // Augmentation de l'espacement
+                momie.setCollideWorldBounds(true);
+                momie.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
+                momie.health = 1;
+            }, [], this);
         }
 
         this.physics.add.collider(this.momies, calque_plateformes);
@@ -201,9 +203,9 @@ export default class Egypte extends Phaser.Scene {
             this.player.anims.play("anim_saut", true);
             this.pants.anims.play("anim_saut_pants", true);
             this.shirt.anims.play("anim_saut_shirt", true);
-            this.pants.setVelocityY(-400);
-            this.player.setVelocityY(-400);
-            this.shirt.setVelocityY(-400);
+            this.pants.setVelocityY(-500);
+            this.player.setVelocityY(-500);
+            this.shirt.setVelocityY(-500);
           }
           
     // Faire suivre les momies
