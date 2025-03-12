@@ -106,7 +106,7 @@ export default class Industrie extends Phaser.Scene {
 
     create(){
 
-
+        musique_de_fond = this.sound.add('medievale'); 
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32

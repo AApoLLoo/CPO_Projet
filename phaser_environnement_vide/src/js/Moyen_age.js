@@ -2,6 +2,7 @@ var clavier;
 var player;
 var score = 0;
 var zone_texte_score;
+var musique_de_fond;
 
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
@@ -9,6 +10,7 @@ export default class Moyen_age extends Phaser.Scene {
     }   
     preload() {
      
+        
     this.load.image("tuilesmoyenage", "src/assets/tuilesmoyenage.png");
     this.load.tilemapTiledJSON("MAPmoyenage", "src/assets/MAPmoyenage.json"); 
     this.load.spritesheet("player", "src/assets/Personnage.png", { frameWidth: 80, frameHeight: 64 });
@@ -20,13 +22,16 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
     this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
     this.load.image("HP", "src/assets/Coeur_HP.png");
-   
     
+    this.load.audio('medieval', 'src/assets/medieval.mp3');
+
 
 
     }
     create(){
 
+        musique_de_fond = this.sound.add('medieval'); 
+        musique_de_fond.play();  
         this.score = 0;
         this.scoreText = this.add.text(50, 80, "Score: " + this.score, { 
             fontSize: "24px", 
