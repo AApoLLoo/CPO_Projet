@@ -14,7 +14,7 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("pants2", "src/assets/Pants - Copie.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
-    this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 80, frameHeight: 80}); // Ajout gobelins
+    this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
    
     
 
