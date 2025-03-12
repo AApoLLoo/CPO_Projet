@@ -26,11 +26,17 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.image("HP", "src/assets/Coeur_HP.png");
     this.load.audio('medieval', 'src/assets/medieval.mp3');   
     this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
-   
+    this.load.audio('sonmort', 'src/assets/gameover.mp3'); // Remplace par le chemin correct
+    this.load.image("roi", "src/assets/roi.png"); // Remplace par le bon chemin
+    this.load.audio("dialogueroi", "src/assets/roi.mp3"); // Remplace par le bon fichier audio
 
 
     }
     create(){
+
+
+// Ajout du roi sur une plateforme solide
+
 
         musique_de_fond = this.sound.add('medieval'); 
         musique_de_fond.play();  
@@ -133,12 +139,13 @@ export default class Moyen_age extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 500, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
-        this.message.setOrigin(0.5);
-        this.time.delayedCall(10000, () => {
-            this.message.destroy();
-        }, [], this);
+       
         clavier = this.input.keyboard.createCursorKeys();
+
+// Affichage des règles du jeu
+
+
+
 
 
         this.fantomes = this.physics.add.group();
@@ -218,9 +225,13 @@ TP=this.physics.add.sprite(3700, 100, "TP");
             });
 boutondoor=this.input.keyboard.addKey('F');
 
+this.roi = this.physics.add.staticSprite(400, 1000, "roi").setScale(1.2);
+ 
+this.physics.add.collider(this.roi, calque_2);
+// Détection de la rencontre avec le roi
+this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
 
-    
-    
+
 
 
 
@@ -345,9 +356,80 @@ hitByFantome(player, fantome) {
         // Vérifie si le joueur a encore des vies
         if (player.health <= 0) {
             console.log("💀 Plus de vies ! Game Over.");
-            this.scene.restart(); // Redémarre le niveau
+            this.afficherGameOver();
         }
     }
+}
+
+rencontrerRoi(player, roi) {
+    // Arrête la musique médiévale
+    if (musique_de_fond.isPlaying) {
+        musique_de_fond.stop();
+    }
+
+    // Affiche le texte du roi à droite de l'écran
+    this.dialogueRoi = this.add.text(
+        this.cameras.main.width - 50, // Position X (à droite)
+        200, // Position Y
+        "👑 Philippe II Auguste :\n" +
+        "Bienvenue, aventurier !\n" +
+        "Grâce à moi, le royaume de France s'est renforcé !\n" +
+        "J'ai agrandi Paris et bâti des fortifications !\n\n" +
+        "🎮 Règles du jeu :\n" +
+        "- ⚔️ Récupère toutes les épées\n" +
+        "- 👻 Évite les fantômes\n" +
+        "- 🚪 Trouve la porte\n" +
+        "- ❤️ Ne perds pas toutes tes vies\n\n" +
+        "Bonne chance, noble guerrier !",
+        {
+            fontSize: "22px",
+            fill: "#FFF",
+            align: "right",
+            fontStyle: "bold"
+        }
+    ).setOrigin(1, 0.5).setScrollFactor(0);
+
+    // Joue le son du roi et récupère la durée
+    this.sonRoi.play();
+
+    // Met le jeu en pause
+    this.physics.pause();
+
+    // Quand le son du roi se termine, on reprend la musique et le jeu
+    this.sonRoi.once('complete', () => {
+        this.dialogueRoi.destroy(); // Supprime le texte
+        this.physics.resume(); // Reprend le jeu
+        musique_de_fond.play(); // Redémarre la musique médiévale
+    });
+}
+
+
+afficherGameOver() {
+    // Affiche "GAME OVER" en grand au centre de l'écran
+    this.sound.play('sonmort');
+    this.gameOverText = this.add.text(
+        this.cameras.main.width / 2, 
+        this.cameras.main.height / 2, 
+        "GAME OVER", 
+        {
+            fontSize: "80px",
+            fill: "#FF0000", // Rouge pour l'effet dramatique
+            fontStyle: "bold",
+            fontFamily: "Times New Roman"
+        }
+    );
+    this.gameOverText.setOrigin(0.5);
+    this.gameOverText.setScrollFactor(0);
+
+    // Désactive les contrôles du joueur
+    this.player.setVelocity(0, 0);
+    this.player.setTint(0x366666); // Effet de "mort"
+    this.physics.pause(); // Met en pause le jeu
+
+    // Redémarre la scène après **5 secondes**
+    this.time.delayedCall(5000, () => {
+        this.scene.restart();
+    }, [], this);
 }
 
 
@@ -365,7 +447,7 @@ attack() {
 ramasserEpee(player, epee) {
     console.log("🗡️ Épée ramassée !");
     epee.destroy(); // Supprime l'épée ramassée
-    score += 10;
+    score += 1;
   zone_texte_score.setText("Score: " + score); 
 }
 }
