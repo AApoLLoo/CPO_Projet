@@ -18,6 +18,7 @@ function tirer(player) {
   var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
   // parametres physiques de la balle.
   bullet.setCollideWorldBounds(true);
+  bullet.body.onWorldBounds = true;
   bullet.body.allowGravity = false;
   bullet.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
 
@@ -27,6 +28,13 @@ function tirer(player) {
     bullet.anims.play('Bullet', true);
   }
 }
+function hit (bullet, groupeCibles) {
+    groupeCibles.pointsVie--;
+    if (groupeCibles.pointsVie==0) {
+      groupeCibles.destroy(); 
+    } 
+     bullet.destroy();
+  }  
 
 export default class Industrie extends Phaser.Scene {
     constructor() {
@@ -42,14 +50,12 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("pants2", "src/assets/Pants - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("shoes", "src/assets/Shoes.png", { frameWidth: 80, frameHeight: 64 });
-        this.load.spritesheet("shoes2", "src/assets/Shoes - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("Transporter1", "src/assets/Transporter1.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("Transporter2", "src/assets/Transporter2.png", { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet("Transporter3", "src/assets/Transporter3.png", { frameWidth: 32, frameHeight: 32 });  
         this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
         this.load.spritesheet("bullet2", "src/assets/Bullet - Copie.png", { frameWidth: 63, frameHeight: 48 });
-
+        this.load.image("cible", "src/assets/Cible.png");
     }
 
 
@@ -68,20 +74,16 @@ export default class Industrie extends Phaser.Scene {
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
-        this.add.image(960, 540, "cible");; 
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
-        this.shoes = this.physics.add.sprite(100, 600, "shoes");
         this.player.body.setSize(18, 40, true); 
         this.player.body.setOffset(30, 22);
         this.pants.body.setSize(18, 40, true);
         this.pants.body.setOffset(30, 22);
         this.shirt.body.setSize(18, 40, true);
         this.shirt.body.setOffset(30, 22);
-        this.shoes.body.setSize(18, 40, true);
-        this.shoes.body.setOffset(30, 22);
         this.player.direction = 'right';
         this.player.setScale(1.5); 
         this.player.setBounce(0.2);
@@ -97,15 +99,16 @@ export default class Industrie extends Phaser.Scene {
         this.shirt.setCollideWorldBounds(true);
         this.shirt.direction = 'right';
         this.physics.add.collider(this.shirt, plateform);
-        this.shoes.setScale(1.5);
-        this.shoes.setBounce(0.2);
-        this.shoes.setCollideWorldBounds(true);
-        this.shoes.direction = 'right';
-        this.physics.add.collider(this.shoes, plateform);
         // Création des pigèes ahhahahah
-        platmouv = this.add.sprite(1375, 950, 'Transporter1');
-        platmouv2 = this.add.sprite(1407, 950, 'Transporter2');
-        platmouv3 = this.add.sprite(1439, 950, 'Transporter3');      
+        platmouv = this.physics.add.sprite(1375, 950, 'Transporter1');
+        platmouv2 = this.physics.add.sprite(1407, 950, 'Transporter2');
+        platmouv3 = this.physics.add.sprite(1439, 950, 'Transporter3');
+        platmouv.body.setAllowGravity(false);
+        platmouv.body.immovable = true;
+        platmouv2.body.setAllowGravity(false);
+        platmouv2.body.immovable = true;
+        platmouv3.body.setAllowGravity(false);
+        platmouv3.body.immovable = true;   
         this.anims.create({
             key: "anim_transporter1",  
             frames: this.anims.generateFrameNumbers("Transporter1", { start: 0, end: 3 }),
@@ -128,6 +131,14 @@ export default class Industrie extends Phaser.Scene {
         platmouv2.anims.play("anim_transporter2", true);
         platmouv3.anims.play("anim_transporter3", true);
         this.physics.add.collider(this.player, platmouv);
+        this.physics.add.collider(this.player, platmouv2);                              
+        this.physics.add.collider(this.player, platmouv3);
+        this.physics.add.collider(this.pants, platmouv);
+        this.physics.add.collider(this.pants, platmouv2);
+        this.physics.add.collider(this.pants, platmouv3);
+        this.physics.add.collider(this.shirt, platmouv);
+        this.physics.add.collider(this.shirt, platmouv2);
+        this.physics.add.collider(this.shirt, platmouv3);
         // Reste du code
         this.anims.create({
             key: "anim_face",
@@ -189,26 +200,6 @@ export default class Industrie extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.anims.create({
-            key: "anim_face_shoes",
-            frames: [{ key: "shoes", frame: 4 }],
-            frameRate: 20
-            });
-        this.anims.create({
-            key: "anim_tourne_gauche_shoes",
-            frames: this.anims.generateFrameNumbers("shoes", { start: 14, end: 16 }),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_tourne_droite_shoes",
-            frames: this.anims.generateFrameNumbers("shoes2", { start: 14, end: 16}),
-            frameRate: 8,
-        });
-        this.anims.create({
-            key: "anim_saut_shoes",
-            frames: this.anims.generateFrameNumbers("shoes", { start: 22, end: 24 }),
-            frameRate: 4,
-        });
         this.message = this.add.text(400, 200, "Bienvenue dans l'air de l'insdustrie !", { fontSize: "32px", color: "White" });
         this.message.setOrigin(0.5);
         this.time.delayedCall(5000, () => {
@@ -226,84 +217,106 @@ export default class Industrie extends Phaser.Scene {
         groupeBullets = this.physics.add.group();
         this.anims.create({
           key: "Bullet",
-          frames: this.anims.generateFrameNumbers("bullet", { start: 0, end: 6 }),
+          frames: this.anims.generateFrameNumbers("bullet", { start: 0, end: 5 }),
           frameRate: 60,
           repeat: -1
         });
         this.anims.create({
             key: "Bullet2",
-            frames: this.anims.generateFrameNumbers("bullet2", { start: 0, end: 6 }),
+            frames: this.anims.generateFrameNumbers("bullet2", { start: 0, end: 5 }),
             frameRate: 60,
             repeat: -1
             });
-      
 
+            this.physics.world.on("worldbounds", function(body) {
+        // on récupère l'objet surveillé
+        var objet = body.gameObject;
+        // s'il s'agit d'une balle
+        if (groupeBullets.contains(objet)) {
+            // on le détruit
+            objet.destroy();
+        }
+    });
 
+        groupeCibles = this.physics.add.group({
+            key: 'cible',
+            repeat: 7,
+            setXY: { x: 58, y: 0, stepX: 200 }
+        });  
+        groupeCibles.children.iterate(function (cible) {
+            cible.setScale(1.5);
+            cible.body.setSize(18, 40, true);
+        });
+        groupeCibles.children.iterate(function (cibleTrouvee) {
+            cibleTrouvee.pointsVie=Phaser.Math.Between(1, 3);
+            cibleTrouvee.y = Phaser.Math.Between(10,250);
+            });    
+        this.physics.add.collider(groupeCibles, plateform); 
+        this.physics.add.overlap(groupeBullets, groupeCibles, hit, null,this);
+        this.physics.world.on("worldbounds", function(body) {
+            // on récupère l'objet surveillé
+            var objet = body.gameObject;
+            // s'il s'agit d'une balle
+            if (groupeBullets.contains(objet)) {
+                // on le détruit
+                objet.destroy();
+            }
+        });
     }
     update() {
-      if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
-        this.player.setVelocityY(-200) && this.player.setVelocityX(0);
-        this.pants.setVelocityY(-200) && this.pants.setVelocityX(0);
-        this.shirt.setVelocityY(-200) && this.shirt.setVelocityX(0);
-        this.shoes.setVelocityY(-200) && this.shoes.setVelocityX(0);
-      }else if (clavier.left.isDown) {
-        this.player.direction = 'left';
-        this.pants.direction = 'left';
-        this.shirt.direction = 'left';
-        this.shoes.direction = 'left';
-        this.player.setVelocityX(-200);
-        this.pants.setVelocityX(-200);
-        this.shirt.setVelocityX(-200);
-        this.shoes.setVelocityX(-200);
-        this.player.anims.play("anim_tourne_gauche", true);
-        this.pants.anims.play("anim_tourne_gauche_pants", true);
-        this.shirt.anims.play("anim_tourne_gauche_shirt", true);
-        this.shoes.anims.play("anim_tourne_gauche_shoes", true);
-      } else if (clavier.right.isDown) {
-        this.player.direction = 'right';
-        this.pants.direction = 'right';
-        this.shirt.direction = 'right';
-        this.shoes.direction = 'right';
-        this.player.setVelocityX(200);
-        this.pants.setVelocityX(200);
-        this.shirt.setVelocityX(200);
-        this.shoes.setVelocityX(200);
-        this.player.anims.play("anim_tourne_droite", true);
-        this.pants.anims.play("anim_tourne_droite_pants", true);
-        this.shirt.anims.play("anim_tourne_droite_shirt", true);
-        this.shoes.anims.play("anim_tourne_droite_shoes", true);
-      } else {
-        this.player.setVelocityX(0);
-        this.pants.setVelocityX(0);
-        this.shirt.setVelocityX(0);
-        this.shoes.setVelocityX(0);
-        this.player.anims.play("anim_face");
-        this.pants.anims.play("anim_face_pants");
-        this.shirt.anims.play("anim_face_shirt");
-        this.shoes.anims.play("anim_face_shoes");
-      }
-      if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
-        this.player.anims.play("anim_saut", true);
-        this.pants.anims.play("anim_saut_pants", true);
-        this.shirt.anims.play("anim_saut_shirt", true);
-        this.shoes.anims.play("anim_saut_shoes", true);
-        this.pants.setVelocityY(-400);
-        this.player.setVelocityY(-400);
-        this.shirt.setVelocityY(-400);
-        this.shoes.setVelocityY(-400);
-      }
-    
-    
-    
-    
-    // GESTION DES TIRS 
-    if ( Phaser.Input.Keyboard.JustDown(boutonFeu)) {
-      tirer(this.player);
-   }
-    
-    
-    
-    
+        const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
+
+        if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
+            this.player.setVelocityY(-200);
+            this.player.setVelocityX(0);
+            this.pants.setVelocityY(-200);
+            this.pants.setVelocityX(0);
+            this.shirt.setVelocityY(-200);
+            this.shirt.setVelocityX(0);
+        } else if (clavier.left.isDown) {
+            this.player.direction = 'left';
+            this.pants.direction = 'left';
+            this.shirt.direction = 'left';
+            const velocity = isOnTransporter ? -100 : -200;
+            this.player.setVelocityX(velocity);
+            this.pants.setVelocityX(velocity);
+            this.shirt.setVelocityX(velocity);
+            this.player.anims.play("anim_tourne_gauche", true);
+            this.pants.anims.play("anim_tourne_gauche_pants", true);
+            this.shirt.anims.play("anim_tourne_gauche_shirt", true);
+        } else if (clavier.right.isDown) {
+            this.player.direction = 'right';
+            this.pants.direction = 'right';
+            this.shirt.direction = 'right';
+            const velocity = isOnTransporter ? 100 : 200;
+            this.player.setVelocityX(velocity);
+            this.pants.setVelocityX(velocity);
+            this.shirt.setVelocityX(velocity);
+            this.player.anims.play("anim_tourne_droite", true);
+            this.pants.anims.play("anim_tourne_droite_pants", true);
+            this.shirt.anims.play("anim_tourne_droite_shirt", true);
+        } else {
+            const velocity = isOnTransporter ? (this.player.direction === 'left' ? -100 : 100) : 0;
+            this.player.setVelocityX(velocity);
+            this.pants.setVelocityX(velocity);
+            this.shirt.setVelocityX(velocity);
+            this.player.anims.play("anim_face");
+            this.pants.anims.play("anim_face_pants");
+            this.shirt.anims.play("anim_face_shirt");
+        }
+        if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
+            this.player.anims.play("anim_saut", true);
+            this.pants.anims.play("anim_saut_pants", true);
+            this.shirt.anims.play("anim_saut_shirt", true);
+            this.pants.setVelocityY(-400);
+            this.player.setVelocityY(-400);
+            this.shirt.setVelocityY(-400);
+        }
+
+        // GESTION DES TIRS 
+        if (Phaser.Input.Keyboard.JustDown(boutonFeu)) {
+            tirer(this.player);
+        }
     }   
     isOnLadder(player) {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
