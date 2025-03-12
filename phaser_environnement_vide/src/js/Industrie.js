@@ -313,6 +313,7 @@ export default class Industrie extends Phaser.Scene {
         groupeCibles.children.iterate(function (cible) {
             cible.setScale(1.5);
             cible.body.setSize(18, 40, true);
+            cible.fireballActive = false;
         });
         groupeCibles.children.iterate(function (cibleTrouvee) {
             cibleTrouvee.pointsVie = Phaser.Math.Between(1, 2);
