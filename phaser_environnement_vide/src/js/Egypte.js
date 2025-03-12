@@ -3,6 +3,8 @@ var player;
 var groupe_parchemins;
 var score = 0;
 var zone_texte_score;
+var teleporteur;
+var boutondoor;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -22,6 +24,10 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("momie", "src/assets/momie.png", { frameWidth: 80, frameHeight: 80}); 
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("Ramses", "src/assets/Ramses.png");
+
+
+        //teleporteur
+        this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
    
 
     }
@@ -35,9 +41,29 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+
+
+        //teleporteur
+        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur");
+        teleporteur.body.immovable = true;
+        teleporteur.setAllowGravity = false;  
+        this.physics.add.collider(teleporteur, calque_plateformes);
+        this.anims.create({
+            key: 'teleporteur',
+            frames: this.anims.generateFrameNumbers('teleporteur', { start: 0, end: 5 }),
+            frameRate: 4
+            ,
+            });
+
+            boutondoor= this.input.keyboard.addKey('F');
+
+
+
+
+
         
 
-        this.player = this.physics.add.sprite(100, 600, "player");
+        this.player = this.physics.add.sprite(5000, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.player.body.setSize(18, 40, true); 
@@ -248,6 +274,16 @@ this.physics.add.collider(this.ramses, calque_plateformes);
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
+
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur)) {
+    teleporteur.anims.play('teleporteur', true);
+}
+
+
+
+
+
+
 }
 
 hitByMomie(player, momie) {
@@ -332,5 +368,10 @@ function verifierReponse(reponse) {
             // Redémarre le jeu
             this.scene.restart();
         });
-    }
-}
+
+
+
+
+
+       
+    }}
