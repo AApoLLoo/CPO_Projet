@@ -29,12 +29,7 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
-        groupe_parchemins = this.physics.add.group(); 
-        for (var i = 0; i < 10; i++) {
-            var coordX = 70 + 70 * i;
-            groupe_parchemins.create(coordX, 10, "parchemin");
-          } 
-        this.physics.add.collider(groupe_parchemins, calque_plateformes); 
+        
 
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -132,7 +127,22 @@ export default class Egypte extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, 3840, 1280);
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
+
+        groupe_parchemins = this.physics.add.group();
+        for (var i = 0; i < 10; i++) {
+            var coordX = 90 + 90 * i;
+            groupe_parchemins.create(coordX, 10, "parchemin");
+          } 
+
+        this.physics.add.collider(groupe_parchemins, calque_plateformes); 
+
+        groupe_parchemins.children.iterate(function iterateur(parchemin_i) {
+            // On tire un coefficient aléatoire de rerebond : valeur entre 0.4 et 0.8
+            var coef_rebond = Phaser.Math.FloatBetween(0.4, 0.8);
+            parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond à l'étoile etoile_i
+          }); 
     }
+
     
     update() {        
         if (clavier.left.isDown) {
@@ -174,3 +184,4 @@ export default class Egypte extends Phaser.Scene {
         }
         
     }
+    
