@@ -28,13 +28,19 @@ function tirer(player) {
     bullet.anims.play('Bullet', true);
   }
 }
-function hit (bullet, groupeCibles) {
-    groupeCibles.pointsVie--;
-    if (groupeCibles.pointsVie==0) {
-      groupeCibles.destroy(); 
-    } 
-     bullet.destroy();
-  }  
+function hit(bullet, cible) {
+  cible.pointsVie--;
+  if (cible.pointsVie == 0) {
+      // Jouer l'animation d'explosion
+      var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
+      explosion.play('explosion');
+      explosion.on('animationcomplete', function() {
+          explosion.destroy();
+      });
+      cible.destroy();
+  }
+  bullet.destroy();
+}
 
 export default class Industrie extends Phaser.Scene {
     constructor() {
@@ -56,6 +62,7 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("bullet", "src/assets/Bullet.png", { frameWidth: 63, frameHeight: 48 });
         this.load.spritesheet("bullet2", "src/assets/Bullet - Copie.png", { frameWidth: 63, frameHeight: 48 });
         this.load.image("cible", "src/assets/Cible.png");
+        this.load.spritesheet("boum", "src/assets/boum.png", { frameWidth: 120, frameHeight: 120 });
     }
 
 
@@ -262,6 +269,17 @@ export default class Industrie extends Phaser.Scene {
                 objet.destroy();
             }
         });
+
+
+        //destuction des cibles
+        this.anims.create({
+          key: 'explosion',
+          frames: this.anims.generateFrameNumbers('boum', { start: 0, end: 11 }),
+          frameRate: 10,
+          repeat: 0
+      });
+
+
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
