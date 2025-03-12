@@ -26,9 +26,13 @@ export default class Moyen_age extends Phaser.Scene {
 
     }
     create(){
-        this.score = 0; // Score initial
-        this.scoreText = this.add.text(50, 80, "Score: " + this.score, { fontSize: "24px", fill: "#FFF" });
 
+        this.score = 0;
+        this.scoreText = this.add.text(50, 80, "Score: " + this.score, { 
+            fontSize: "24px", 
+            fill: "#FFF" 
+        }).setScrollFactor(0);
+        
     
         const carteDuNiveau3 = this.add.tilemap("MAPmoyenage");
         const tileset = carteDuNiveau3.addTilesetImage("tuilesmoyenage");
@@ -122,7 +126,7 @@ export default class Moyen_age extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 300, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(400, 500, "Bienvenue au Moyen-âge", { fontSize: "32px", color: "White" });
         this.message.setOrigin(0.5);
         this.time.delayedCall(10000, () => {
             this.message.destroy();
@@ -146,7 +150,7 @@ export default class Moyen_age extends Phaser.Scene {
 
 
         this.player.health = 3;
-        this.healthText = this.add.text(300, 400, "Vies❤️: " + this.player.health, { fontSize: "24px", fill: "#FFF" });
+        
 
         // Clavier
         this.clavier = this.input.keyboard.createCursorKeys();
@@ -171,6 +175,7 @@ let positionsEpees = [
 positionsEpees.forEach(pos => {
     this.epees.create(pos.x, pos.y, "epee").setScale(0.5); // Place les épées et réduit la taille
 });
+
 
 // Détecte quand le joueur touche une épée
 this.physics.add.overlap(this.player, this.epees, this.ramasserEpee, null, this);
@@ -293,10 +298,15 @@ attack() {
 
 ramasserEpee(player, epee) {
     console.log("🗡️ Épée ramassée !");
-    epee.destroy(); // Supprime l'épée
+    epee.destroy(); // Supprime l'épée ramassée
 
-    // Augmente le score
+    // **Mise à jour du score**
     this.score += 10;
-    this.scoreText.setText("SCORE: " + this.score);
+    this.updateScore();
+}
+
+// **Mise à jour du texte du score**
+updateScore() {
+    this.scoreText.setText("Score: " + this.score);
 }
 }
