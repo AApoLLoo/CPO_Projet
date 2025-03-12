@@ -1,6 +1,6 @@
 var clavier;
 var player;
-var groupe_parchemin;
+var groupe_parchemins;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -16,7 +16,7 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("pants2", "src/assets/Pants - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
-        
+        this.load.image("parchemin", "src/assets/parchemin.png"); 
 
     }
     create(){
@@ -29,6 +29,7 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+        
 
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -126,7 +127,23 @@ export default class Egypte extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, 3840, 1280);
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
+
+        groupe_parchemins = this.physics.add.group();
+        for (var i = 0; i < 10; i++) {
+            var coordX = 400 + 400 * i;
+            groupe_parchemins.create(coordX, 10, "parchemin");
+          } 
+
+        this.physics.add.collider(groupe_parchemins, calque_plateformes); 
+
+        groupe_parchemins.children.iterate(function iterateur(parchemin_i) {
+            // On tire un coefficient aléatoire de rerebond : valeur entre 0.4 et 0.8
+            var coef_rebond = Phaser.Math.FloatBetween(0.4, 0.8);
+            parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond à l'étoile etoile_i
+          }); 
+        this.physics.add.overlap(this.player, groupe_parchemins, ramasserParchemin, null, this);
     }
+
     
     update() {        
         if (clavier.left.isDown) {
@@ -168,3 +185,8 @@ export default class Egypte extends Phaser.Scene {
         }
         
     }
+    function ramasserParchemin(player, un_parchemin) {
+        un_parchemin.disableBody(true, true);
+      
+      
+      } 
