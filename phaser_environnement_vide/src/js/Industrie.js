@@ -17,6 +17,7 @@ var Mort;
 var footstep;
 var Degats;
 var door;
+var door2;
 var boutondoor;
 var groupeFireball;
 var compteurCibleDetruite = 0;
@@ -93,7 +94,8 @@ export default class Industrie extends Phaser.Scene {
         Degats = this.sound.add('Degats'), { loop: false }, { volume: 1 };
         MUSIQUE.play();
         industry.play();
-        door = this.physics.add.sprite(3500, 600, 'door');
+        door = this.physics.add.sprite(3790, 750, 'door');
+        door2 = this.physics.add.sprite(100, 597, 'door');
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -124,7 +126,9 @@ export default class Industrie extends Phaser.Scene {
         this.shirt.body.onWorldBounds = true;
         // Création des pigèes ahhahahah
         door.body.immovable = true;
+        door2.body.immovable = true;
         door.body.setAllowGravity(false);
+        door2.body.setAllowGravity(false);
         platmouv = this.physics.add.sprite(1375, 950, 'Transporter1');
         platmouv2 = this.physics.add.sprite(1407, 950, 'Transporter2');
         platmouv3 = this.physics.add.sprite(1439, 950, 'Transporter3');
@@ -224,7 +228,11 @@ export default class Industrie extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 200, "Bienvenue dans l'air de l'insdustrie !", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(600, 200, "Bienvenue dans l'ère de l'industrie ! \n\nDétruisez les Tanks afin d'arrêter la guerre \net d'accéder à la liberté pour ouvrir la porte ! \n\nAttention aux Projectils des Tanks !\n\nBonne chance !", {
+            font: "32px Shruti",
+            fill: "#ffffff",
+            align: "center"
+        }).setOrigin(0.5).setScrollFactor(0);
         this.message.setOrigin(0.5);
         this.time.delayedCall(5000, () => {
             this.message.destroy();
@@ -337,7 +345,7 @@ export default class Industrie extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('door', { start: 0, end: 4 }),
             frameRate: 6,
         })
-// Création des fireballs
+        // Création des fireballs
         groupeFireball = this.physics.add.group({
             defaultKey: 'fireball',
         });
@@ -438,6 +446,18 @@ export default class Industrie extends Phaser.Scene {
                 this.scene.start('Fin');
             }, this);
         }
+        if (boutondoor.isDown && this.physics.overlap(this.player, door2)) {
+            const tempText = this.add.text(200, 400, "La porte est fermée", {
+                font: "32px Shruti",
+                fill: "#ffffff",
+                align: "center"
+            }).setOrigin(0.5).setScrollFactor(0);
+
+            // Utiliser un timer pour supprimer le texte après 3 secondes
+            this.time.delayedCall(2000, () => {
+                tempText.destroy(); // Supprimer le texte
+            }, [], this);
+        }
 
     }
     isOnLadder(player) {
@@ -494,7 +514,7 @@ export default class Industrie extends Phaser.Scene {
         if (fireball.texture.key === 'fireball') {
             fireball.destroy();
         }
-    } 
+    }
     playerHitFireball(player, fireball) {
         if (fireball.texture.key === 'fireball') {
             this.hp--;
@@ -532,19 +552,19 @@ function tirerFireball(cible) {
     console.log("ontire")
     if (cible.pointsVie > 0 && (cible.body.touching.down || cible.body.blocked.down)) {
         // Crée la fireball en utilisant le groupe correct
-         var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
+        var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
 
-            fireball.setCollideWorldBounds(true);
-            fireball.body.onWorldBounds = true;
-            fireball.body.allowGravity = false;
-            fireball.setVelocity(-400, 0); // Définit la vitesse de la fireball
-            fireball.anims.play('fireball', true);
-            cible.fireballActive = true;
-            console.log("onatire")
-            // Ajout d'un timer pour réinitialiser `cible.fireballActive`
-            fireball.on('destroy', () => {
-                cible.fireballActive = false;
-            });
+        fireball.setCollideWorldBounds(true);
+        fireball.body.onWorldBounds = true;
+        fireball.body.allowGravity = false;
+        fireball.setVelocity(-400, 0); // Définit la vitesse de la fireball
+        fireball.anims.play('fireball', true);
+        cible.fireballActive = true;
+        console.log("onatire")
+        // Ajout d'un timer pour réinitialiser `cible.fireballActive`
+        fireball.on('destroy', () => {
+            cible.fireballActive = false;
+        });
     }
 }
 function tirer(player) {

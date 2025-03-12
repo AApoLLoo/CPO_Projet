@@ -5,12 +5,15 @@ var ZoneCredit;
 var BoutonJouer;
 var BoutonQuitter;
 var BoutonCredit;
+var BoutonGuide;
 var BoutonEgypte;
 var BoutonIndustrie;
 var BoutonMoyenAge;
 var zoneEgypte;
 var zoneIndustrie;
 var zoneMoyenAge;
+var ZoneGuide;
+var Soundtrack;
 
 export default class Menu extends Phaser.Scene {
     constructor() {
@@ -21,12 +24,18 @@ export default class Menu extends Phaser.Scene {
         this.load.image("BoutonJouer", "src/assets/BoutonJouer.png");
         this.load.image("BoutonQuitter", "src/assets/BoutonQuitter.png");
         this.load.image("BoutonCredit", "src/assets/BoutonCredit.png");
+        this.load.audio("Soundtrack", "src/assets/SoundtrackMenu.mp3");
+        this.load.audio("BoutonMenu", "src/assets/BoutonMenu.mp3");
     }
     create() {
         this.add.image(960, 540, "background");
+        Soundtrack = this.sound.add("Soundtrack"), {volume: 0.05, loop: true};
+        Soundtrack.play();
+        //
         BoutonJouer = this.add.image(960, 920, "BoutonJouer");
         BoutonQuitter = this.add.image(960, 730, "BoutonQuitter");
         BoutonCredit = this.add.image(1750, 980, "BoutonCredit");
+        BoutonGuide = this.add.image(175, 980, "BoutonCredit");
         //
         BoutonEgypte = this.add.image(400, 300, "BoutonJouer");
         BoutonIndustrie = this.add.image(400, 540, "BoutonJouer");
@@ -39,29 +48,45 @@ export default class Menu extends Phaser.Scene {
         ZoneJouer = this.add.text(750, 900, "Entrer dans le jeu", {fontSize: "40px", color: ("Black"), fontStyle: "bold"});
         ZoneQuitter = this.add.text(815 , 710, "Quitter le jeu", {fontSize: "35px", color:("Black"), fontStyle: "bold"});
         ZoneCredit = this.add.text(1705, 960, "Credits", {fontSize: "30px", color:("White"), fontStyle: "bold", fontFamily: "Sherif"});
+        ZoneGuide = this.add.text(140, 960, "Guide", {fontSize: "30px", color:("White"), fontStyle: "bold", fontFamily: "Sherif"});
+
 
         this.effetGlow(BoutonJouer);
         this.effetGlow(BoutonQuitter);
         this.effetGlow(BoutonCredit);
+        this.effetGlow(BoutonGuide);
         //
         this.effetGlow(BoutonEgypte);
         this.effetGlow(BoutonIndustrie);
         this.effetGlow(BoutonMoyenAge);
         //
         BoutonCredit.on("pointerup", () => {
-            this.scene.start("Credit");
+            this.sound.play("BoutonMenu");
+            this.scene.switch("Credit");
         });
         BoutonJouer.on("pointerup", () => {
-            this.scene.start("Industrie");
+            Soundtrack.stop();
+            this.sound.play("BoutonMenu");
+            this.scene.stop("menu");
+            this.scene.start("Egypte");
         });
         //
         BoutonEgypte.on("pointerup", () => {
+            Soundtrack.stop();
+            this.sound.play("BoutonMenu");
+            this.scene.stop("menu");
             this.scene.start("Egypte");
         });
         BoutonIndustrie.on("pointerup", () => {
+            Soundtrack.stop();
+            this.sound.play("BoutonMenu");
+            this.scene.stop("menu");    
             this.scene.start("Industrie");
         });
         BoutonMoyenAge.on("pointerup", () => {
+            Soundtrack.stop();
+            this.sound.play("BoutonMenu");
+            this.scene.stop("menu");
             this.scene.start("Moyen_age");
         });
         //

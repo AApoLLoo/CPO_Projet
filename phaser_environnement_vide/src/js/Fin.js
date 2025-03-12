@@ -32,7 +32,7 @@ export default class Fin extends Phaser.Scene {
         - Itch.io 
         - Tiled.inc
         
-        -Partenaires :
+        Partenaires :
         - EPF Montpellier 
         - EPF
         - Dartis BENOIT

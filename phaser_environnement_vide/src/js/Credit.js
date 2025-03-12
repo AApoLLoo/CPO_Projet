@@ -15,7 +15,8 @@ export default class Credit extends Phaser.Scene {
         zoneRetour.setOrigin(0.5);
         this.effetGlow(this.BoutonRetour);
         this.BoutonRetour.on("pointerup", () => {
-            this.scene.start("menu");
+            this.sound.play("BoutonMenu");
+            this.scene.switch("menu");
         });
         zoneCredit = this.add.text(960, 400, `Chef de projet : \n\n- Antoine P.\n\nCarte de l'Egypte : \n\n- Cassandra S.\n\nCarte du Moyen-Age : \n\n- Ninon P.\n\nCarte de l'Industrie : \n\n- Antoine G.`, { fontSize: "50px", color: "#ffffff", align: "center" });
         zoneCredit.setOrigin(0.5);
