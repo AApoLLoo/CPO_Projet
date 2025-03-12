@@ -1,6 +1,8 @@
 var clavier;
 var player;
-var groupe_parchemins;
+var score = 0;
+var zone_texte_score;
+
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
         super({key : "Moyen_age"});
@@ -17,12 +19,16 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
     this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
-    
+    this.load.image("HP", "src/assets/Coeur_HP.png");
+   
     
 
 
     }
     create(){
+        this.score = 0; // Score initial
+        this.scoreText = this.add.text(50, 80, "Score: " + this.score, { fontSize: "24px", fill: "#FFF" });
+
     
         const carteDuNiveau3 = this.add.tilemap("MAPmoyenage");
         const tileset = carteDuNiveau3.addTilesetImage("tuilesmoyenage");
@@ -169,8 +175,24 @@ positionsEpees.forEach(pos => {
 // Détecte quand le joueur touche une épée
 this.physics.add.overlap(this.player, this.epees, this.ramasserEpee, null, this);
 
+//VIES
+this.player.health = 3; // Nombre initial de vies
+this.coins = []; // Tableau pour stocker les objets de cœur
 
-    }
+// Affichage des cœurs pour les vies
+for (let i = 0; i < this.player.health; i++) {
+   this.coins.push(this.add.image(100 + i * 120, 120, "HP").setOrigin(0.5).setScrollFactor(0));
+}
+   
+//SCORE
+zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', { 
+   fontSize: '64px', 
+   fill: '#FFF', 
+   fontStyle: 'bold',
+   fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
+}).setOrigin(0.5).setScrollFactor(0);
+   }
+
     
     update() {        
         if (clavier.left.isDown) {
@@ -222,49 +244,59 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 }
 }
 
+
 hitByFantome(player, fantome) {
-        if (!player.invincible) { // Vérifie si le joueur est déjà invincible
-            player.health -= 1; // Perd seulement une vie
-            this.healthText.setText("Vies: " + player.health);
-            console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
-            
-            player.invincible = true; // Active l'invincibilité temporaire
-    
-            // Clignotement du joueur pour montrer l'invincibilité
-            this.tweens.add({
-                targets: player,
-                alpha: 0.5, // Le joueur devient un peu transparent
-                duration: 200, // 200ms par clignotement
-                yoyo: true,
-                repeat: 5 // Fait 5 clignotements
-            });
-    
-            // Désactive l'invincibilité après 1 seconde
-            this.time.delayedCall(1000, () => {
-                player.invincible = false; // Le joueur peut être touché à nouveau
-                player.setAlpha(1); // Remet l'opacité normale
-            });
-    
-            // Vérifie si le joueur a encore des vies
-            if (player.health <= 0) {
-                console.log("☠️ Plus de vies ! Game Over.");
-                this.scene.restart(); // Redémarre la scène si plus de vies
-            }
+    if (!player.invincible) {
+        player.health -= 1; // Le joueur perd une vie
+
+        console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
+
+        // Vérifie que le joueur a encore des vies avant de supprimer un cœur
+        if (player.health >= 0 && this.coins[player.health]) {
+            this.coins[player.health].destroy(); // Supprime un cœur
+        }
+
+        // Activer l'invincibilité temporaire
+        player.invincible = true;
+
+        // Effet visuel d'invincibilité
+        this.tweens.add({
+            targets: player,
+            alpha: 0.5,
+            duration: 200,
+            yoyo: true,
+            repeat: 5
+        });
+
+        this.time.delayedCall(1000, () => {
+            player.invincible = false;
+            player.setAlpha(1);
+        });
+
+        // Vérifie si le joueur a encore des vies
+        if (player.health <= 0) {
+            console.log("💀 Plus de vies ! Game Over.");
+            this.scene.restart(); // Redémarre le niveau
         }
     }
+}
 
 
 attack() {
     // Tuer les momies proches
-    this.momies.children.iterate((momie) => {
-        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, momie.x, momie.y) < 50) {
-            momie.destroy();
+    this.fantomes.children.iterate((momie) => {
+        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, fantome.x, fantome.y) < 50) {
+            fantome.destroy();
         }
     });
-    }
+}
 
 ramasserEpee(player, epee) {
     console.log("🗡️ Épée ramassée !");
-    epee.destroy(); // Supprime l'épée quand elle est ramassée
+    epee.destroy(); // Supprime l'épée
+
+    // Augmente le score
+    this.score += 10;
+    this.scoreText.setText("SCORE: " + this.score);
 }
 }
