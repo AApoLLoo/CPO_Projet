@@ -6,6 +6,7 @@ var zone_texte_score;
 var teleporteur;
 var boutondoor;
 var sol = false;
+var musique_fond;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -25,6 +26,8 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("momie", "src/assets/momie.png", { frameWidth: 80, frameHeight: 80}); 
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("Ramses", "src/assets/Ramses.png");
+        this.load.audio('desert', 'src/assets/desert.mp3');
+
 
 
         //teleporteur
@@ -153,6 +156,9 @@ export default class Egypte extends Phaser.Scene {
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
+//SON
+musique_fond = this.sound.add('desert');
+musique_fond.play();  
 
 //CLAVIER
         clavier = this.input.keyboard.createCursorKeys();
@@ -276,8 +282,8 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur)) {
     teleporteur.anims.play('teleporteur', true);
 }
-
-
+//SON
+this.load.audio('desert', 'desert.mp3');
 
 
 
