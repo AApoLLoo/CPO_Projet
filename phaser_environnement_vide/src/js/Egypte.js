@@ -6,6 +6,7 @@ var zone_texte_score;
 var teleporteur;
 var boutondoor;
 var musique_fond;
+var CompteurParchemin = 0;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -45,9 +46,9 @@ export default class Egypte extends Phaser.Scene {
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
 
-
+ 
         //teleporteur
-        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur");
+        teleporteur=this.physics.add.sprite(150, 100, "teleporteur"); //((3750), y, nom de l'image)
         teleporteur.body.immovable = true;
         teleporteur.setAllowGravity = false;  
         this.physics.add.collider(teleporteur, calque_plateformes);
@@ -66,7 +67,7 @@ export default class Egypte extends Phaser.Scene {
 
         
 
-        this.player = this.physics.add.sprite(5000, 600, "player");
+        this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
         this.player.body.setSize(18, 40, true); 
@@ -156,9 +157,8 @@ export default class Egypte extends Phaser.Scene {
             this.message.destroy();
         }, [], this);
 //SON
-musique_fond = this.sound.add('desert');
-musique_fond.play();  
-
+musique_fond = this.sound.add('desert'), {loop: true}, {volume: 0.1};
+musique_fond.play();
 //CLAVIER
         clavier = this.input.keyboard.createCursorKeys();
 
@@ -184,6 +184,8 @@ musique_fond.play();
             
             var coef_rebond = Phaser.Math.FloatBetween(0.4, 0.8);
             parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond 
+            parchemin_i.setSize(70, 32); // on définit la taille du parchemin (Hitbox)
+            parchemin_i.setOffset(60, 15); // on définit l'offset du parchemin (Hitbox)
             
           }); 
         this.physics.add.overlap(this.player, groupe_parchemins, ramasserParchemin, null, this);
@@ -277,15 +279,14 @@ musique_fond.play();
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
-
-if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur)) {
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 0) {
     teleporteur.anims.play('teleporteur', true);
+    teleporteur.on('animationcomplete', () => {
+        musique_fond.stop();
+        this.scene.stop('Egypte');
+        this.scene.start('Moyen_age');
+    }, this);
 }
-//SON
-this.load.audio('desert', 'desert.mp3');
-
-
-
 
 }
 
@@ -335,6 +336,7 @@ this.momies.children.iterate((momie) => {
 function ramasserParchemin(player, un_parchemin) {
         un_parchemin.disableBody(true, true);
         score += 1;
+        CompteurParchemin += 1;
         zone_texte_score.setText("SCORE : " + score);
       
       } 
