@@ -222,13 +222,34 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 }
 
 hitByMomie(player, momie) {
-// Si une momie touche le joueur, il perd une vie
-player.health -= 1;
-this.healthText.setText("Vies: " + player.health);
+    if (!player.invincible) { // Vérifie si le joueur est déjà invincible
+        player.health -= 1; // Perd seulement une vie
+        this.healthText.setText("Vies: " + player.health);
+        console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
+        
+        player.invincible = true; // Active l'invincibilité temporaire
 
-if (player.health <= 0) {
-    this.scene.restart();
-}
+        // Clignotement du joueur pour montrer l'invincibilité
+        this.tweens.add({
+            targets: player,
+            alpha: 0.5, // Le joueur devient un peu transparent
+            duration: 200, // 200ms par clignotement
+            yoyo: true,
+            repeat: 5 // Fait 5 clignotements
+        });
+
+        // Désactive l'invincibilité après 1 seconde
+        this.time.delayedCall(1000, () => {
+            player.invincible = false; // Le joueur peut être touché à nouveau
+            player.setAlpha(1); // Remet l'opacité normale
+        });
+
+        // Vérifie si le joueur a encore des vies
+        if (player.health <= 0) {
+            console.log("Plus de vies ! Game Over.");
+            this.scene.restart(); // Redémarre la scène si plus de vies
+        }
+    }
 }
 
 attack() {
