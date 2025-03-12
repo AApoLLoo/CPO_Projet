@@ -91,6 +91,14 @@ export default class Menu extends Phaser.Scene {
                 }
             });
         });    
+        BoutonQuitter.on("pointerup", () => {
+            this.sound.play("BoutonMenu");
+            // Affiche un message expliquant qu'il faut fermer l'onglet
+            alert("Merci d'avoir joué ! Fermez l'onglet pour quitter.");
+            location.reload();
+        });
+        
+        
         BoutonGuide.on("pointerup", () => {
             this.sound.play("BoutonMenu");
             this.cameras.main.fadeOut(200);
