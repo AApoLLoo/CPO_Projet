@@ -42,6 +42,24 @@ function hit(bullet, cible) {
   bullet.destroy();
 }
 
+
+function tirerFireball(cible) {
+  if (cible.pointsVie > 0 && cible.body.blocked.down) {
+      var fireball = groupeCibles.create(cible.x, cible.y, 'fireball');
+      fireball.setCollideWorldBounds(true);
+      fireball.body.onWorldBounds = true;
+      fireball.body.allowGravity = false;
+      fireball.setVelocity(-400, 0); // vitesse en x et en y
+      fireball.anims.play('fireball', true);
+
+
+  }
+}
+
+
+//tire des cibles 
+
+
 export default class Industrie extends Phaser.Scene {
     constructor() {
         super({key : "Industrie"});
@@ -63,6 +81,8 @@ export default class Industrie extends Phaser.Scene {
         this.load.spritesheet("bullet2", "src/assets/Bullet - Copie.png", { frameWidth: 63, frameHeight: 48 });
         this.load.image("cible", "src/assets/Cible.png");
         this.load.spritesheet("boum", "src/assets/boum.png", { frameWidth: 120, frameHeight: 120 });
+        this.load.spritesheet("fireball", "src/assets/fireball (2).png", { frameWidth: 95, frameHeight: 32 });
+    
     }
 
 
@@ -280,6 +300,27 @@ export default class Industrie extends Phaser.Scene {
       });
 
 
+
+      // tirs des cibles
+      this.anims.create({
+        key: 'fireball',
+        frames: this.anims.generateFrameNumbers('fireball', { start: 0, end: 3 }), // Ajuste `end` selon le nombre de frames
+        frameRate: 10,  // -1 pour boucle infinie, sinon mets 0 pour une seule lecture
+        repeat: -1
+    });
+    
+    
+
+
+
+
+      groupeCibles.children.iterate(function (cible) {
+        if (cible.pointsVie > 0) {
+            tirerFireball(cible);
+        }
+    });
+
+      
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
@@ -335,9 +376,23 @@ export default class Industrie extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(boutonFeu)) {
             tirer(this.player);
         }
+
+
+
+        // tire des cibles 
+  groupeCibles.children.iterate(function (cible) {
+    if (cible.pointsVie > 0) {
+        tirerFireball(cible);
+    }
+});
+
     }   
     isOnLadder(player) {
       const tile = this.ladder.getTileAtWorldXY(player.x, player.y);
       return tile && tile.properties.estladder;
+
   }
+
+
+  
 }
