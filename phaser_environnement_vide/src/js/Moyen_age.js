@@ -1,5 +1,6 @@
 var clavier;
 var player;
+var groupe_parchemins;
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
         super({key : "Moyen_age"});
@@ -15,7 +16,8 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
     this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
-   
+    this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
+    
     
 
 
@@ -124,10 +126,12 @@ export default class Moyen_age extends Phaser.Scene {
 
         this.fantomes = this.physics.add.group();
         for (let i = 0; i < 3; i++) {
-            let fantome = this.fantomes.create(Phaser.Math.Between(500, 1500), 600, "fantome");
-            fantome.setCollideWorldBounds(true);
-            fantome.setVelocity(Phaser.Math.Between(-50, 50), Phaser.Math.Between(-50, 50));
-            fantome.health = 1;
+            this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
+                let fantome = this.fantomes.create(1000 + i * 800, 600, "fantome"); // Augmentation de l'espacement
+                fantome.setCollideWorldBounds(true);
+                fantome.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
+                fantome.health = 1;
+            }, [], this);
         }
 
         this.physics.add.collider(this.fantomes, calque_2);
@@ -146,7 +150,24 @@ export default class Moyen_age extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
 
+        // Groupe d'épées statiques (elles ne tombent pas)
+this.epees = this.physics.add.staticGroup();
 
+// Liste des positions des épées
+let positionsEpees = [
+    { x: 455, y: 620 },
+    { x: 1280, y: 850 },
+    { x: 2850, y:1000},
+    { x: 3210, y: 700},
+];
+
+// Ajout des épées dans le niveau
+positionsEpees.forEach(pos => {
+    this.epees.create(pos.x, pos.y, "epee").setScale(0.5); // Place les épées et réduit la taille
+});
+
+// Détecte quand le joueur touche une épée
+this.physics.add.overlap(this.player, this.epees, this.ramasserEpee, null, this);
 
 
     }
@@ -241,5 +262,9 @@ attack() {
         }
     });
     }
-    }
-    
+
+ramasserEpee(player, epee) {
+    console.log("🗡️ Épée ramassée !");
+    epee.destroy(); // Supprime l'épée quand elle est ramassée
+}
+}
