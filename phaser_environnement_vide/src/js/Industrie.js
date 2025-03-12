@@ -104,7 +104,6 @@ export default class Industrie extends Phaser.Scene {
 
 
 
-
     create(){
 
 
@@ -321,6 +320,7 @@ export default class Industrie extends Phaser.Scene {
         });
         // Gestion des collisions entre les balles et les cibles    
         this.physics.add.overlap(groupeBullets, groupeCibles, hit, null, this);
+        //////////////////////////////////////////
         // Gestion des collisions entre les balles et les bords du monde    
         this.physics.world.on("worldbounds", function (body) {
             // on récupère l'objet surveillé
@@ -456,6 +456,8 @@ export default class Industrie extends Phaser.Scene {
             this.player.setVelocityY(-400);
             this.shirt.setVelocityY(-400);
         }
+        //////////////////////////
+        // GESTION DU SOL
         if (sol) {
             this.time.delayedCall(1000, this.respawn, null, this);
             return;
@@ -468,6 +470,17 @@ export default class Industrie extends Phaser.Scene {
         // GESTION DE LA PORTE
         if (boutondoor.isDown && this.physics.overlap(this.player, door)) {
             door.anims.play('door', true);
+            door.on('animationcomplete', () => {
+                // Arrêtez la musique
+                if (MUSIQUE.isPlaying) {
+                    MUSIQUE.stop();
+                }
+                if (industry.isPlaying) {
+                    industry.stop();
+                }
+                // Lancez la scène Fin
+                this.scene.start('Fin');
+            }, this);
         }
 
     }
