@@ -156,9 +156,9 @@ export default class Egypte extends Phaser.Scene {
 
  //MOMIE       
         this.momies = this.physics.add.group();
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
             this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
-                let momie = this.momies.create(1000 + i * 800, 600, "momie"); // Augmentation de l'espacement
+                let momie = this.momies.create(1000 + i * 600, 600, "momie"); // Augmentation de l'espacement
                 momie.setCollideWorldBounds(true);
                 momie.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
                 momie.health = 1;
@@ -177,18 +177,14 @@ export default class Egypte extends Phaser.Scene {
  for (let i = 0; i < this.player.health; i++) {
     this.coins.push(this.add.image(100 + i * 120, 120, "HP").setOrigin(0.5).setScrollFactor(0));
  }
-
-
-
-        
-
+    
  //SCORE
- zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'Score: 0', { 
+ zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', { 
     fontSize: '64px', 
     fill: '#FFF', 
-    fontStyle: 'bold'
+    fontStyle: 'bold',
+    fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
 }).setOrigin(0.5).setScrollFactor(0);
-
     }
 
 
@@ -226,9 +222,9 @@ export default class Egypte extends Phaser.Scene {
             this.player.anims.play("anim_saut", true);
             this.pants.anims.play("anim_saut_pants", true);
             this.shirt.anims.play("anim_saut_shirt", true);
-            this.pants.setVelocityY(-500);
-            this.player.setVelocityY(-500);
-            this.shirt.setVelocityY(-500);
+            this.pants.setVelocityY(-450);
+            this.player.setVelocityY(-450);
+            this.shirt.setVelocityY(-450);
           }
           
 // Faire suivre les momies
@@ -288,6 +284,6 @@ this.momies.children.iterate((momie) => {
 function ramasserParchemin(player, un_parchemin) {
         un_parchemin.disableBody(true, true);
         score += 1;
-        zone_texte_score.setText("Score: " + score);
+        zone_texte_score.setText("SCORE : " + score);
       
       } 
