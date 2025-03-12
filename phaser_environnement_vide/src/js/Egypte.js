@@ -1,6 +1,8 @@
 var clavier;
 var player;
 var groupe_parchemins;
+var score = 0;
+var zone_texte_score;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
@@ -18,6 +20,7 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.image("parchemin", "src/assets/parchemin.png"); 
         this.load.spritesheet("momie", "src/assets/momie.png", { frameWidth: 80, frameHeight: 80}); 
+        this.load.image("HP", "src/assets/Coeur_HP.png");
    
 
     }
@@ -123,6 +126,7 @@ export default class Egypte extends Phaser.Scene {
             this.message.destroy();
         }, [], this);
 
+//CLAVIER
         clavier = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.player, calque_plateformes); 
@@ -134,6 +138,7 @@ export default class Egypte extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
 
+ //PARCHEMIN
         groupe_parchemins = this.physics.add.group();
         for (var i = 0; i < 10; i++) {
             var coordX = 400 + 400 * i;
@@ -148,7 +153,8 @@ export default class Egypte extends Phaser.Scene {
             parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond à l'étoile etoile_i
           }); 
         this.physics.add.overlap(this.player, groupe_parchemins, ramasserParchemin, null, this);
-        
+
+ //MOMIE       
         this.momies = this.physics.add.group();
         for (let i = 0; i < 3; i++) {
             this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
@@ -162,9 +168,26 @@ export default class Egypte extends Phaser.Scene {
         this.physics.add.collider(this.momies, calque_plateformes);
         this.physics.add.overlap(this.player, this.momies, this.hitByMomie, null, this);
         this.physics.add.collider(this.player, calque_plateformes);
+
+ //VIES
+ this.player.health = 3; // Nombre initial de vies
+ this.coins = []; // Tableau pour stocker les objets de cœur
+ 
+ // Affichage des cœurs pour les vies
+ for (let i = 0; i < this.player.health; i++) {
+    this.coins.push(this.add.image(100 + i * 120, 120, "HP").setOrigin(0.5).setScrollFactor(0));
+ }
+
+
+
         
-        this.player.health = 3;
-        this.healthText = this.add.text(300, 400, "Vies❤️: " + this.player.health, { fontSize: "24px", fill: "#FFF" });
+
+ //SCORE
+ zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'Score: 0', { 
+    fontSize: '64px', 
+    fill: '#FFF', 
+    fontStyle: 'bold'
+}).setOrigin(0.5).setScrollFactor(0);
 
     }
 
@@ -208,7 +231,7 @@ export default class Egypte extends Phaser.Scene {
             this.shirt.setVelocityY(-500);
           }
           
-    // Faire suivre les momies
+// Faire suivre les momies
  this.momies.children.iterate((momie) => {
     if (momie) {
         this.physics.moveToObject(momie, this.player, 50);
@@ -222,37 +245,36 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 }
 
 hitByMomie(player, momie) {
-    if (!player.invincible) { // Vérifie si le joueur est déjà invincible
-        player.health -= 1; // Perd seulement une vie
-        this.healthText.setText("Vies: " + player.health);
-        console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
-        
-        player.invincible = true; // Active l'invincibilité temporaire
+    if (!player.invincible) {
+        player.health -= 1; // Le joueur perd une vie
+        this.coins[player.health]?.destroy(); // Supprime un cœur correspondant à la perte de vie
 
-        // Clignotement du joueur pour montrer l'invincibilité
+        console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
+
+        player.invincible = true;
+
         this.tweens.add({
             targets: player,
-            alpha: 0.5, // Le joueur devient un peu transparent
-            duration: 200, // 200ms par clignotement
+            alpha: 0.5,
+            duration: 200,
             yoyo: true,
-            repeat: 5 // Fait 5 clignotements
+            repeat: 5
         });
 
-        // Désactive l'invincibilité après 1 seconde
         this.time.delayedCall(1000, () => {
-            player.invincible = false; // Le joueur peut être touché à nouveau
-            player.setAlpha(1); // Remet l'opacité normale
+            player.invincible = false;
+            player.setAlpha(1);
         });
 
-        // Vérifie si le joueur a encore des vies
         if (player.health <= 0) {
             console.log("Plus de vies ! Game Over.");
-            this.scene.restart(); // Redémarre la scène si plus de vies
+            this.scene.restart();
         }
     }
 }
 
 attack() {
+
 // Tuer les momies proches
 this.momies.children.iterate((momie) => {
     if (Phaser.Math.Distance.Between(this.player.x, this.player.y, momie.x, momie.y) < 50) {
@@ -262,9 +284,10 @@ this.momies.children.iterate((momie) => {
 }
 }
 
-
+//Fonction pour ramasser les parchemins
 function ramasserParchemin(player, un_parchemin) {
         un_parchemin.disableBody(true, true);
-      
+        score += 1;
+        zone_texte_score.setText("Score: " + score);
       
       } 
