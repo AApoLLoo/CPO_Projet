@@ -346,17 +346,12 @@ attack() {
     });
 }
 
+
+ 
 ramasserEpee(player, epee) {
     console.log("🗡️ Épée ramassée !");
     epee.destroy(); // Supprime l'épée ramassée
-
-    // **Mise à jour du score**
-    this.score += 10;
-    this.updateScore();
-}
-
-// **Mise à jour du texte du score**
-updateScore() {
-    this.scoreText.setText("Score: " + this.score);
+    score += 10;
+  zone_texte_score.setText("Score: " + score); 
 }
 }
