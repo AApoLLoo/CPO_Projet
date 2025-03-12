@@ -2,6 +2,9 @@ var clavier;
 var player;
 var score = 0;
 var zone_texte_score;
+var musique_de_fond;
+var TP;
+var boutondoor;
 
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
@@ -21,8 +24,9 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.spritesheet("fantome", "src/assets/fantome.png", { frameWidth: 630, frameHeight: 396}); // Ajout gobelins
     this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
     this.load.image("HP", "src/assets/Coeur_HP.png");
+    this.load.audio('medieval', 'src/assets/medieval.mp3');   
+    this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
    
-    
 
 
     }
@@ -212,10 +216,11 @@ TP=this.physics.add.sprite(3700, 100, "TP");
             frameRate: 4
             ,
             });
+boutondoor=this.input.keyboard.addKey('F');
 
-            boutondoor= this.input.keyboard.addKey('F');
 
-
+    
+    
 
 
 
