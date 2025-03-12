@@ -141,6 +141,7 @@ export default class Egypte extends Phaser.Scene {
             var coef_rebond = Phaser.Math.FloatBetween(0.4, 0.8);
             parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond à l'étoile etoile_i
           }); 
+        this.physics.add.overlap(this.player, groupe_parchemins, ramasserParchemin, null, this);
     }
 
     
@@ -184,4 +185,8 @@ export default class Egypte extends Phaser.Scene {
         }
         
     }
-    
+    function ramasserParchemin(player, un_parchemin) {
+        un_parchemin.disableBody(true, true);
+      
+      
+      } 
