@@ -130,7 +130,7 @@ export default class Egypte extends Phaser.Scene {
 
         groupe_parchemins = this.physics.add.group();
         for (var i = 0; i < 10; i++) {
-            var coordX = 90 + 90 * i;
+            var coordX = 400 + 400 * i;
             groupe_parchemins.create(coordX, 10, "parchemin");
           } 
 
