@@ -10,7 +10,8 @@ var sol = false;
 var BoutonRetourMenu;
 var bouton;
 var explosion;
-
+var industry;
+var MUSIQUE;
 
 function tirer(player) {
   var coefDir;
@@ -42,6 +43,8 @@ function hit(bullet, cible) {
       explosion.on('animationcomplete', function() {
           explosion.destroy();
       });
+
+      cible.scene.sound.play('BOUM');
       cible.destroy();
   }
   bullet.destroy();
@@ -78,10 +81,18 @@ export default class Industrie extends Phaser.Scene {
         this.load.image("BoutonRetourMenu", "src/assets/BoutonRetour.png");
 
         this.load.audio('BOUM', 'src/assets/explosion.mp3');
+        this.load.audio('factory', 'src/assets/factory.mp3');
+        this.load.audio('MUSIQUE', 'src/assets/musique.mp3');
     }
 
 
     create(){
+      industry = this.sound.add('factory');
+      MUSIQUE = this.sound.add('MUSIQUE');
+      loop: true;
+      MUSIQUE.play();
+      industry.play();
+
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
@@ -317,6 +328,7 @@ export default class Industrie extends Phaser.Scene {
         function(body, up, down, left, right) {
             if (body.gameObject == (this.player || this.pants || this.shrit) && down) {
                 this.respawn(); // Appelle respawn directement
+                
             }
         },
         this
@@ -343,9 +355,13 @@ export default class Industrie extends Phaser.Scene {
         }
     });
     this.physics.add.overlap(this.player, groupeCibles, this.playerHitFireball, null, this);
+
+    
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
+
+        
 
         if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
             this.player.setVelocityY(-200);
@@ -428,9 +444,11 @@ respawn() {
         this.physics.pause();
         this.time.delayedCall(500, () => {
             this.physics.resume();
+            
         }, [], this);
     } else {
         this.add.image(960, 540, "GameOverImage");
+        
         BoutonRetourMenu = this.add.image(960, 1000, "BoutonRetourMenu");
         this.add.text(960, 1000, "Retour au menu", { fontSize: "50px", color: "White" , fontStyle: "bold", fontStyle:"Arial Black", origin: 0.5});
         this.physics.pause();
