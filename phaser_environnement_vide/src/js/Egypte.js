@@ -225,6 +225,13 @@ musique_fond.play();
     fontFamily: 'Papyrus' 
 }).setOrigin(0.5).setScrollFactor(0);
 
+//permettre au joueur de mourir et de recommencer la partie s'il touche les limites du monde
+this.player.setCollideWorldBounds(true);
+this.player.body.onWorldBounds = true; // Active la détection des collisions avec les bords
+this.physics.world.on('worldbounds', () => {
+    this.scene.restart(); // Redémarre le jeu si le joueur touche les bords du monde
+}, this);
+
 
     }
 
