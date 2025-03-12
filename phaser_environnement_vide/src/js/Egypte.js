@@ -48,7 +48,7 @@ export default class Egypte extends Phaser.Scene {
 
  
         //teleporteur
-        teleporteur=this.physics.add.sprite(150, 100, "teleporteur"); //((3750), y, nom de l'image)
+        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur"); //((3750), y, nom de l'image)
         teleporteur.body.immovable = true;
         teleporteur.setAllowGravity = false;  
         this.physics.add.collider(teleporteur, calque_plateformes);
@@ -152,14 +152,19 @@ export default class Egypte extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-        this.message = this.add.text(400, 100, "Bienvenue en Egypte", { fontSize: "32px", color: "White" });
+        this.message = this.add.text(1000, 350, 
+            "Bienvenue en Égypte !\nTa mission : récupérer tous les parchemins sacrés\net éviter les momies qui hantent ces terres antiques.", 
+            { fontSize: "32px", color: "Black", fontFamily: "Papyrus", align: "center" }
+        );
         this.message.setOrigin(0.5);
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
+
 //SON
 musique_fond = this.sound.add('desert'), {loop: true}, {volume: 0.1};
 musique_fond.play();
+
 //CLAVIER
         clavier = this.input.keyboard.createCursorKeys();
 
@@ -193,9 +198,9 @@ musique_fond.play();
 
  //MOMIE       
         this.momies = this.physics.add.group();
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 3; i++) {
             this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
-                let momie = this.momies.create(1000 + i * 600, 600, "momie"); // Augmentation de l'espacement
+                let momie = this.momies.create(1000 + i * 800, 800, "momie"); // Augmentation de l'espacement
                 momie.setCollideWorldBounds(true);
                 momie.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
                 momie.health = 1;
@@ -215,12 +220,19 @@ musique_fond.play();
  }
     
  //SCORE
- zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', { 
-    fontSize: '64px', 
-    fill: '#FFF', 
+ zone_texte_score = this.add.text(this.cameras.main.width * 0.08, 200, 'SCORE : 0', { 
+    fontSize: '32px', 
+    fill: '#000', 
     fontStyle: 'bold',
-    fontFamily: 'Times New Roman' 
+    fontFamily: 'Papyrus' 
 }).setOrigin(0.5).setScrollFactor(0);
+
+//permettre au joueur de mourir et de recommencer la partie s'il touche les limites du monde
+this.player.setCollideWorldBounds(true);
+this.player.body.onWorldBounds = true; // Active la détection des collisions avec les bords
+this.physics.world.on('worldbounds', () => {
+    this.scene.restart(); // Redémarre le jeu si le joueur touche les bords du monde
+}, this);
 
 
     }
