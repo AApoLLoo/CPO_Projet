@@ -48,7 +48,7 @@ export default class Egypte extends Phaser.Scene {
 
  
         //teleporteur
-        teleporteur=this.physics.add.sprite(150, 100, "teleporteur"); //((3750), y, nom de l'image)
+        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur"); //((3750), y, nom de l'image)
         teleporteur.body.immovable = true;
         teleporteur.setAllowGravity = false;  
         this.physics.add.collider(teleporteur, calque_plateformes);
@@ -160,9 +160,11 @@ export default class Egypte extends Phaser.Scene {
         this.time.delayedCall(10000, () => {
             this.message.destroy();
         }, [], this);
+
 //SON
 musique_fond = this.sound.add('desert'), {loop: true}, {volume: 0.1};
 musique_fond.play();
+
 //CLAVIER
         clavier = this.input.keyboard.createCursorKeys();
 
@@ -196,9 +198,9 @@ musique_fond.play();
 
  //MOMIE       
         this.momies = this.physics.add.group();
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 3; i++) {
             this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
-                let momie = this.momies.create(1000 + i * 600, 600, "momie"); // Augmentation de l'espacement
+                let momie = this.momies.create(1000 + i * 800, 800, "momie"); // Augmentation de l'espacement
                 momie.setCollideWorldBounds(true);
                 momie.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
                 momie.health = 1;
