@@ -12,6 +12,7 @@ var bouton;
 var explosion;
 var industry;
 var MUSIQUE;
+var Shot;
 
 function tirer(player) {
     var coefDir;
@@ -22,6 +23,7 @@ function tirer(player) {
     }
     // on crée la balle a coté du joueur
     var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
+  Shot.play();
     // parametres physiques de la balle.
     bullet.setCollideWorldBounds(true);
     bullet.body.onWorldBounds = true;
@@ -83,14 +85,16 @@ export default class Industrie extends Phaser.Scene {
         this.load.audio('BOUM', 'src/assets/explosion.mp3');
         this.load.audio('factory', 'src/assets/factory.mp3');
         this.load.audio('MUSIQUE', 'src/assets/musique.mp3');
+        this.load.audio('shot', 'src/assets/gun_shot.mp3');
     }
 
 
     create(){
       industry = this.sound.add('factory'), {loop: true};
       MUSIQUE = this.sound.add('MUSIQUE'), {loop: true};
+        Shot= this.sound.add('shot')
       MUSIQUE.play();
-      industry.play();
+      industry.play(); 
 
         const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
         const tileset = carteDuNiveau.addTilesetImage(
