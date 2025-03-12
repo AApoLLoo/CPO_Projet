@@ -279,7 +279,8 @@ export default class Industrie extends Phaser.Scene {
         groupeCibles.children.iterate(function (cible) {
             console.log("Ciblecree");
             cible.setScale(1.5);
-            cible.body.setSize(18, 40, true);
+            cible.body.setSize(20, 20, true);
+            cible.body.setOffset(28, 28);
             cible.fireballActive = false;
             cible.pointsVie = Phaser.Math.Between(1, 2);
             cible.y = Phaser.Math.Between(10, 250)
@@ -489,7 +490,7 @@ export default class Industrie extends Phaser.Scene {
             Mort.play();
             this.add.image(960, 350, "GameOverImage").setScrollFactor(0);
             BoutonRetourMenu = this.add.image(960, 800, "BoutonRetourMenu").setScrollFactor(0);
-            this.add.text(960, 800, "Retour au menu", { fontSize: "50px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0).setScale(3);
+            this.add.text(960, 800, "Retour au menu", { fontSize: "5000px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0);
             this.physics.pause();
             this.player.setTint(0xff0000);
             BoutonRetourMenu.setInteractive();

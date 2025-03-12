@@ -62,14 +62,50 @@ export default class Menu extends Phaser.Scene {
         //
         BoutonCredit.on("pointerup", () => {
             this.sound.play("BoutonMenu");
-            this.scene.switch("Credit");
+            this.cameras.main.fadeOut(200);
+            this.cameras.main.once("camerafadeoutcomplete", () => {
+                console.log("Credit lancé");
+                this.scene.start("Credit");
+            });
         });
         BoutonJouer.on("pointerup", () => {
-            Soundtrack.stop();
             this.sound.play("BoutonMenu");
-            this.scene.stop("menu");
-            this.scene.start("Egypte");
+        
+            // Position de zoom (centré un peu plus haut)
+            let targetZoom = 12; // Zoom x10
+            let targetY = -80;  // Décale la caméra vers le haut
+            let targetAngle = 360; // Rotation complète
+        
+            // Tween pour zoom + rotation en même temps
+            this.tweens.add({
+                targets: this.cameras.main,
+                zoom: targetZoom,
+                scrollY: targetY,
+                angle: targetAngle,
+                duration: 1000, // Durée en ms
+                ease: "Sine.easeInOut",
+                onComplete: () => {
+                    this.scene.stop("menu");
+                    Soundtrack.stop();
+                    this.scene.start("Egypte");
+                }
+            });
+        });    
+        BoutonQuitter.on("pointerup", () => {
+            this.sound.play("BoutonMenu");
+            // Affiche un message expliquant qu'il faut fermer l'onglet
+            alert("Merci d'avoir joué ! Fermez l'onglet pour quitter.");
+            location.reload();
         });
+        
+        
+        BoutonGuide.on("pointerup", () => {
+            this.sound.play("BoutonMenu");
+            this.cameras.main.fadeOut(200);
+            this.cameras.main.once("camerafadeoutcomplete", () => {
+                this.scene.start("Guide");
+            });
+        });    
         //
         BoutonEgypte.on("pointerup", () => {
             Soundtrack.stop();
@@ -91,7 +127,7 @@ export default class Menu extends Phaser.Scene {
         });
         //
     }
-    udpate() {
+    update() {
 
     }
 effetGlow(bouton) {
