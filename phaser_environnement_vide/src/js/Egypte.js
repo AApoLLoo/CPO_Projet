@@ -1,5 +1,7 @@
 var clavier;
 var player;
+var groupe_parchemins;
+
 export default class Egypte extends Phaser.Scene {
     constructor() {
         super({key : "Egypte"});
@@ -14,6 +16,7 @@ export default class Egypte extends Phaser.Scene {
         this.load.spritesheet("pants2", "src/assets/Pants - Copie.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt", "src/assets/Shirt.png", { frameWidth: 80, frameHeight: 64 });
         this.load.spritesheet("shirt2", "src/assets/Shirt - Copie.png", { frameWidth: 80, frameHeight: 64 });
+        this.load.image("parchemin", "src/assets/parchemin.png"); 
 
     }
     create(){
@@ -26,6 +29,12 @@ export default class Egypte extends Phaser.Scene {
         const calque_background4 = carteDuNiveau2.createLayer("calque_background4", tileset);
         const calque_plateformes = carteDuNiveau2.createLayer("calque_plateformes", tileset);  
         calque_plateformes.setCollisionByProperty({ estSolide: true }); 
+        groupe_parchemins = this.physics.add.group(); 
+        for (var i = 0; i < 10; i++) {
+            var coordX = 70 + 70 * i;
+            groupe_parchemins.create(coordX, 10, "parchemin");
+          } 
+        this.physics.add.collider(groupe_parchemins, calque_plateformes); 
 
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
