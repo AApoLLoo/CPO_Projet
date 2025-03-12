@@ -9,6 +9,8 @@ var groupeCibles;
 var sol = false;
 var BoutonRetourMenu;
 var bouton;
+var explosion;
+
 
 function tirer(player) {
   var coefDir;
@@ -91,6 +93,8 @@ export default class Industrie extends Phaser.Scene {
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("GameOverImage", "src/assets/GameOverNice.png");
         this.load.image("BoutonRetourMenu", "src/assets/BoutonRetour.png");
+
+        this.load.audio('BOUM', 'src/assets/explosion.mp3');
     }
 
 
@@ -107,6 +111,7 @@ export default class Industrie extends Phaser.Scene {
         const fonds_2 = carteDuNiveau.createLayer("fonds_2", tileset);
         const fonds_1 = carteDuNiveau.createLayer("fonds_1", tileset);
         const plateform = carteDuNiveau.createLayer("plateform", tileset);
+        const smog = carteDuNiveau.createLayer("smog", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
         //
@@ -281,8 +286,8 @@ export default class Industrie extends Phaser.Scene {
         
         groupeCibles = this.physics.add.group({
             key: 'cible',
-            repeat: 7,
-            setXY: { x: 58, y: 0, stepX: 200 }
+            repeat: 40,
+            setXY: { x: 1280, y: 0, stepX: 200 }
         });  
         groupeCibles.children.iterate(function (cible) {
             cible.setScale(1.5);
@@ -415,8 +420,11 @@ export default class Industrie extends Phaser.Scene {
   groupeCibles.children.iterate(function (cible) {
     if (cible.pointsVie > 0) {
         tirerFireball(cible);
-    }
-});
+    }else{ 
+      explosion.play
+    
+}
+    });
 
     }   
     isOnLadder(player) {
