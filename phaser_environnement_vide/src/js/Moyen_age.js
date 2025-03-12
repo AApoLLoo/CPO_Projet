@@ -290,7 +290,21 @@ if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
 }
 
 
-
+if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
+    TP.anims.play('teleporteur', true);
+    TP.on('animationcomplete', () => {
+        // Arrêtez la musique
+        // // if (MUSIQUE.isPlaying) {
+        //     MUSIQUE.stop();
+        // }
+        // if (industry.isPlaying) {
+        //     industry.stop();
+        // }
+        // // Lancez la scène Fin
+        this.scene.stop('Moyen_age');
+        this.scene.start('Industrie');
+    }, this);
+}
 
 
 
@@ -346,17 +360,12 @@ attack() {
     });
 }
 
+
+ 
 ramasserEpee(player, epee) {
     console.log("🗡️ Épée ramassée !");
     epee.destroy(); // Supprime l'épée ramassée
-
-    // **Mise à jour du score**
-    this.score += 10;
-    this.updateScore();
-}
-
-// **Mise à jour du texte du score**
-updateScore() {
-    this.scoreText.setText("Score: " + this.score);
+    score += 10;
+  zone_texte_score.setText("Score: " + score); 
 }
 }
