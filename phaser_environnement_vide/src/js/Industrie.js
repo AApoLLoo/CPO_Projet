@@ -18,6 +18,7 @@ var footstep;
 var Degats;
 var door;
 var boutondoor;
+var groupeFireball;
 
 function tirer(player) {
     var coefDir;
@@ -28,7 +29,7 @@ function tirer(player) {
     }
     // on crée la balle a coté du joueur
     var bullet = groupeBullets.create(player.x + (25 * coefDir), player.y - 4, 'bullet');
-  Shot.play();
+    Shot.play();
     // parametres physiques de la balle.
     bullet.setCollideWorldBounds(true);
     bullet.body.onWorldBounds = true;
@@ -42,19 +43,19 @@ function tirer(player) {
     }
 }
 function hit(bullet, cible) {
-  cible.pointsVie--;
-  if (cible.pointsVie == 0) {
-      // Jouer l'animation d'explosion
-      var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
-      explosion.play('explosion');
-      explosion.on('animationcomplete', function() {
-          explosion.destroy();
-      });
+    cible.pointsVie--;
+    if (cible.pointsVie == 0) {
+        // Jouer l'animation d'explosion
+        var explosion = cible.scene.add.sprite(cible.x, cible.y, 'boum');
+        explosion.play('explosion');
+        explosion.on('animationcomplete', function () {
+            explosion.destroy();
+        });
 
-      cible.scene.sound.play('BOUM');
-      cible.destroy();
-  }
-  bullet.destroy();
+        cible.scene.sound.play('BOUM');
+        cible.destroy();
+    }
+    bullet.destroy();
 }
 
 //tire des cibles 
@@ -86,7 +87,6 @@ export default class Industrie extends Phaser.Scene {
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("GameOverImage", "src/assets/GameOverNice.png");
         this.load.image("BoutonRetourMenu", "src/assets/BoutonRetour.png");
-
         this.load.audio('BOUM', 'src/assets/explosion.mp3');
         this.load.audio('factory', 'src/assets/factory.mp3');
         this.load.audio('MUSIQUE', 'src/assets/musique.mp3');
@@ -96,7 +96,7 @@ export default class Industrie extends Phaser.Scene {
         this.load.audio('Mort', 'src/assets/Mort.mp3');
 
         this.load.spritesheet("door", "src/assets/door.png", { frameWidth: 71, frameHeight: 97 });
-        
+
     }
 
 
@@ -104,10 +104,10 @@ export default class Industrie extends Phaser.Scene {
 
 
 
-    create(){
+    create() {
 
 
-        const carteDuNiveau = this.add.tilemap("Carte_Industrie");   
+        const carteDuNiveau = this.add.tilemap("Carte_Industrie");
         const tileset = carteDuNiveau.addTilesetImage(
             "jeux_2_tuiles", "TuilesDeJeuIndustrie1", 32, 32
         );
@@ -123,14 +123,14 @@ export default class Industrie extends Phaser.Scene {
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
         //      
-        industry = this.sound.add('factory'), {loop: true}, {volume: 1.5};
-        MUSIQUE = this.sound.add('MUSIQUE'), {loop: true},  {volume: 0.8};
-        Shot= this.sound.add('shot')
-        Mort = this.sound.add('Mort'), {loop: false}, {volume: 1};
-        footstep = this.sound.add('footstep'), {loop: true}, {volume: 1};
-        Degats = this.sound.add('Degats'), {loop: false}, {volume: 1};
+        industry = this.sound.add('factory'), { loop: true }, { volume: 1.5 };
+        MUSIQUE = this.sound.add('MUSIQUE'), { loop: true }, { volume: 0.8 };
+        Shot = this.sound.add('shot')
+        Mort = this.sound.add('Mort'), { loop: false }, { volume: 1 };
+        footstep = this.sound.add('footstep'), { loop: true }, { volume: 1 };
+        Degats = this.sound.add('Degats'), { loop: false }, { volume: 1 };
         MUSIQUE.play();
-        industry.play(); 
+        industry.play();
         door = this.physics.add.sprite(100, 600, 'door');
         //
         this.player = this.physics.add.sprite(100, 600, "player");
@@ -277,7 +277,7 @@ export default class Industrie extends Phaser.Scene {
 
         // GESTION DES TIRS
         boutonFeu = this.input.keyboard.addKey('A');
-        boutondoor= this.input.keyboard.addKey('F');
+        boutondoor = this.input.keyboard.addKey('F');
         groupeBullets = this.physics.add.group();
         this.anims.create({
             key: "Bullet",
@@ -345,7 +345,8 @@ export default class Industrie extends Phaser.Scene {
             frameRate: 10,  // -1 pour boucle infinie, sinon mets 0 pour une seule lecture
             repeat: -1
         });
-
+        //////////////////////////////////////////
+        // Gestion des collisions entre les players et le sol
         this.player.body.world.on(
             "worldbounds",
             function (body, up, down, left, right) {
@@ -361,52 +362,39 @@ export default class Industrie extends Phaser.Scene {
             this.hpContainer.add(heart);
         }
         this.resetLives();
-        groupeCibles.children.iterate((cible) => {
-            if (cible.pointsVie > 0) {
-                this.tirerFireball(cible);
-                this.time.addEvent({
-                    delay: Phaser.Math.Between(2000, 5000),
-                    callback: () => {
-                        if (cible.pointsVie > 0) {
-                            this.tirerFireball(cible);
-                        }
-                    },
-                    callbackScope: this, // Ensure `this` refers to the class instance
-                    loop: true
-                });
-            }
-        });
-        this.physics.add.overlap(this.player, groupeCibles, this.playerHitFireball, null, this);
-        this.physics.add.collider(groupeCibles, plateform, (fireball) => {
-            this.physics.add.collider(groupeCibles, plateform);
-            fireball.destroy();
-        });
-        this.physics.add.collider(groupeCibles, plateform, (cible, plateform) => {
-            if (cible.texture.key === 'fireball') {
-                cible.destroy();
-            }
-        });
-        this.physics.add.collider(groupeCibles, plateform, (cible, plateform) => {
-            if (cible.texture.key === 'fireball') {
-                cible.destroy();
-            }
-        });
-
-
+        // this.physics.add.overlap(this.player, groupeCibles, this.playerHitFireball, null, this);
+        // this.physics.add.collider(groupeCibles, plateform, (fireball) => {
+        //     this.physics.add.collider(groupeCibles, plateform);
+        //     fireball.destroy();
+        // });
+        this.physics.add.collider(groupeCibles, plateform);
+        this.physics.add.collider(groupeCibles, platmouv);
+        this.physics.add.collider(groupeCibles, platmouv2);
+        this.physics.add.collider(groupeCibles, platmouv3);
 
         this.anims.create({
-          key: 'door',
-          frames: this.anims.generateFrameNumbers('door', { start: 0, end: 4 }),
-          frameRate: 6,
-          })
-
+            key: 'door',
+            frames: this.anims.generateFrameNumbers('door', { start: 0, end: 4 }),
+            frameRate: 6,
+        })
+// Création des fireballs
+        groupeFireball = this.physics.add.group({
+            defaultKey: 'fireball',
+            maxSize: 50,
+        });
 
 
     }
     update() {
         const isOnTransporter = this.physics.overlap(this.player, platmouv) || this.physics.overlap(this.player, platmouv2) || this.physics.overlap(this.player, platmouv3);
 
-        
+        groupeCibles.children.iterate((cible) => {
+            if (Phaser.Math.Between(0, 1000)>995 ) {
+                this.tirerFireball(cible);
+            }       
+
+        });
+
 
         if (toucheEchelle.isDown && this.isOnLadder(this.player)) {
             this.player.setVelocityY(-200);
@@ -479,6 +467,7 @@ export default class Industrie extends Phaser.Scene {
                     industry.stop();
                 }
                 // Lancez la scène Fin
+                this.scene.stop('Industrie');
                 this.scene.start('Fin');
             }, this);
         }
@@ -501,7 +490,6 @@ export default class Industrie extends Phaser.Scene {
     respawn() {
         console.log("Respawn appelé !");
         this.hp--;
-
         if (this.hp > 0) {
             this.player.setPosition(this.spawn.x, this.spawn.y);
             this.pants.setPosition(this.spawn.x, this.spawn.y);
@@ -512,8 +500,8 @@ export default class Industrie extends Phaser.Scene {
             }, [], this);
         } else {
             Mort.play();
-            this.add.image(960,350, "GameOverImage").setScrollFactor(0);
-            BoutonRetourMenu = this.add.image(960,800, "BoutonRetourMenu").setScrollFactor(0);
+            this.add.image(960, 350, "GameOverImage").setScrollFactor(0);
+            BoutonRetourMenu = this.add.image(960, 800, "BoutonRetourMenu").setScrollFactor(0);
             this.add.text(960, 800, "Retour au menu", { fontSize: "50px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0).setScale(3);
             this.physics.pause();
             this.player.setTint(0xff0000);
@@ -534,10 +522,11 @@ export default class Industrie extends Phaser.Scene {
         this.hp = 3;
         this.updateLivesDisplay();
     }
+
     tirerFireball(cible) {
-        if (cible.pointsVie > 0 && !cible.fireballActive) {
+        if (cible.pointsVie > 0 && cible.body.touching.down) {
             // Create the fireball using the correct group
-            var fireball = groupeCibles.create(cible.x, cible.y, 'fireball');
+            var fireball = groupeFireball.create(cible.x, cible.y, 'fireball');
 
             if (fireball) {
                 fireball.setCollideWorldBounds(true);
@@ -583,7 +572,7 @@ export default class Industrie extends Phaser.Scene {
             door.anims.play('door', true);
         }
     }
-    shutdown(){
+    shutdown() {
         if (MUSIQUE.isPlaying) {
             MUSIQUE.stop();
         }
