@@ -401,7 +401,7 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
         }
     }
 
-    rencontrerRoi(player, roi) {
+    rencontrerRoi(player, roi) { // deux parametre , player= entite qui ramasse l'eppe , eppee = ce que le jouer ramasse, chacun est un objet
         
 
         this.dialogueRoi = this.add.text( // ajoute un texte sur l'ecran aligne a droite 
