@@ -11,6 +11,8 @@ export default class Moyen_age extends Phaser.Scene {
     constructor() {
         super({ key: "Moyen_age" });
     }
+        super({ key: "Moyen_age" });
+    }
     preload() {
 
 
@@ -30,6 +32,7 @@ export default class Moyen_age extends Phaser.Scene {
         this.load.audio('sonmort', 'src/assets/gameover.mp3'); // Remplace par le chemin correct
         this.load.image("roi", "src/assets/roi.png"); // Remplace par le bon chemin
         this.load.audio("dialogueroi", "src/assets/roi.mp3"); // Remplace par le bon fichier audio
+        this.load.image("bulleDialogue", "src/assets/bulle.png"); // Remplace par le bon chemin
 
 
     }
@@ -47,7 +50,12 @@ export default class Moyen_age extends Phaser.Scene {
         this.scoreText = this.add.text(50, 80, "Score: " + this.score, {
             fontSize: "24px",
             fill: "#FFF"
+        this.scoreText = this.add.text(50, 80, "Score: " + this.score, {
+            fontSize: "24px",
+            fill: "#FFF"
         }).setScrollFactor(0);
+        
+    
         const carteDuNiveau3 = this.add.tilemap("MAPmoyenage");
         const tileset = carteDuNiveau3.addTilesetImage("tuilesmoyenage");
         const calque_background = carteDuNiveau3.createLayer("calque_background", tileset);
@@ -56,9 +64,12 @@ export default class Moyen_age extends Phaser.Scene {
         calque_2.setCollisionByProperty({ estSolide: true });
 
         TP = this.physics.add.sprite(3700, 100, "TP");
+
+        TP = this.physics.add.sprite(3700, 100, "TP");
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
+        this.player.body.setSize(18, 40, true);
         this.player.body.setSize(18, 40, true);
         this.player.body.setOffset(30, 22);
         this.pants.body.setSize(18, 40, true);
@@ -66,6 +77,7 @@ export default class Moyen_age extends Phaser.Scene {
         this.shirt.body.setSize(18, 40, true);
         this.shirt.body.setOffset(30, 22);
         this.player.direction = 'right';
+        this.player.setScale(1.5);
         this.player.setScale(1.5);
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
@@ -85,6 +97,7 @@ export default class Moyen_age extends Phaser.Scene {
             frames: [{ key: "player", frame: 4 }],
             frameRate: 20
         });
+        });
         this.anims.create({
             key: "anim_tourne_gauche",
             frames: this.anims.generateFrameNumbers("player", { start: 14, end: 16 }),
@@ -92,6 +105,7 @@ export default class Moyen_age extends Phaser.Scene {
         });
         this.anims.create({
             key: "anim_tourne_droite",
+            frames: this.anims.generateFrameNumbers("player2", { start: 14, end: 16 }),
             frames: this.anims.generateFrameNumbers("player2", { start: 14, end: 16 }),
             frameRate: 8,
         });
@@ -105,6 +119,7 @@ export default class Moyen_age extends Phaser.Scene {
             frames: [{ key: "pants", frame: 4 }],
             frameRate: 20
         });
+        });
         this.anims.create({
             key: "anim_tourne_gauche_pants",
             frames: this.anims.generateFrameNumbers("pants", { start: 14, end: 16 }),
@@ -113,8 +128,10 @@ export default class Moyen_age extends Phaser.Scene {
         this.anims.create({
             key: "anim_tourne_droite_pants",
             frames: this.anims.generateFrameNumbers("pants2", { start: 14, end: 16 }),
+            frames: this.anims.generateFrameNumbers("pants2", { start: 14, end: 16 }),
             frameRate: 8,
         });
+        this.anims.create({
         this.anims.create({
             key: "anim_saut_pants",
             frames: this.anims.generateFrameNumbers("pants", { start: 22, end: 24 }),
@@ -125,6 +142,7 @@ export default class Moyen_age extends Phaser.Scene {
             frames: [{ key: "shirt", frame: 4 }],
             frameRate: 20
         });
+        });
         this.anims.create({
             key: "anim_tourne_gauche_shirt",
             frames: this.anims.generateFrameNumbers("shirt", { start: 14, end: 16 }),
@@ -132,6 +150,7 @@ export default class Moyen_age extends Phaser.Scene {
         });
         this.anims.create({
             key: "anim_tourne_droite_shirt",
+            frames: this.anims.generateFrameNumbers("shirt2", { start: 14, end: 16 }),
             frames: this.anims.generateFrameNumbers("shirt2", { start: 14, end: 16 }),
             frameRate: 8,
         });
@@ -141,22 +160,25 @@ export default class Moyen_age extends Phaser.Scene {
             frameRate: 4,
         });
 
+
         clavier = this.input.keyboard.createCursorKeys();
 
+        // Affichage des règles du jeu
         // Affichage des règles du jeu
 
 
 
 
 
-        this.fantomes = this.physics.add.group();
-        for (let i = 0; i < 3; i++) {
-            this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
-                let fantome = this.fantomes.create(1000 + i * 800, 600, "fantome"); // Augmentation de l'espacement
-                fantome.setCollideWorldBounds(true);
-                fantome.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
-                fantome.health = 1;
-            }, [], this);
+        this.fantomes = this.physics.add.group(); {
+            for (let i = 0; i < 3; i++) {
+                this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
+                    let fantome = this.fantomes.create(1000 + i * 800, 600, "fantome"); // Augmentation de l'espacement
+                    fantome.setCollideWorldBounds(true);
+                    fantome.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
+                    fantome.health = 1;
+                }, [], this);
+            }
         }
 
         this.physics.add.collider(this.fantomes, calque_2);
@@ -167,13 +189,13 @@ export default class Moyen_age extends Phaser.Scene {
         this.player.health = 3;
 
 
-        // Clavier
-        this.clavier = this.input.keyboard.createCursorKeys();
-        this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            // Clavier
+            this.clavier = this.input.keyboard.createCursorKeys();
+            this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.physics.world.setBounds(0, 0, 3840, 1280);
-        this.cameras.main.setBounds(0, 0, 3840, 1280);
-        this.cameras.main.startFollow(this.player);
+            this.physics.world.setBounds(0, 0, 3840, 1280);
+            this.cameras.main.setBounds(0, 0, 3840, 1280);
+            this.cameras.main.startFollow(this.player);
 
         // Groupe d'épées statiques (elles ne tombent pas)
         this.epees = this.physics.add.staticGroup();
@@ -226,19 +248,11 @@ export default class Moyen_age extends Phaser.Scene {
         });
         boutondoor = this.input.keyboard.addKey('F');
 
-        this.roi = this.physics.add.staticSprite(400, 1000, "roi").setScale(1.2);
-
-        this.physics.add.collider(this.roi, calque_2);
-        // Détection de la rencontre avec le roi
-        this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
-
-
-
-
-
-
-
-
+this.roi = this.physics.add.staticSprite(400, 1000, "roi").setScale(1.2);
+ 
+this.physics.add.collider(this.roi, calque_2);
+// Détection de la rencontre avec le roi
+this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
 
 
     }
@@ -256,6 +270,7 @@ export default class Moyen_age extends Phaser.Scene {
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
         } else if (clavier.right.isDown) {
+        } else if (clavier.right.isDown) {
             this.player.direction = 'right';
             this.pants.direction = 'right';
             this.shirt.direction = 'right';
@@ -266,12 +281,15 @@ export default class Moyen_age extends Phaser.Scene {
             this.pants.anims.play("anim_tourne_droite_pants", true);
             this.shirt.anims.play("anim_tourne_droite_shirt", true);
         } else {
+        } else {
             this.player.setVelocityX(0);
             this.pants.setVelocityX(0);
             this.shirt.setVelocityX(0);
             this.player.anims.play("anim_face");
             this.pants.anims.play("anim_face_pants");
             this.shirt.anims.play("anim_face_shirt");
+        }
+        if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
         }
         if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
             this.player.anims.play("anim_saut", true);
@@ -291,14 +309,23 @@ export default class Moyen_age extends Phaser.Scene {
         // Attaque du joueur
         if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
             this.attack();
+        // Attaque du joueur
+        if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
+            this.attack();
 
+        }
         }
 
         // Téléportation
         if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
             TP.anims.play('teleporteur', true);
 
+        // Téléportation
+        if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
+            TP.anims.play('teleporteur', true);
 
+
+        }
         }
 
 
@@ -311,25 +338,31 @@ export default class Moyen_age extends Phaser.Scene {
             }, this);
         }
 
+}
 
-
-
-
-
-    }
 
 
     hitByFantome(player, fantome) {
         if (!player.invincible) {
             player.health -= 1; // Le joueur perd une vie
+    hitByFantome(player, fantome) {
+        if (!player.invincible) {
+            player.health -= 1; // Le joueur perd une vie
 
+            console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
             console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
 
             // Vérifie que le joueur a encore des vies avant de supprimer un cœur
             if (player.health >= 0 && this.coins[player.health]) {
                 this.coins[player.health].destroy(); // Supprime un cœur
             }
+            // Vérifie que le joueur a encore des vies avant de supprimer un cœur
+            if (player.health >= 0 && this.coins[player.health]) {
+                this.coins[player.health].destroy(); // Supprime un cœur
+            }
 
+            // Activer l'invincibilité temporaire
+            player.invincible = true;
             // Activer l'invincibilité temporaire
             player.invincible = true;
 
@@ -341,7 +374,19 @@ export default class Moyen_age extends Phaser.Scene {
                 yoyo: true,
                 repeat: 5
             });
+            // Effet visuel d'invincibilité
+            this.tweens.add({
+                targets: player,
+                alpha: 0.5,
+                duration: 200,
+                yoyo: true,
+                repeat: 5
+            });
 
+            this.time.delayedCall(1000, () => {
+                player.invincible = false;
+                player.setAlpha(1);
+            });
             this.time.delayedCall(1000, () => {
                 player.invincible = false;
                 player.setAlpha(1);
