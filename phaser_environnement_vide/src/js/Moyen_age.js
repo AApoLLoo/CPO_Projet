@@ -56,7 +56,7 @@ export default class Moyen_age extends Phaser.Scene {
         const calque_3 = carteDuNiveau3.createLayer("calque_3", tileset);
         calque_2.setCollisionByProperty({ estSolide: true });
 
-        TP=this.physics.add.sprite(3700, 100, "TP");
+        TP = this.physics.add.sprite(3700, 100, "TP");
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
@@ -214,16 +214,16 @@ export default class Moyen_age extends Phaser.Scene {
             }).setOrigin(0.5).setScrollFactor(0);
 
 
-//TELEPORTATION
+            //TELEPORTATION
 
-        TP.body.immovable = true;
-        TP.setAllowGravity = false;  
-        this.physics.add.collider(TP, calque_2);
-        this.anims.create({
-            key: 'teleporteur',
-            frames: this.anims.generateFrameNumbers('TP', { start: 0, end: 5 }),
-            frameRate: 4
-            ,
+            TP.body.immovable = true;
+            TP.setAllowGravity = false;
+            this.physics.add.collider(TP, calque_2);
+            this.anims.create({
+                key: 'teleporteur',
+                frames: this.anims.generateFrameNumbers('TP', { start: 0, end: 5 }),
+                frameRate: 4
+                ,
             });
             boutondoor = this.input.keyboard.addKey('F');
 
@@ -295,33 +295,33 @@ export default class Moyen_age extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
             this.attack();
 
-}
+        }
 
-// Téléportation
-if (boutondoor.isDown && this.physics.overlap(this.player, TP)&& score==4) {
-    TP.anims.play('teleporteur', true);
-    
-
-}
+        // Téléportation
+        if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
+            TP.anims.play('teleporteur', true);
 
 
-if (boutondoor.isDown && this.physics.overlap(this.player, TP)&& score==4)  {
-    TP.anims.play('teleporteur', true);
-    TP.on('animationcomplete', () => {
-        // Arrêtez la musique
-        // // if (MUSIQUE.isPlaying) {
-        //     MUSIQUE.stop();
-        // }
-        // if (industry.isPlaying) {
-        //     industry.stop();
-        // }
-        // // Lancez la scène Fin
-        this.scene.stop('Moyen_age');
-        this.scene.start('Industrie');
-    }, this);
-}
+        }
 
-}
+
+        if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
+            TP.anims.play('teleporteur', true);
+            TP.on('animationcomplete', () => {
+                // Arrêtez la musique
+                // // if (MUSIQUE.isPlaying) {
+                //     MUSIQUE.stop();
+                // }
+                // if (industry.isPlaying) {
+                //     industry.stop();
+                // }
+                // // Lancez la scène Fin
+                this.scene.stop('Moyen_age');
+                this.scene.start('Industrie');
+            }, this);
+        }
+
+    }
 
 
 
@@ -360,167 +360,99 @@ if (boutondoor.isDown && this.physics.overlap(this.player, TP)&& score==4)  {
             }
         }
     }
-    
-    rencontrerRoi(player, roi) {
-        if (this.roiADitSonTexte) return; // Empêche que le roi parle plusieurs fois
-    
-        this.roiADitSonTexte = true; // Marque que le roi a déjà parlé
-        this.jeuEnPause = true; // Bloque les actions du joueur
-        musique_de_fond.stop(); // Arrête la musique médiévale
-        this.physics.pause(); // Met en pause la physique du jeu
-        this.player.setVelocity(0, 0);
-        this.player.anims.pause();
-    
-        // 📌 Assure-toi que l'image de la bulle est bien chargée dans preload()
-        if (!this.textures.exists("bulleDialogue")) {
-            console.error("❌ ERREUR : L'image de la bulle de dialogue n'est pas chargée !");
-            return;
+
+
+        rencontrerRoi(player, roi) {
+            // Arrête la musique médiévale
+            if (musique_de_fond.isPlaying) {
+                musique_de_fond.stop();
+            }
+
+
+            // Affiche le texte du roi à droite de l'écran
+            this.dialogueRoi = this.add.text(
+                this.cameras.main.width - 50, // Position X (à droite)
+                200, // Position Y
+                "👑 Philippe II Auguste :\n" +
+                "Bienvenue, aventurier !\n" +
+                "Grâce à moi, le royaume de France s'est renforcé !\n" +
+                "J'ai agrandi Paris et bâti des fortifications !\n\n" +
+                "🎮 Règles du jeu :\n" +
+                "- ⚔️ Récupère toutes les épées\n" +
+                "- 👻 Évite les fantômes\n" +
+                "- 🚪 Trouve la porte\n" +
+                "- ❤️ Ne perds pas toutes tes vies\n\n" +
+                "Bonne chance, noble guerrier !",
+                {
+                    fontSize: "22px",
+                    fill: "#FFF",
+                    align: "right",
+                    fontStyle: "bold"
+                }
+            ).setOrigin(1, 0.5).setScrollFactor(0);
+
+            // Joue le son du roi et récupère la durée
+            sonRoi = this.sound.add('medieval');
+            sonRoi.play();
+
+
+            // Met le jeu en pause
+
+            // Quand le son du roi se termine, on reprend la musique et le jeu
+            sonRoi.once('complete', () => {
+                this.dialogueRoi.destroy(); // Supprime le texte
+                this.physics.resume(); // Reprend le jeu
+                musique_de_fond.play(); // Redémarre la musique médiévale
+            });
+        }
+
+
+        afficherGameOver() {
+            // Affiche "GAME OVER" en grand au centre de l'écran
+            this.sound.play('sonmort');
+            this.gameOverText = this.add.text(
+                this.cameras.main.width / 2,
+                this.cameras.main.height / 2,
+                "GAME OVER",
+                {
+                    fontSize: "80px",
+                    fill: "#FF0000", // Rouge pour l'effet dramatique
+                    fontStyle: "bold",
+                    fontFamily: "Times New Roman"
+                }
+            );
+            this.gameOverText.setOrigin(0.5);
+            this.gameOverText.setScrollFactor(0);
+
+            // Désactive les contrôles du joueur
+            this.player.setVelocity(0, 0);
+            this.player.setTint(0x366666); // Effet de "mort"
+            this.physics.pause(); // Met en pause le jeu
+
+            // Redémarre la scène après **5 secondes**
+            this.time.delayedCall(5000, () => {
+                this.scene.restart();
+            }, [], this);
         }
     
-        // 📌 Position de la bulle bien visible à droite du roi
-        let bulleX = roi.x + 320;  // Décalage à droite du roi
-        let bulleY = roi.y - 250;   // Légèrement au-dessus du roi
-    
-        // 📌 Création de la bulle de dialogue
-        this.bulle = this.add.image(bulleX, bulleY, "bulleDialogue")
-            .setScale(2.0)
-            .setOrigin(0.5)
-            .setDepth(10); // 🔺 Assure que la bulle est au premier plan
-    
-        // 📌 Affichage du texte bien centré dans la bulle
-        this.dialogueRoi = this.add.text(
-            bulleX, bulleY, 
-          "👑 Salut, aventurier ! Je suis Philippe Auguste, roi de France.\n\n"
-        + "Savais-tu qu’au Moyen Âge, les rois fortifiaient leurs villes ?\n"
-        + "Moi, j’ai protégé Paris avec de grandes murailles !\n\n"
-        + "Poursuis ta quête et montre ta valeur !",
 
-            {
-                fontSize: "18px",
-                fill: "#000", // Texte noir pour être lisible
-                align: "center",
-                fontFamily: "Arial",
-                wordWrap: { width: 350 } // Ajuste pour rester dans la bulle
-            }
-        ).setOrigin(0.5)
-         .setDepth(11); // 🔺 Assure que le texte est bien au-dessus de la bulle
-    
-        // 📌 Joue le son du roi
-        this.sonRoi = this.sound.add("dialogueroi", { loop: false });
-        this.sonRoi.play();
-    
-        // 📌 Quand le son du roi se termine, tout reprend
-        this.sonRoi.once('complete', () => {
-            this.bulle.destroy(); // Supprime la bulle
-            this.dialogueRoi.destroy(); // Supprime le texte
-            this.physics.resume(); // Reprend la physique du jeu
-            this.jeuEnPause = false; // Débloque le jeu
-            this.player.anims.resume(); // Relance les animations
-    
-            // 📌 Redémarre la musique médiévale
-            if (!musique_de_fond.isPlaying) {
-                musique_de_fond.play();
-            }
-        });
-    }
-    
-   
-        // Vérifie si le joueur a encore des vies
-        if (player.health <= 0) {
-            console.log("💀 Plus de vies ! Game Over.");
-            this.afficherGameOver();
+
+        attack() {
+            // Tuer les momies proches
+            this.fantomes.children.iterate((fantome) => {
+                if (Phaser.Math.Distance.Between(this.player.x, this.player.y, fantome.x, fantome.y) < 50) {
+                    fantome.destroy();
+                }
+            });
+        }
+
+
+
+        ramasserEpee(player, epee) {
+            console.log("🗡️ Épée ramassée !");
+            epee.destroy(); // Supprime l'épée ramassée
+            score += 1;
+            zone_texte_score.setText("Score: " + score);
         }
     }
-}
-
-rencontrerRoi(player, roi) {
-    // Arrête la musique médiévale
-    if (musique_de_fond.isPlaying) {
-        musique_de_fond.stop();
-    }
-
-    // Affiche le texte du roi à droite de l'écran
-    this.dialogueRoi = this.add.text(
-        this.cameras.main.width - 50, // Position X (à droite)
-        200, // Position Y
-        "👑 Philippe II Auguste :\n" +
-        "Bienvenue, aventurier !\n" +
-        "Grâce à moi, le royaume de France s'est renforcé !\n" +
-        "J'ai agrandi Paris et bâti des fortifications !\n\n" +
-        "🎮 Règles du jeu :\n" +
-        "- ⚔️ Récupère toutes les épées\n" +
-        "- 👻 Évite les fantômes\n" +
-        "- 🚪 Trouve la porte\n" +
-        "- ❤️ Ne perds pas toutes tes vies\n\n" +
-        "Bonne chance, noble guerrier !",
-        {
-            fontSize: "22px",
-            fill: "#FFF",
-            align: "right",
-            fontStyle: "bold"
-        }
-    ).setOrigin(1, 0.5).setScrollFactor(0);
-
-    // Joue le son du roi et récupère la durée
-    sonRoi = this.sound.add('medieval');
-    sonRoi.play();
     
-
-    // Met le jeu en pause
-
-    // Quand le son du roi se termine, on reprend la musique et le jeu
-    sonRoi.once('complete', () => {
-        this.dialogueRoi.destroy(); // Supprime le texte
-        this.physics.resume(); // Reprend le jeu
-        musique_de_fond.play(); // Redémarre la musique médiévale
-    });
-}
-
-
-    afficherGameOver() {
-        // Affiche "GAME OVER" en grand au centre de l'écran
-        this.sound.play('sonmort');
-        this.gameOverText = this.add.text(
-            this.cameras.main.width / 2,
-            this.cameras.main.height / 2,
-            "GAME OVER",
-            {
-                fontSize: "80px",
-                fill: "#FF0000", // Rouge pour l'effet dramatique
-                fontStyle: "bold",
-                fontFamily: "Times New Roman"
-            }
-        );
-        this.gameOverText.setOrigin(0.5);
-        this.gameOverText.setScrollFactor(0);
-
-        // Désactive les contrôles du joueur
-        this.player.setVelocity(0, 0);
-        this.player.setTint(0x366666); // Effet de "mort"
-        this.physics.pause(); // Met en pause le jeu
-
-        // Redémarre la scène après **5 secondes**
-        this.time.delayedCall(5000, () => {
-            this.scene.restart();
-        }, [], this);
-    }
-
-
-    attack() {
-        // Tuer les momies proches
-        this.fantomes.children.iterate((momie) => {
-            if (Phaser.Math.Distance.Between(this.player.x, this.player.y, fantome.x, fantome.y) < 50) {
-                fantome.destroy();
-            }
-        });
-    }
-
-
-
-    ramasserEpee(player, epee) {
-        console.log("🗡️ Épée ramassée !");
-        epee.destroy(); // Supprime l'épée ramassée
-        score += 1;
-        zone_texte_score.setText("Score: " + score);
-    }
-}
