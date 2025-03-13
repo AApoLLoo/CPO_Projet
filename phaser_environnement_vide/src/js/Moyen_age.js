@@ -5,6 +5,7 @@ var zone_texte_score;
 var musique_de_fond;
 var TP;
 var boutondoor;
+var sonRoi;
 
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
@@ -25,7 +26,7 @@ export default class Moyen_age extends Phaser.Scene {
         this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.audio('medieval', 'src/assets/medieval.mp3');
-        this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130 });
+        this.load.spritesheet("TP", "src/assets/teleporter2.png", { frameWidth: 154, frameHeight: 130 });
         this.load.audio('sonmort', 'src/assets/gameover.mp3'); // Remplace par le chemin correct
         this.load.image("roi", "src/assets/roi.png"); // Remplace par le bon chemin
         this.load.audio("dialogueroi", "src/assets/roi.mp3"); // Remplace par le bon fichier audio
@@ -55,7 +56,7 @@ export default class Moyen_age extends Phaser.Scene {
         const calque_3 = carteDuNiveau3.createLayer("calque_3", tileset);
         calque_2.setCollisionByProperty({ estSolide: true });
 
-
+        TP=this.physics.add.sprite(3700, 100, "TP");
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
@@ -213,16 +214,16 @@ export default class Moyen_age extends Phaser.Scene {
             }).setOrigin(0.5).setScrollFactor(0);
 
 
-            //TELEPORTATION
-            TP = this.physics.add.sprite(3700, 100, "TP");
-            TP.body.immovable = true;
-            TP.setAllowGravity = false;
-            this.physics.add.collider(TP, calque_2);
-            this.anims.create({
-                key: 'teleporteur',
-                frames: this.anims.generateFrameNumbers('TP', { start: 0, end: 5 }),
-                frameRate: 4
-                ,
+//TELEPORTATION
+
+        TP.body.immovable = true;
+        TP.setAllowGravity = false;  
+        this.physics.add.collider(TP, calque_2);
+        this.anims.create({
+            key: 'teleporteur',
+            frames: this.anims.generateFrameNumbers('TP', { start: 0, end: 5 }),
+            frameRate: 4
+            ,
             });
             boutondoor = this.input.keyboard.addKey('F');
 
@@ -250,9 +251,9 @@ export default class Moyen_age extends Phaser.Scene {
             this.player.direction = 'left';
             this.pants.direction = 'left';
             this.shirt.direction = 'left';
-            this.player.setVelocityX(-400);
-            this.pants.setVelocityX(-400);
-            this.shirt.setVelocityX(-400);
+            this.player.setVelocityX(-200);
+            this.pants.setVelocityX(-200);
+            this.shirt.setVelocityX(-200);
             this.player.anims.play("anim_tourne_gauche", true);
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
@@ -294,25 +295,33 @@ export default class Moyen_age extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
             this.attack();
 
-        }
+}
 
-        if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
-            TP.anims.play('teleporteur', true);
-            TP.on('animationcomplete', () => {
-                // Arrêtez la musique
-                // // if (MUSIQUE.isPlaying) {
-                //     MUSIQUE.stop();
-                // }
-                // if (industry.isPlaying) {
-                //     industry.stop();
-                // }
-                // // Lancez la scène Fin
-                this.scene.stop('Moyen_age');
-                this.scene.start('Industrie');
-            }, this);
-        }
+// Téléportation
+if (boutondoor.isDown && this.physics.overlap(this.player, TP)&& score==4) {
+    TP.anims.play('teleporteur', true);
+    
 
-    }
+}
+
+
+if (boutondoor.isDown && this.physics.overlap(this.player, TP)&& score==4)  {
+    TP.anims.play('teleporteur', true);
+    TP.on('animationcomplete', () => {
+        // Arrêtez la musique
+        // // if (MUSIQUE.isPlaying) {
+        //     MUSIQUE.stop();
+        // }
+        // if (industry.isPlaying) {
+        //     industry.stop();
+        // }
+        // // Lancez la scène Fin
+        this.scene.stop('Moyen_age');
+        this.scene.start('Industrie');
+    }, this);
+}
+
+}
 
 
 
@@ -416,6 +425,56 @@ export default class Moyen_age extends Phaser.Scene {
     }
     
    
+        // Vérifie si le joueur a encore des vies
+        if (player.health <= 0) {
+            console.log("💀 Plus de vies ! Game Over.");
+            this.afficherGameOver();
+        }
+    }
+}
+
+rencontrerRoi(player, roi) {
+    // Arrête la musique médiévale
+    if (musique_de_fond.isPlaying) {
+        musique_de_fond.stop();
+    }
+
+    // Affiche le texte du roi à droite de l'écran
+    this.dialogueRoi = this.add.text(
+        this.cameras.main.width - 50, // Position X (à droite)
+        200, // Position Y
+        "👑 Philippe II Auguste :\n" +
+        "Bienvenue, aventurier !\n" +
+        "Grâce à moi, le royaume de France s'est renforcé !\n" +
+        "J'ai agrandi Paris et bâti des fortifications !\n\n" +
+        "🎮 Règles du jeu :\n" +
+        "- ⚔️ Récupère toutes les épées\n" +
+        "- 👻 Évite les fantômes\n" +
+        "- 🚪 Trouve la porte\n" +
+        "- ❤️ Ne perds pas toutes tes vies\n\n" +
+        "Bonne chance, noble guerrier !",
+        {
+            fontSize: "22px",
+            fill: "#FFF",
+            align: "right",
+            fontStyle: "bold"
+        }
+    ).setOrigin(1, 0.5).setScrollFactor(0);
+
+    // Joue le son du roi et récupère la durée
+    sonRoi = this.sound.add('medieval');
+    sonRoi.play();
+    
+
+    // Met le jeu en pause
+
+    // Quand le son du roi se termine, on reprend la musique et le jeu
+    sonRoi.once('complete', () => {
+        this.dialogueRoi.destroy(); // Supprime le texte
+        this.physics.resume(); // Reprend le jeu
+        musique_de_fond.play(); // Redémarre la musique médiévale
+    });
+}
 
 
     afficherGameOver() {

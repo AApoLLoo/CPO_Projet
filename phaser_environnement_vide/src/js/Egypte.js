@@ -3,14 +3,16 @@ var player;
 var groupe_parchemins;
 var score = 0;
 var zone_texte_score;
-var teleporteur;
+var teleporter;
 var boutondoor;
 var musique_fond;
 var CompteurParchemin = 0;
+var phrases;
 
 export default class Egypte extends Phaser.Scene {
     constructor() {
         super({key : "Egypte"});
+        this.isPaused = false;
     }
     preload() {
         this.load.image("TuilesEgypte3", "src/assets/TuilesEgypte3.png");
@@ -27,11 +29,10 @@ export default class Egypte extends Phaser.Scene {
         this.load.image("HP", "src/assets/Coeur_HP.png");
         this.load.image("Ramses", "src/assets/Ramses.png");
         this.load.audio('desert', 'src/assets/desert.mp3');
-
-
-
+        this.load.image("ParcheminTexte", "src/assets/ParcheminImageTexte.png");
         //teleporteur
-        this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
+        this.load.spritesheet("teleporter", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
+        this.load.audio('sonmort', 'src/assets/gameover.mp3'); 
    
 
     }
@@ -48,18 +49,17 @@ export default class Egypte extends Phaser.Scene {
 
  
         //teleporteur
-        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur"); //((3750), y, nom de l'image)
-        teleporteur.body.immovable = true;
-        teleporteur.setAllowGravity = false;  
-        this.physics.add.collider(teleporteur, calque_plateformes);
+        teleporter=this.physics.add.sprite(3700, 100, "teleporter"); //((3750), y, nom de l'image)
+        teleporter.body.immovable = true;
+        teleporter.setAllowGravity = false;  
+        this.physics.add.collider(teleporter, calque_plateformes);
         this.anims.create({
-            key: 'teleporteur',
-            frames: this.anims.generateFrameNumbers('teleporteur', { start: 0, end: 5 }),
+            key: 'teleporter',
+            frames: this.anims.generateFrameNumbers('teleporter', { start: 0, end: 5 }),
             frameRate: 4
             ,
             });
-
-            boutondoor= this.input.keyboard.addKey('F');
+        boutondoor= this.input.keyboard.addKey('F');
 
 
 
@@ -67,7 +67,6 @@ export default class Egypte extends Phaser.Scene {
 
         
 
-        this.player = this.physics.add.sprite(100, 600, "player");
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
@@ -176,13 +175,34 @@ musique_fond.play();
         this.physics.world.setBounds(0, 0, 3840, 1280);
         this.cameras.main.setBounds(0, 0, 3840, 1280);
         this.cameras.main.startFollow(this.player);
+ //Texte sur l'histoire
+    phrases = [
+    "L'Égypte antique a duré plus de 3000 ans.",
+    "Les pyramides ont été construites comme tombes pour les pharaons.",
+    "Le Nil est le plus long fleuve du monde.",
+    "Cléopâtre était la dernière reine d'Égypte.",
+    "Les Égyptiens croyaient en plus de 2000 dieux.",
+    "Le Sphinx de Gizeh a plus de 4500 ans.",
+    "Les momies étaient embaumées pour l'au-delà.",
+    "Le papyrus était utilisé pour écrire avant le papier.",
+    "Les Égyptiens utilisaient des hiéroglyphes pour écrire.",
+    "Le roi Toutankhamon est célèbre pour sa tombe intacte."
+    ];
+    Phaser.Utils.Array.Shuffle(phrases);
 
  //PARCHEMIN
         groupe_parchemins = this.physics.add.group();
+        let indexPhrase = 0;
         for (var i = 0; i < 10; i++) {
             var coordX = 400 + 400 * i;
-            groupe_parchemins.create(coordX, 10, "parchemin");
-          } 
+            var parchemin = groupe_parchemins.create(coordX, 10, "parchemin");
+            if (indexPhrase < phrases.length) {
+                parchemin.phrase = phrases[indexPhrase]; // Assigner une phrase unique
+                indexPhrase++;
+            } else {
+                parchemin.phrase = "Ancienne sagesse perdue..."; // Sécurité au cas où
+            }
+              }     
 
         this.physics.add.collider(groupe_parchemins, calque_plateformes); 
 
@@ -191,16 +211,15 @@ musique_fond.play();
             var coef_rebond = Phaser.Math.FloatBetween(0.4, 0.8);
             parchemin_i.setBounceY(coef_rebond); // on attribut le coefficient de rebond 
             parchemin_i.setSize(70, 32); // on définit la taille du parchemin (Hitbox)
-            parchemin_i.setOffset(60, 15); // on définit l'offset du parchemin (Hitbox)
-            
+            parchemin_i.setOffset(60, 15); // on définit l'offset du parchemin (Hitbox)            
           }); 
-        this.physics.add.overlap(this.player, groupe_parchemins, ramasserParchemin, null, this);
+        this.physics.add.overlap(this.player, groupe_parchemins, this.ramasserParchemin, null, this);
 
  //MOMIE       
         this.momies = this.physics.add.group();
         for (let i = 0; i < 3; i++) {
             this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
-                let momie = this.momies.create(1000 + i * 800, 800, "momie"); // Augmentation de l'espacement
+                let momie = this.momies.create(1000 + i * 700, 700, "momie"); // Augmentation de l'espacement
                 momie.setCollideWorldBounds(true);
                 momie.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
                 momie.health = 1;
@@ -233,8 +252,6 @@ this.player.body.onWorldBounds = true; // Active la détection des collisions av
 this.physics.world.on('worldbounds', () => {
     this.scene.restart(); // Redémarre le jeu si le joueur touche les bords du monde
 }, this);
-
-
     }
 
 
@@ -292,9 +309,9 @@ this.physics.world.on('worldbounds', () => {
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
-if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 0) {
-    teleporteur.anims.play('teleporteur', true);
-    teleporteur.on('animationcomplete', () => {
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporter) && CompteurParchemin > 8) {
+    teleporter.anims.play('teleporter', true);
+    teleporter.on('animationcomplete', () => {
         musique_fond.stop();
         this.scene.stop('Egypte');
         this.scene.start('Moyen_age');
@@ -327,11 +344,41 @@ hitByMomie(player, momie) {
 
         if (player.health <= 0) {
             console.log("Plus de vies ! Game Over.");
-            this.scene.restart();
+            this.afficherGameOver();
         }
     }
 }
 
+
+
+// Affiche "GAME OVER"
+afficherGameOver() {
+    this.sound.play('sonmort');
+    this.gameOverText = this.add.text(
+        this.cameras.main.width / 2, 
+        this.cameras.main.height / 2, 
+        "GAME OVER", 
+        {
+            fontSize: "80px",
+            fill: "#FF0000", // Rouge pour l'effet dramatique
+            fontStyle: "bold",
+            fontFamily: "Times New Roman"
+        }
+    );
+    this.gameOverText.setOrigin(0.5);
+    this.gameOverText.setScrollFactor(0);
+
+    // Désactive les contrôles du joueur
+    this.player.setVelocity(0, 0);
+    this.player.setTint(0x366666); // Effet de "mort"
+    this.physics.pause(); // Met en pause le jeu
+
+    // Redémarre la scène après **5 secondes**
+    this.time.delayedCall(5000, () => {
+        this.scene.restart();
+    }, [], this);
+
+}
 attack() {
 
 // Tuer par les momies proches
@@ -341,18 +388,36 @@ this.momies.children.iterate((momie) => {
     }
 });
 }
+showPhrase(phrase) {
+    console.log("Affiche la phrase")
+    let ImageTemp = this.add.image(1700, 300, "ParcheminTexte").setScrollFactor(0).setScale(0.8);
+    let text = this.add.text(1700, 300, phrase, {
+        fontSize: '30px',
+        color: '#ffffff',
+        align: "center",
+        padding: { x: 3, y: 5 },
+        wordWrap: { width: ImageTemp.width * 0.8, useAdvancedWrap: true }
+        
+    }).setOrigin(0.5).setScrollFactor(0);
 
-
+    // Effacer le texte après 3 secondes
+    this.time.delayedCall(3000, () => text.destroy(), [], this);
+    this.time.delayedCall(3000, () => ImageTemp.destroy(), [], this);
+}
+ramasserParchemin(player, un_parchemin) {
+    un_parchemin.destroy();
+    if (un_parchemin.phrase) {
+        this.showPhrase(un_parchemin.phrase); // Afficher la phrase correcte
+    } else {
+        console.log("⚠️ Problème : Pas de phrase attribuée à ce parchemin.");
+    }
+    score += 1;
+    CompteurParchemin += 1;
+    zone_texte_score.setText("SCORE : " + score);
+  
+  } 
 }
 
-//Fonction pour ramasser les parchemins
-function ramasserParchemin(player, un_parchemin) {
-        un_parchemin.disableBody(true, true);
-        score += 1;
-        CompteurParchemin += 1;
-        zone_texte_score.setText("SCORE : " + score);
-      
-      } 
 
 
 

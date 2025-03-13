@@ -37,13 +37,6 @@ export default class Menu extends Phaser.Scene {
         BoutonCredit = this.add.image(1750, 980, "BoutonCredit");
         BoutonGuide = this.add.image(175, 980, "BoutonCredit");
         //
-        BoutonEgypte = this.add.image(400, 300, "BoutonJouer");
-        BoutonIndustrie = this.add.image(400, 540, "BoutonJouer");
-        BoutonMoyenAge = this.add.image(400, 780, "BoutonJouer");
-        zoneEgypte = this.add.text(400, 300, "Egypte", {fontSize: "40px", color: "White", fontStyle: "bold"});
-        zoneIndustrie = this.add.text(400, 540, "Industrie", {fontSize: "40px", color: "White", fontStyle: "bold"});
-        zoneMoyenAge = this.add.text(400, 780, "Moyen Age", {fontSize: "40px", color: "White", fontStyle: "bold"});
-        //
         TitreDeJeu = this.add.text(500, 100, "Les voyageurs du temps", {fontSize: "80px", color: "White", fontStyle: "bold", fontFamily: "Cooper Black"});
         ZoneJouer = this.add.text(750, 900, "Entrer dans le jeu", {fontSize: "40px", color: ("Black"), fontStyle: "bold"});
         ZoneQuitter = this.add.text(815 , 710, "Quitter le jeu", {fontSize: "35px", color:("Black"), fontStyle: "bold"});
@@ -55,10 +48,6 @@ export default class Menu extends Phaser.Scene {
         this.effetGlow(BoutonQuitter);
         this.effetGlow(BoutonCredit);
         this.effetGlow(BoutonGuide);
-        //
-        this.effetGlow(BoutonEgypte);
-        this.effetGlow(BoutonIndustrie);
-        this.effetGlow(BoutonMoyenAge);
         //
         BoutonCredit.on("pointerup", () => {
             this.sound.play("BoutonMenu");
@@ -106,25 +95,6 @@ export default class Menu extends Phaser.Scene {
                 this.scene.start("Guide");
             });
         });    
-        //
-        BoutonEgypte.on("pointerup", () => {
-            Soundtrack.stop();
-            this.sound.play("BoutonMenu");
-            this.scene.stop("menu");
-            this.scene.start("Egypte");
-        });
-        BoutonIndustrie.on("pointerup", () => {
-            Soundtrack.stop();
-            this.sound.play("BoutonMenu");
-            this.scene.stop("menu");    
-            this.scene.start("Industrie");
-        });
-        BoutonMoyenAge.on("pointerup", () => {
-            Soundtrack.stop();
-            this.sound.play("BoutonMenu");
-            this.scene.stop("menu");
-            this.scene.start("Moyen_age");
-        });
         //
     }
     update() {
