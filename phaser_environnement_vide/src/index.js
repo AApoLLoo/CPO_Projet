@@ -27,7 +27,7 @@ var config = {
         gravity: {
           y: 300 // gravité verticale : acceleration ddes corps en pixels par seconde
         },
-        debug: true // permet de voir les hitbox et les vecteurs d'acceleration quand mis à true
+        debug: false // permet de voir les hitbox et les vecteurs d'acceleration quand mis à true
       }
     },
   scene : [menu, Egypte, Moyen_age, Industrie, Credit, Fin, Guide] // liste des scenes du jeu

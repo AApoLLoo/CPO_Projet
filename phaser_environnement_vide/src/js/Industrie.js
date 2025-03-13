@@ -14,7 +14,7 @@ var industry;
 var MUSIQUE;
 var Shot;
 var Mort;
-var footstep;
+// var footstep;
 var Degats;
 var door;
 var door2;
@@ -85,17 +85,27 @@ export default class Industrie extends Phaser.Scene {
         const smog = carteDuNiveau.createLayer("smog", tileset);
         this.ladder = carteDuNiveau.createLayer("ladder", tileset);
         plateform.setCollisionByProperty({ estsolide: true });
-        //      
-        industry = this.sound.add('factory'), { loop: true }, { volume: 1.5 };
-        MUSIQUE = this.sound.add('MUSIQUE'), { loop: true }, { volume: 0.1 };
+        //  
+        if(!industry){    
+        industry = this.sound.add('factory'), { loop: true , volume: 1.5 };
+        }
+        if(!MUSIQUE){
+        MUSIQUE = this.sound.add('MUSIQUE'), { loop: true, volume: 0.1 };
+        }
         Shot = this.sound.add('shot')
-        Mort = this.sound.add('Mort'), { loop: false }, { volume: 1 };
-        footstep = this.sound.add('footstep'), { loop: true }, { volume: 1 };
-        Degats = this.sound.add('Degats'), { loop: false }, { volume: 1 };
+        Mort = this.sound.add('Mort'), { loop: false , volume: 1 };
+        // footstep = this.sound.add('footstep'), { loop: true }, { volume: 1 };
+        Degats = this.sound.add('Degats'), { loop: false, volume: 1 };
         MUSIQUE.play();
         industry.play();
         door = this.physics.add.sprite(3790, 750, 'door');
         door2 = this.physics.add.sprite(100, 597, 'door');
+        if(!industry.isPlaying){
+            industry.play();
+        }
+        if(!MUSIQUE.isPlaying){
+            MUSIQUE.play();
+        }
         //
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -389,7 +399,7 @@ export default class Industrie extends Phaser.Scene {
             this.player.anims.play("anim_tourne_gauche", true);
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
-            footstep.play();
+            // footstep.play();
         } else if (clavier.right.isDown) {
             this.player.direction = 'right';
             this.pants.direction = 'right';
@@ -401,7 +411,7 @@ export default class Industrie extends Phaser.Scene {
             this.player.anims.play("anim_tourne_droite", true);
             this.pants.anims.play("anim_tourne_droite_pants", true);
             this.shirt.anims.play("anim_tourne_droite_shirt", true);
-            footstep.play();
+            // footstep.play();
         } else {
             const velocity = isOnTransporter ? (this.player.direction === 'left' ? -100 : 100) : 0;
             this.player.setVelocityX(velocity);
@@ -410,7 +420,7 @@ export default class Industrie extends Phaser.Scene {
             this.player.anims.play("anim_face");
             this.pants.anims.play("anim_face_pants");
             this.shirt.anims.play("anim_face_shirt");
-            footstep.stop();
+            // footstep.stop();
         }
         if (clavier.up.isDown && (this.player.body.touching.down || this.player.body.blocked.down)) {
             this.player.anims.play("anim_saut", true);
@@ -432,7 +442,7 @@ export default class Industrie extends Phaser.Scene {
         }
 
         // GESTION DE LA PORTE
-        if (boutondoor.isDown && this.physics.overlap(this.player, door) && compteurCibleDetruite == 0) {
+        if (boutondoor.isDown && this.physics.overlap(this.player, door) && compteurCibleDetruite >= 10) {
             door.anims.play('door', true);
             door.on('animationcomplete', () => {
                 // Arrêtez la musique
@@ -489,21 +499,24 @@ export default class Industrie extends Phaser.Scene {
         } else {
             Mort.play();
             this.add.image(960, 350, "GameOverImage").setScrollFactor(0);
-            BoutonRetourMenu = this.add.image(960, 800, "BoutonRetourMenu").setScrollFactor(0);
-            this.add.text(960, 800, "Retour au menu", { fontSize: "5000px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0);
+            // BoutonRetourMenu = this.add.image(960, 800, "BoutonRetourMenu").setScrollFactor(0);
+            // this.add.text(960, 800, "Retour au menu", { fontSize: "5000px", color: "White", fontStyle: "bold", fontStyle: "Arial Black", origin: 0.5 }).setScrollFactor(0);
             this.physics.pause();
             this.player.setTint(0xff0000);
-            BoutonRetourMenu.setInteractive();
-            BoutonRetourMenu.on("pointerover", () => {
-                BoutonRetourMenu.setTint(0x00ff00);
-            });
-            BoutonRetourMenu.on("pointerout", () => {
-                BoutonRetourMenu.clearTint();
-            });
-            BoutonRetourMenu.on("pointerup", () => {
-                this.shutdown();
-                this.scene.start("menu");
-            });
+            this.time.delayedCall(1000, () => {
+                this.scene.restart();
+            }, [], this);
+            // BoutonRetourMenu.setInteractive();
+            // BoutonRetourMenu.on("pointerover", () => {
+            //     BoutonRetourMenu.setTint(0x00ff00);
+            // });
+            // BoutonRetourMenu.on("pointerout", () => {
+            //     BoutonRetourMenu.clearTint();
+            // });
+            // BoutonRetourMenu.on("pointerup", () => {
+            //     this.shutdown();
+            //     this.scene.start("menu");
+            // });
         }
         this.updateLivesDisplay();
     }
@@ -531,13 +544,6 @@ export default class Industrie extends Phaser.Scene {
                     this.player.clearTint(); // Reset player color
                 }, [], this);
             }
-        }
-
-
-
-
-        if (boutondoor.isDown && this.physics.overlap(this.player, door)) {
-            door.anims.play('door', true);
         }
     }
     shutdown() {
