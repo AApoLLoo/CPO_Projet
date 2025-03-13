@@ -11,8 +11,6 @@ export default class Moyen_age extends Phaser.Scene {
     constructor() {
         super({ key: "Moyen_age" });
     }
-        super({ key: "Moyen_age" });
-    }
     preload() {
 
 
@@ -38,7 +36,6 @@ export default class Moyen_age extends Phaser.Scene {
     }
     create() {
 
-
         // Ajout du roi sur une plateforme solide
         if (!musique_de_fond) {
             musique_de_fond = this.sound.add("medieval"), { volume: 0.05, loop: true };
@@ -50,21 +47,14 @@ export default class Moyen_age extends Phaser.Scene {
         this.scoreText = this.add.text(50, 80, "Score: " + this.score, {
             fontSize: "24px",
             fill: "#FFF"
-        this.scoreText = this.add.text(50, 80, "Score: " + this.score, {
-            fontSize: "24px",
-            fill: "#FFF"
         }).setScrollFactor(0);
-        
-    
         const carteDuNiveau3 = this.add.tilemap("MAPmoyenage");
         const tileset = carteDuNiveau3.addTilesetImage("tuilesmoyenage");
         const calque_background = carteDuNiveau3.createLayer("calque_background", tileset);
         const calque_2 = carteDuNiveau3.createLayer("calque_2", tileset);
         const calque_3 = carteDuNiveau3.createLayer("calque_3", tileset);
         calque_2.setCollisionByProperty({ estSolide: true });
-
         TP = this.physics.add.sprite(3700, 100, "TP");
-
         TP = this.physics.add.sprite(3700, 100, "TP");
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
@@ -97,7 +87,6 @@ export default class Moyen_age extends Phaser.Scene {
             frames: [{ key: "player", frame: 4 }],
             frameRate: 20
         });
-        });
         this.anims.create({
             key: "anim_tourne_gauche",
             frames: this.anims.generateFrameNumbers("player", { start: 14, end: 16 }),
@@ -119,7 +108,6 @@ export default class Moyen_age extends Phaser.Scene {
             frames: [{ key: "pants", frame: 4 }],
             frameRate: 20
         });
-        });
         this.anims.create({
             key: "anim_tourne_gauche_pants",
             frames: this.anims.generateFrameNumbers("pants", { start: 14, end: 16 }),
@@ -132,7 +120,6 @@ export default class Moyen_age extends Phaser.Scene {
             frameRate: 8,
         });
         this.anims.create({
-        this.anims.create({
             key: "anim_saut_pants",
             frames: this.anims.generateFrameNumbers("pants", { start: 22, end: 24 }),
             frameRate: 4,
@@ -141,7 +128,6 @@ export default class Moyen_age extends Phaser.Scene {
             key: "anim_face_shirt",
             frames: [{ key: "shirt", frame: 4 }],
             frameRate: 20
-        });
         });
         this.anims.create({
             key: "anim_tourne_gauche_shirt",
@@ -159,17 +145,10 @@ export default class Moyen_age extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers("shirt", { start: 22, end: 24 }),
             frameRate: 4,
         });
-
-
         clavier = this.input.keyboard.createCursorKeys();
 
         // Affichage des règles du jeu
         // Affichage des règles du jeu
-
-
-
-
-
         this.fantomes = this.physics.add.group(); {
             for (let i = 0; i < 3; i++) {
                 this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
@@ -180,26 +159,18 @@ export default class Moyen_age extends Phaser.Scene {
                 }, [], this);
             }
         }
-
         this.physics.add.collider(this.fantomes, calque_2);
         this.physics.add.overlap(this.player, this.fantomes, this.hitByFantome, null, this);
         this.physics.add.collider(this.player, calque_2);
-
-
         this.player.health = 3;
-
-
             // Clavier
             this.clavier = this.input.keyboard.createCursorKeys();
             this.attackKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
             this.physics.world.setBounds(0, 0, 3840, 1280);
             this.cameras.main.setBounds(0, 0, 3840, 1280);
             this.cameras.main.startFollow(this.player);
-
         // Groupe d'épées statiques (elles ne tombent pas)
         this.epees = this.physics.add.staticGroup();
-
         // Liste des positions des épées
         let positionsEpees = [
             { x: 455, y: 620 },
@@ -207,25 +178,19 @@ export default class Moyen_age extends Phaser.Scene {
             { x: 2850, y: 1000 },
             { x: 3210, y: 700 },
         ];
-
         // Ajout des épées dans le niveau
         positionsEpees.forEach(pos => {
             this.epees.create(pos.x, pos.y, "epee").setScale(0.5); // Place les épées et réduit la taille
         });
-
-
         // Détecte quand le joueur touche une épée
         this.physics.add.overlap(this.player, this.epees, this.ramasserEpee, null, this);
-
         //VIES
         this.player.health = 3; // Nombre initial de vies
         this.coins = []; // Tableau pour stocker les objets de cœur
-
         // Affichage des cœurs pour les vies
         for (let i = 0; i < this.player.health; i++) {
             this.coins.push(this.add.image(100 + i * 120, 120, "HP").setOrigin(0.5).setScrollFactor(0));
         }
-
         //SCORE
         zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', {
             fontSize: '64px',
@@ -233,10 +198,7 @@ export default class Moyen_age extends Phaser.Scene {
             fontStyle: 'bold',
             fontFamily: 'Times New Roman' // Remplacer ici par la police de ton choix
         }).setOrigin(0.5).setScrollFactor(0);
-
-
         //TELEPORTATION
-
         TP.body.immovable = true;
         TP.setAllowGravity = false;
         this.physics.add.collider(TP, calque_2);
@@ -247,15 +209,11 @@ export default class Moyen_age extends Phaser.Scene {
             ,
         });
         boutondoor = this.input.keyboard.addKey('F');
-
 this.roi = this.physics.add.staticSprite(400, 1000, "roi").setScale(1.2);
- 
 this.physics.add.collider(this.roi, calque_2);
 // Détection de la rencontre avec le roi
 this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
-
-
-    }
+}
 
 
     update() {
@@ -270,7 +228,6 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
             this.pants.anims.play("anim_tourne_gauche_pants", true);
             this.shirt.anims.play("anim_tourne_gauche_shirt", true);
         } else if (clavier.right.isDown) {
-        } else if (clavier.right.isDown) {
             this.player.direction = 'right';
             this.pants.direction = 'right';
             this.shirt.direction = 'right';
@@ -280,7 +237,6 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
             this.player.anims.play("anim_tourne_droite", true);
             this.pants.anims.play("anim_tourne_droite_pants", true);
             this.shirt.anims.play("anim_tourne_droite_shirt", true);
-        } else {
         } else {
             this.player.setVelocityX(0);
             this.pants.setVelocityX(0);
@@ -305,30 +261,16 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
                 this.physics.moveToObject(fantome, this.player, 50);
             }
         });
-
         // Attaque du joueur
         if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
             this.attack();
         // Attaque du joueur
-        if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
-            this.attack();
-
-        }
-        }
+    }
 
         // Téléportation
         if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
             TP.anims.play('teleporteur', true);
-
-        // Téléportation
-        if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
-            TP.anims.play('teleporteur', true);
-
-
         }
-        }
-
-
         if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score == 4) {
             TP.anims.play('teleporteur', true);
             TP.on('animationcomplete', () => {
@@ -339,33 +281,18 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
         }
 
 }
-
-
-
     hitByFantome(player, fantome) {
         if (!player.invincible) {
             player.health -= 1; // Le joueur perd une vie
-    hitByFantome(player, fantome) {
-        if (!player.invincible) {
-            player.health -= 1; // Le joueur perd une vie
-
             console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
-            console.log("👻 Le joueur a été touché ! Vies restantes : " + player.health);
-
             // Vérifie que le joueur a encore des vies avant de supprimer un cœur
             if (player.health >= 0 && this.coins[player.health]) {
                 this.coins[player.health].destroy(); // Supprime un cœur
             }
-            // Vérifie que le joueur a encore des vies avant de supprimer un cœur
-            if (player.health >= 0 && this.coins[player.health]) {
-                this.coins[player.health].destroy(); // Supprime un cœur
-            }
-
             // Activer l'invincibilité temporaire
             player.invincible = true;
             // Activer l'invincibilité temporaire
             player.invincible = true;
-
             // Effet visuel d'invincibilité
             this.tweens.add({
                 targets: player,
@@ -382,7 +309,6 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
                 yoyo: true,
                 repeat: 5
             });
-
             this.time.delayedCall(1000, () => {
                 player.invincible = false;
                 player.setAlpha(1);
@@ -391,7 +317,6 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
                 player.invincible = false;
                 player.setAlpha(1);
             });
-
             // Vérifie si le joueur a encore des vies
             if (player.health <= 0) {
                 console.log("💀 Plus de vies ! Game Over.");
@@ -429,7 +354,7 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
         ).setOrigin(1, 0.5).setScrollFactor(0);
 
         // Joue le son du roi et récupère la durée
-        sonRoi = this.sound.add('medieval');
+        sonRoi = this.sound.add('dialogueroi');
         sonRoi.play();
 
 
@@ -437,9 +362,9 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
 
         // Quand le son du roi se termine, on reprend la musique et le jeu
         sonRoi.once('complete', () => {
-            this.dialogueRoi.destroy(); // Supprime le texte
+            this.dialogueRoi.destroy();
+            musique_de_fond.play(); // Supprime le texte
             this.physics.resume(); // Reprend le jeu
-            musique_de_fond.play(); // Redémarre la musique médiévale
         });
     }
 
