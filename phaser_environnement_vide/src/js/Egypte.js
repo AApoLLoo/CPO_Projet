@@ -193,7 +193,7 @@ musique_fond.play();
         this.momies = this.physics.add.group();
         for (let i = 0; i < 3; i++) {
             this.time.delayedCall(i * 1000, () => { // Ajout d'un délai entre chaque momie
-                let momie = this.momies.create(1000 + i * 800, 800, "momie"); // Augmentation de l'espacement
+                let momie = this.momies.create(1000 + i * 700, 700, "momie"); // Augmentation de l'espacement
                 momie.setCollideWorldBounds(true);
                 momie.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100)); // Augmentation de la vitesse
                 momie.health = 1;
