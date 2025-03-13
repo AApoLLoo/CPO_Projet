@@ -31,7 +31,6 @@ export default class Egypte extends Phaser.Scene {
         this.load.audio('desert', 'src/assets/desert.mp3');
         this.load.image("ParcheminTexte", "src/assets/ParcheminImageTexte.png");
         //teleporteur
-        this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
         this.load.spritesheet("teleporter", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
         this.load.audio('sonmort', 'src/assets/gameover.mp3'); 
    
@@ -310,9 +309,9 @@ this.physics.world.on('worldbounds', () => {
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
-if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 0) {
-    teleporteur.anims.play('teleporteur', true);
-    teleporteur.on('animationcomplete', () => {
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporter) && CompteurParchemin > 8) {
+    teleporter.anims.play('teleporter', true);
+    teleporter.on('animationcomplete', () => {
         musique_fond.stop();
         this.scene.stop('Egypte');
         this.scene.start('Moyen_age');
