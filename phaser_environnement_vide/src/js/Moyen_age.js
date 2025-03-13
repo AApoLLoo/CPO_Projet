@@ -5,6 +5,7 @@ var zone_texte_score;
 var musique_de_fond;
 var TP;
 var boutondoor;
+var sonRoi;
 
 export default class Moyen_age extends Phaser.Scene {
     constructor() {
@@ -25,7 +26,7 @@ export default class Moyen_age extends Phaser.Scene {
     this.load.image("epee", "src/assets/epee.png"); // Ajoute l'image de l'épée
     this.load.image("HP", "src/assets/Coeur_HP.png");
     this.load.audio('medieval', 'src/assets/medieval.mp3');   
-    this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
+    this.load.spritesheet("TP", "src/assets/teleporter1.png", { frameWidth: 154, frameHeight: 130}); 
     this.load.audio('sonmort', 'src/assets/gameover.mp3'); // Remplace par le chemin correct
     this.load.image("roi", "src/assets/roi.png"); // Remplace par le bon chemin
     this.load.audio("dialogueroi", "src/assets/roi.mp3"); // Remplace par le bon fichier audio
@@ -390,13 +391,14 @@ rencontrerRoi(player, roi) {
     ).setOrigin(1, 0.5).setScrollFactor(0);
 
     // Joue le son du roi et récupère la durée
-    this.sonRoi.play();
+    sonRoi = this.sound.add('medieval');
+    sonRoi.play();
+    
 
     // Met le jeu en pause
-    this.physics.pause();
 
     // Quand le son du roi se termine, on reprend la musique et le jeu
-    this.sonRoi.once('complete', () => {
+    sonRoi.once('complete', () => {
         this.dialogueRoi.destroy(); // Supprime le texte
         this.physics.resume(); // Reprend le jeu
         musique_de_fond.play(); // Redémarre la musique médiévale
