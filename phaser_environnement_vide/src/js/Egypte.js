@@ -292,7 +292,7 @@ this.physics.world.on('worldbounds', () => {
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
-if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 0) {
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 9) {
     teleporteur.anims.play('teleporteur', true);
     teleporteur.on('animationcomplete', () => {
         musique_fond.stop();
