@@ -28,6 +28,7 @@ export default class Egypte extends Phaser.Scene {
         this.load.image("Ramses", "src/assets/Ramses.png");
         this.load.audio('desert', 'src/assets/desert.mp3');
         this.load.spritesheet("teleporter", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
+        this.load.audio('sonmort', 'src/assets/gameover.mp3'); 
    
 
     }
@@ -284,7 +285,7 @@ this.physics.world.on('worldbounds', () => {
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
-if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 9) {
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 0) {
     teleporteur.anims.play('teleporteur', true);
     teleporteur.on('animationcomplete', () => {
         musique_fond.stop();
@@ -319,11 +320,41 @@ hitByMomie(player, momie) {
 
         if (player.health <= 0) {
             console.log("Plus de vies ! Game Over.");
-            this.scene.restart();
+            this.afficherGameOver();
         }
     }
 }
 
+
+
+// Affiche "GAME OVER"
+afficherGameOver() {
+    this.sound.play('sonmort');
+    this.gameOverText = this.add.text(
+        this.cameras.main.width / 2, 
+        this.cameras.main.height / 2, 
+        "GAME OVER", 
+        {
+            fontSize: "80px",
+            fill: "#FF0000", // Rouge pour l'effet dramatique
+            fontStyle: "bold",
+            fontFamily: "Times New Roman"
+        }
+    );
+    this.gameOverText.setOrigin(0.5);
+    this.gameOverText.setScrollFactor(0);
+
+    // Désactive les contrôles du joueur
+    this.player.setVelocity(0, 0);
+    this.player.setTint(0x366666); // Effet de "mort"
+    this.physics.pause(); // Met en pause le jeu
+
+    // Redémarre la scène après **5 secondes**
+    this.time.delayedCall(5000, () => {
+        this.scene.restart();
+    }, [], this);
+
+}
 attack() {
 
 // Tuer par les momies proches
@@ -345,6 +376,8 @@ function ramasserParchemin(player, un_parchemin) {
         zone_texte_score.setText("SCORE : " + score);
       
       } 
+
+
 
 
 
