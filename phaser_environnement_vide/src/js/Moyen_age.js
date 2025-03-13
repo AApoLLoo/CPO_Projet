@@ -55,7 +55,7 @@ export default class Moyen_age extends Phaser.Scene {
         const calque_3 = carteDuNiveau3.createLayer("calque_3", tileset);
         calque_2.setCollisionByProperty({ estSolide: true });
     
-
+        TP=this.physics.add.sprite(3700, 100, "TP");
         this.player = this.physics.add.sprite(100, 600, "player");
         this.pants = this.physics.add.sprite(100, 600, "pants");
         this.shirt = this.physics.add.sprite(100, 600, "shirt");
@@ -214,7 +214,7 @@ zone_texte_score = this.add.text(this.cameras.main.width / 2, 50, 'SCORE : 0', {
 
 
 //TELEPORTATION
-TP=this.physics.add.sprite(3700, 100, "TP");
+
         TP.body.immovable = true;
         TP.setAllowGravity = false;  
         this.physics.add.collider(TP, calque_2);
@@ -295,14 +295,14 @@ if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
 }
 
 // Téléportation
-if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
+if (boutondoor.isDown && this.physics.overlap(this.player, TP)&& score==4) {
     TP.anims.play('teleporteur', true);
     
 
 }
 
 
-if (boutondoor.isDown && this.physics.overlap(this.player, TP)) {
+if (boutondoor.isDown && this.physics.overlap(this.player, TP) && score==4) {
     TP.anims.play('teleporteur', true);
     TP.on('animationcomplete', () => {
         // Arrêtez la musique

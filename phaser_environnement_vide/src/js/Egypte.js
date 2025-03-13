@@ -3,7 +3,7 @@ var player;
 var groupe_parchemins;
 var score = 0;
 var zone_texte_score;
-var teleporteur;
+var teleporter;
 var boutondoor;
 var musique_fond;
 var CompteurParchemin = 0;
@@ -32,6 +32,10 @@ export default class Egypte extends Phaser.Scene {
         this.load.image("ParcheminTexte", "src/assets/ParcheminImageTexte.png");
         //teleporteur
         this.load.spritesheet("teleporteur", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
+        this.load.spritesheet("teleporter", "src/assets/teleporter.png", { frameWidth: 154, frameHeight: 130}); 
+        this.load.audio('sonmort', 'src/assets/gameover.mp3'); 
+   
+
     }
     create(){
         const carteDuNiveau2 = this.add.tilemap("MapEgypte");
@@ -46,18 +50,17 @@ export default class Egypte extends Phaser.Scene {
 
  
         //teleporteur
-        teleporteur=this.physics.add.sprite(3700, 100, "teleporteur"); //((3750), y, nom de l'image)
-        teleporteur.body.immovable = true;
-        teleporteur.setAllowGravity = false;  
-        this.physics.add.collider(teleporteur, calque_plateformes);
+        teleporter=this.physics.add.sprite(3700, 100, "teleporter"); //((3750), y, nom de l'image)
+        teleporter.body.immovable = true;
+        teleporter.setAllowGravity = false;  
+        this.physics.add.collider(teleporter, calque_plateformes);
         this.anims.create({
-            key: 'teleporteur',
-            frames: this.anims.generateFrameNumbers('teleporteur', { start: 0, end: 5 }),
+            key: 'teleporter',
+            frames: this.anims.generateFrameNumbers('teleporter', { start: 0, end: 5 }),
             frameRate: 4
             ,
             });
-
-            boutondoor= this.input.keyboard.addKey('F');
+        boutondoor= this.input.keyboard.addKey('F');
 
 
 
@@ -307,7 +310,7 @@ this.physics.world.on('worldbounds', () => {
 if (Phaser.Input.Keyboard.JustDown(this.attackKey)) {
     this.attack();
 }
-if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 9) {
+if (boutondoor.isDown && this.physics.overlap(this.player, teleporteur) && CompteurParchemin == 0) {
     teleporteur.anims.play('teleporteur', true);
     teleporteur.on('animationcomplete', () => {
         musique_fond.stop();
@@ -342,11 +345,41 @@ hitByMomie(player, momie) {
 
         if (player.health <= 0) {
             console.log("Plus de vies ! Game Over.");
-            this.scene.restart();
+            this.afficherGameOver();
         }
     }
 }
 
+
+
+// Affiche "GAME OVER"
+afficherGameOver() {
+    this.sound.play('sonmort');
+    this.gameOverText = this.add.text(
+        this.cameras.main.width / 2, 
+        this.cameras.main.height / 2, 
+        "GAME OVER", 
+        {
+            fontSize: "80px",
+            fill: "#FF0000", // Rouge pour l'effet dramatique
+            fontStyle: "bold",
+            fontFamily: "Times New Roman"
+        }
+    );
+    this.gameOverText.setOrigin(0.5);
+    this.gameOverText.setScrollFactor(0);
+
+    // Désactive les contrôles du joueur
+    this.player.setVelocity(0, 0);
+    this.player.setTint(0x366666); // Effet de "mort"
+    this.physics.pause(); // Met en pause le jeu
+
+    // Redémarre la scène après **5 secondes**
+    this.time.delayedCall(5000, () => {
+        this.scene.restart();
+    }, [], this);
+
+}
 attack() {
 
 // Tuer par les momies proches
