@@ -228,11 +228,10 @@ export default class Moyen_age extends Phaser.Scene {
             boutondoor = this.input.keyboard.addKey('F');
 
             // Ajout du roi à une position précise
-            this.roi = this.physics.add.staticSprite(2000, 720, "roi").setScale(1.2);
+            this.roi = this.physics.add.staticSprite(400, 1000, "roi").setScale(1.2);
             this.physics.add.collider(this.roi, calque_2); // Collision avec le sol
 
-            // Chargement du son du roi
-            this.sonRoi = this.sound.add("dialogueroi");
+           
 
             // Détection de la rencontre avec le roi
             this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
@@ -396,7 +395,7 @@ export default class Moyen_age extends Phaser.Scene {
             sonRoi.play();
 
 
-            // Met le jeu en pause
+           
 
             // Quand le son du roi se termine, on reprend la musique et le jeu
             sonRoi.once('complete', () => {
