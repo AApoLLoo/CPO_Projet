@@ -326,10 +326,7 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
     }
 
     rencontrerRoi(player, roi) {
-        // Arrête la musique médiévale
-        if (musique_de_fond.isPlaying) {
-            musique_de_fond.stop();
-        }
+        
 
         // Affiche le texte du roi à droite de l'écran
         this.dialogueRoi = this.add.text(
@@ -353,19 +350,8 @@ this.physics.add.overlap(this.player, this.roi, this.rencontrerRoi, null, this);
             }
         ).setOrigin(1, 0.5).setScrollFactor(0);
 
-        // Joue le son du roi et récupère la durée
-        sonRoi = this.sound.add('dialogueroi');
-        sonRoi.play();
+      
 
-
-        // Met le jeu en pause
-
-        // Quand le son du roi se termine, on reprend la musique et le jeu
-        sonRoi.once('complete', () => {
-            this.dialogueRoi.destroy();
-            musique_de_fond.play(); // Supprime le texte
-            this.physics.resume(); // Reprend le jeu
-        });
     }
 
 
